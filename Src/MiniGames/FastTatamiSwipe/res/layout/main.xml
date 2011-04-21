@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+  Le layout pour mon essaie de mini-jeu 1.
+  
+  Je crois, pour l'instant que ce fichier est le fichier spécialementn
+  pour l'activité menu. étand donné que je crois pour l'instant que
+  j'ai besoin d'une activité spéciale menu.
+ -->
+ 
+ <!-- Le frame layout est concu pour un élément prennat toute la fenêtre. -->
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@drawable/back" xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:layout_height="match_parent" android:id="@+id/relativeLayout1" android:layout_width="match_parent">
+        <!-- Title -->
+        <TextView android:text="@string/app_title"
+                  android:id="@+id/labelTitle"
+                  android:layout_alignParentTop="true"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_horizontal"
+                  android:textColor="#FFFFFF"
+                  android:textSize="40sp" android:layout_width="match_parent" android:paddingTop="25sp"/>
+        <!-- Test -->
+        <TextView android:layout_width="fill_parent"
+                  android:text="@string/mode"
+                  android:id="@+id/labelMode"
+                  android:gravity="left"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/labelTitle"
+                  android:textColor="#CCCCCC"
+                  android:textSize="20sp"
+                  android:paddingLeft="20sp"
+                  android:layout_alignRight="@+id/labelTitle" android:background="#151515"/>
+        <!-- Reflexe -->
+        <Button android:id="@+id/btnStart" android:layout_below="@+id/labelMode" android:layout_alignLeft="@+id/labelMode" android:layout_alignRight="@+id/labelMode" android:text="@string/button_start" android:layout_width="wrap_content" android:layout_centerVertical="true" android:layout_height="wrap_content" android:layout_marginLeft="15sp" android:layout_marginRight="15sp" android:textColor="#dddddd" android:textSize="60sp" android:layout_marginTop="140sp" android:background="#d0111111" android:paddingBottom="10sp" android:paddingTop="10sp" android:clickable="true"></Button>
+        <TextView android:layout_width="fill_parent"
+                  android:text="@string/tested_attribute"
+                  android:id="@+id/labelAttribute"
+                  android:gravity="right"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/labelTitle"
+                  android:textColor="#CCCCCC"
+                  android:paddingRight="10sp"
+                  android:textSize="20sp"
+                  android:layout_alignLeft="@+id/labelTitle"/>
+    </RelativeLayout>
+    
+</FrameLayout>

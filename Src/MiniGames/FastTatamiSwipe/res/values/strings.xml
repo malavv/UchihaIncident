@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ninja Menu</string>
+    <string name="app_title">Mini-Game 1</string>
+    <string name="mode">Test</string>
+    <string name="tested_attribute">Reflexes</string>
+    <string name="button_start">Start !</string>
+</resources>
