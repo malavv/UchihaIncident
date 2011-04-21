@@ -29,4 +29,5 @@ public class FrontScreen extends Activity implements OnClickListener {
 	      Log.wtf("Front Screen start button click.", "Activity not found.");
 	  }
 	}
+	
 }

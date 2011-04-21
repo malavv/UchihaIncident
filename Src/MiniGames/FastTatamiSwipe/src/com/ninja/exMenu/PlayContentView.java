@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -23,6 +25,8 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 		
 		SurfaceHolder h = getHolder();
 		h.addCallback(this);
+		
+		this.
 		
 		thread = new PlayContentThread(h, context, new Handler() {
 			@Override
@@ -65,5 +69,11 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
                 retry = false;
             } catch (InterruptedException e) {}
         }
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+	  thread.doTouch(event);
+	  return true;
 	}
 }
