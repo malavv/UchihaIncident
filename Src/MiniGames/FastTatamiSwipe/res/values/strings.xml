@@ -7,4 +7,7 @@
     <string name="button_start">Start !</string>
     <string name="app_content_label">PlayContent</string>
     <string name="playContent_text"></string>
+    <string name="menu_options">Options</string>
+    <string name="menu_pause">Pause</string>
+    <string name="menu_resume">Resume</string>
 </resources>

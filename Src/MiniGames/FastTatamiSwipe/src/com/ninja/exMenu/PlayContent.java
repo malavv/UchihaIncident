@@ -2,31 +2,112 @@ package com.ninja.exMenu;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
- * This class will control everything that is visible after pressing
- * play in the main menu.
+ * PlayContent est l'activité/page qui contient toute la logique nécessaire
+ * à faire fonctionner le minigame. Elle contient principalement un thread
+ * sous-jacent à la logique et une surface faisant l'abstraction des inputs
+ * et des outputs.
  */
 public class PlayContent extends Activity {
 	
-    /** A handle to the thread that's actually running the animation. */
+	/** Le thread sur lequel se passe la physique et les animations. */
     private PlayContentThread mContentThread;
 
-    /** A handle to the View in which the game is running. */
+    /** La vue s'occupant de tout le input/output. */
     private PlayContentView mContentView;
+    
+    /** L'identifiant du boutton option dans le menu en jeu. */
+    private static final int kOptionMenu = 1;
+    
+    /** L'identifiant du boutton option dans le menu en jeu. */
+    private static final int kPauseMenu = 2;
+    
+    /** L'identifiant du boutton option dans le menu en jeu. */
+    private static final int kResumeMenu = 3;
 	
+    /**
+     * Phase du cycle de vie correspondant à l'initialisation.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	
     	setContentView(R.layout.content);
 
-        // get handles to the LunarView from XML, and its LunarThread
-    	//mContentView = (PlayContentView) findViewById(R.id.ContentView);
-    	//mContentThread = mContentView.getThread();
-
-        // give the LunarView a handle to the TextView used for messages
-    	//mContentView.setTextView((TextView) findViewById(R.id.Text));
+      // On va chercher la référence des deux éléments.
+    	mContentView = (PlayContentView) findViewById(R.id.ContentView);
+    	mContentThread = mContentView.getThread();
+    }
+    
+    /**
+     * Création du menu et des options qui s'y retrouve.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        
+        menu.add(0, kOptionMenu, 0, R.string.menu_options);
+        menu.add(0, kPauseMenu, 0, R.string.menu_pause);
+        menu.add(0, kResumeMenu, 0, R.string.menu_resume);
+        
+        return true;
+    }
+    
+    /**
+     * Actions à prendre dépendament de l'option choisit dans le menu.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+  	    case 1:
+  	 	    return true;
+  	  	case 2:
+  			  Pause();
+  				return true;
+  			case 3:
+  			  Resume();
+  				return true;
+  	   }
+    	return false;
+    }
+    
+    /**
+     * Phase du cycle de vie ou nous ne sommes probablement plus visible et
+     * prêt à être mis hors de mémoire.
+     */
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	Pause();
+    }
+    
+    /**
+     * Finalement, on es revenu du onPause et apparemment, Yay, Android nous
+     * dis que nos informations sont supppsé encore être en mémoire.
+     */
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	Resume();
+    }
+    
+    /** Méthode privé permettant de géré l'événement pause. */
+    private void Pause() {
+      mContentThread.pause();
+    }
+    
+    /** Méthode privé permettant de géré l'événement resumé. */
+    private void Resume() {}
+    
+    /**
+     * Méthode que nous donne Android pour nous permettre de sauvegarder notre
+     * état en mémoire juste avant que notre application se fasse fermer pour
+     * libéré de la mémoire.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
     }
 }

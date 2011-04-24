@@ -12,12 +12,16 @@ import android.widget.TextView;
 
 
 /**
- * Vue centrale utilisé par le Play Content, c'est dans cette vue que se fera l'affichage et tout.
+ * Vue centrale utilisé par le Mini-jeu, elle dérive de la classe surface
+ * qui donne une facon facile de s'occuper de la gestion des événements et
+ * de pouvoir dessiner.
  */
 public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback {
 
+  /** Zone de texte nous permettant d'afficher des messages à l'utilisateur. */
 	private TextView mStatusText;
 	
+	/** Le thread sous-jacent à l'application. */
 	private PlayContentThread thread;
 	
 	public PlayContentView(Context context, AttributeSet attrs) {
@@ -25,8 +29,6 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 		
 		SurfaceHolder h = getHolder();
 		h.addCallback(this);
-		
-		this.
 		
 		thread = new PlayContentThread(h, context, new Handler() {
 			@Override
@@ -39,38 +41,35 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 		setFocusable(true);
 	}
 	
-	public PlayContentThread getThread() {
-	  return thread;
-	}
-	
-    public void setTextView(TextView textView) {
-        mStatusText = textView;
-    }
+	public PlayContentThread getThread() { return thread; }
 
-	@Override
+  /**
+   * Implémentation de l'interface.
+   */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 		thread.setSurfaceSize(width, height);		
 	}
 
-	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-        thread.setRunning(true);
-        thread.start();
+    thread.setRunning(true);
+    thread.start();
 	}
 
-	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        thread.setRunning(false);
-        while (retry) {
-            try {
-                thread.join();
-                retry = false;
-            } catch (InterruptedException e) {}
-        }
+    boolean retry = true;
+    thread.setRunning(false);
+    while (retry) {
+        try {
+            thread.join();
+            retry = false;
+        } catch (InterruptedException e) {}
+    }
 	}
 	
+	/**
+	 * Handle de touch event.
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 	  thread.doTouch(event);

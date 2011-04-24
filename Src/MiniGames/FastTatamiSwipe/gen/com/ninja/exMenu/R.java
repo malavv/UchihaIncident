@@ -32,6 +32,9 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int app_title=0x7f040001;
         public static final int button_start=0x7f040004;
+        public static final int menu_options=0x7f040007;
+        public static final int menu_pause=0x7f040008;
+        public static final int menu_resume=0x7f040009;
         public static final int mode=0x7f040002;
         public static final int playContent_text=0x7f040006;
         public static final int tested_attribute=0x7f040003;
