@@ -5,4 +5,6 @@
     <string name="mode">Test</string>
     <string name="tested_attribute">Reflexes</string>
     <string name="button_start">Start !</string>
+    <string name="app_content_label">PlayContent</string>
+    <string name="playContent_text"></string>
 </resources>
