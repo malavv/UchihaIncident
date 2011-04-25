@@ -1,48 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 
-  Le layout pour mon essaie de mini-jeu 1.
+<!-- Layout pour le mini-jeu. -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  android:background="@drawable/back"
+  android:id="@+id/verticalMenu">
+
+  <!-- Title -->
+  <TextView 
+    android:text="@string/app_title"
+    android:id="@+id/labelTitle"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:textColor="#FFFFFF"
+    android:textSize="40sp"
+    android:layout_width="fill_parent" 
+    android:paddingBottom="15sp"
+    android:paddingTop="25sp"/>
   
-  Je crois, pour l'instant que ce fichier est le fichier spécialementn
-  pour l'activité menu. étand donné que je crois pour l'instant que
-  j'ai besoin d'une activité spéciale menu.
- -->
- 
- <!-- Le frame layout est concu pour un élément prennat toute la fenêtre. -->
-<FrameLayout android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@drawable/back" xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout android:layout_height="match_parent" android:id="@+id/relativeLayout1" android:layout_width="match_parent">
-        <!-- Title -->
-        <TextView android:text="@string/app_title"
-                  android:id="@+id/labelTitle"
-                  android:layout_alignParentTop="true"
-                  android:layout_height="wrap_content"
-                  android:gravity="center_horizontal"
-                  android:textColor="#FFFFFF"
-                  android:textSize="40sp" android:layout_width="match_parent" android:paddingTop="25sp"/>
-        <!-- Test -->
-        <TextView android:layout_width="fill_parent"
-                  android:text="@string/mode"
-                  android:id="@+id/labelMode"
-                  android:gravity="left"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@+id/labelTitle"
-                  android:textColor="#CCCCCC"
-                  android:textSize="20sp"
-                  android:paddingLeft="20sp"
-                  android:layout_alignRight="@+id/labelTitle" android:background="#151515"/>
-        <!-- Reflexe -->
-        <Button android:id="@+id/btnStart" android:layout_below="@+id/labelMode" android:layout_alignLeft="@+id/labelMode" android:layout_alignRight="@+id/labelMode" android:text="@string/button_start" android:layout_width="wrap_content" android:layout_centerVertical="true" android:layout_height="wrap_content" android:layout_marginLeft="15sp" android:layout_marginRight="15sp" android:textColor="#dddddd" android:textSize="60sp" android:layout_marginTop="140sp" android:background="#d0111111" android:paddingBottom="10sp" android:paddingTop="10sp" android:clickable="true"></Button>
-        <TextView android:layout_width="fill_parent"
-                  android:text="@string/tested_attribute"
-                  android:id="@+id/labelAttribute"
-                  android:gravity="right"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@+id/labelTitle"
-                  android:textColor="#CCCCCC"
-                  android:paddingRight="10sp"
-                  android:textSize="20sp"
-                  android:layout_alignLeft="@+id/labelTitle"/>
-    </RelativeLayout>
+  <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#111111">
     
-</FrameLayout>
+    <!-- Le mode -->
+    <TextView
+      android:text="@string/mode" 
+      android:id="@+id/labelMode" 
+      android:layout_width="wrap_content" 
+      android:layout_height="wrap_content"
+      android:textSize="25sp"
+      android:paddingLeft="15sp"
+      android:layout_weight="1" />
+   
+    <!-- Le mode -->
+    <TextView
+      android:text="@string/tested_attribute" 
+      android:id="@+id/labelMode" 
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="right"
+      android:textSize="25sp"
+      android:paddingRight="15sp"
+      android:layout_weight="1" />
+  </LinearLayout>
+  
+  <!-- Bouton joueur solo. -->
+  <Button
+    android:id="@+id/btnSolo"
+    android:text="@string/menu_1_joueur"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textColor="#dddddd"
+    android:textSize="40sp"
+    android:background="#d0111111"
+    android:clickable="true"
+    android:layout_gravity="center_horizontal"
+    android:paddingLeft="30sp"
+    android:paddingRight="30sp"
+    android:layout_marginTop="110sp" />
+    
+  <!-- Bouton deux joueurs. -->
+  <Button
+    android:id="@+id/btnDuo"
+    android:text="@string/menu_2_joueurs"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textColor="#dddddd"
+    android:textSize="40sp"
+    android:background="#d0111111"
+    android:clickable="true"
+    android:layout_gravity="center_horizontal"
+    android:paddingLeft="30sp"
+    android:paddingRight="30sp"
+    android:layout_marginTop="30sp" />
+</LinearLayout>

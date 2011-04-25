@@ -17,11 +17,11 @@ public final class R {
     public static final class id {
         public static final int ContentView=0x7f050000;
         public static final int Text=0x7f050001;
-        public static final int btnStart=0x7f050005;
-        public static final int labelAttribute=0x7f050006;
+        public static final int btnDuo=0x7f050006;
+        public static final int btnSolo=0x7f050005;
         public static final int labelMode=0x7f050004;
         public static final int labelTitle=0x7f050003;
-        public static final int relativeLayout1=0x7f050002;
+        public static final int verticalMenu=0x7f050002;
     }
     public static final class layout {
         public static final int content=0x7f030000;
@@ -32,6 +32,8 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int app_title=0x7f040001;
         public static final int button_start=0x7f040004;
+        public static final int menu_1_joueur=0x7f04000a;
+        public static final int menu_2_joueurs=0x7f04000b;
         public static final int menu_options=0x7f040007;
         public static final int menu_pause=0x7f040008;
         public static final int menu_resume=0x7f040009;

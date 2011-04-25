@@ -10,4 +10,6 @@
     <string name="menu_options">Options</string>
     <string name="menu_pause">Pause</string>
     <string name="menu_resume">Resume</string>
+    <string name="menu_1_joueur">Mode solo</string>
+    <string name="menu_2_joueurs">Deux Joueurs</string>
 </resources>
