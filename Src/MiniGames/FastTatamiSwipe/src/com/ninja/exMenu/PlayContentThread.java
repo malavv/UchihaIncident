@@ -1,5 +1,6 @@
 package com.ninja.exMenu;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import android.content.Context;
@@ -7,13 +8,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
-import android.os.Bundle;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
 
 /**
  * Le thread sous-jacent au jeu. Il contient la physique,
@@ -37,11 +39,37 @@ public class PlayContentThread extends Thread {
 	  private long tickDiff;
 	  public long Fps() { return 1000 / tickDiff; }
 	  public String PrintFps() { return Long.toString(Fps()); }
+	  public long Delta() { return tickDiff; }
 	  public void Tick() {
 	    long time = System.currentTimeMillis();
 	    tickDiff = time - lastTick;
 	    lastTick = time;
 	  }
+	}
+	
+	private class Sound {
+		private SoundPool mSound;
+		private HashMap<Integer, Integer> mSoundPoolMap;
+		private AudioManager mAudioManager;
+		private Context mContext;
+		public void Init(Context c) {
+			mContext = c;
+			mSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+			mSoundPoolMap = new HashMap<Integer, Integer>();
+			mAudioManager = (AudioManager)c.getSystemService(Context.AUDIO_SERVICE);
+		}
+		public void Load(int index, int id) { mSoundPoolMap.put(index, mSound.load(mContext, id, 1)); }
+		public void playSound(int index) {
+		  float streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		  streamVolume = streamVolume / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		  mSound.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
+		}
+		 
+		public void playLoopedSound(int index) {
+		    float streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		    streamVolume = streamVolume / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		    mSound.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, -1, 1f);
+		}
 	}
 	
 	/** Les dimensions du canvas de l'écran. */
@@ -78,11 +106,22 @@ public class PlayContentThread extends Thread {
    * On retrouve ici les états dans lesquels peut ce situer le minigame.
    */
   public static final int kInitial = 0;
-  public static final int kkPause = 1;
+  public static final int kPause = 1;
   public static final int kAnimationDebut = 2;
   public static final int kUserInput = 3;
   public static final int kAnimationMouvement = 4;
   public static final int kAnimationFin = 5;
+  
+  private Sprite Samurai = null;
+  private Sprite Tameshigiri = null;
+  
+  private int distSamurai = 0;
+  private int distTame = 0;
+  
+  private Sound mSound = new Sound();
+  
+  
+  private long anim1Count = 0;
 	
   /**
    * Créé un thread sous-jacent au minigame pour géré les animations, la physique et les timers.
@@ -102,11 +141,24 @@ public class PlayContentThread extends Thread {
 		coords = new LinkedList<PointF>();
 		mCanvasDim = new Dimension(1, 1);
 		profiler = new Profiler();
+		
+		mSound.Init(context);
+		mSound.Load(1, R.raw.fourreau);
+		
+		Samurai = new Sprite(context.getResources().getDrawable(R.drawable.kendo));
+		Tameshigiri = new Sprite(context.getResources().getDrawable(R.drawable.tameshigiri));
+		
+		Samurai.Scale(2.5);
+		Tameshigiri.Scale(0.8);
 	}
 	
 	public void doStart() {
 	  profiler.Tick();
-		setState(kInitial);
+      setState(kInitial);
+	}
+	
+	public void Panic() {
+		mRun = false;
 	}
 	
 	@Override
@@ -131,20 +183,57 @@ public class PlayContentThread extends Thread {
 		
 		profiler.Tick();
 		
-		String s = "FPS : " + profiler.PrintFps();
-		
 		synchronized (mSurfaceHolder) {
-			
+			// Clear de l'écran.
 			c.drawColor(Color.BLACK);
 			
-			c.drawText(s, 5, mCanvasDim.Height - 5, mLinePaint);
-			
-			if (coords.size() > 2) {
-			  for (int i = coords.size() - 2, j = coords.size() - 1; i > 0; i--, j--) {
-				  c.drawLine(coords.get(j).x, coords.get(j).y, coords.get(i).x, coords.get(i).y, mLinePaint);
-			  }
+			switch (mMode) {
+				case kInitial:
+					mMode = kAnimationDebut;
+					break;
+				case kPause:
+					break;
+				case kAnimationDebut:
+					FirstAnimation(c, profiler.Delta());
+					break;
+				case kUserInput:
+					break;
+				case kAnimationMouvement:
+					break;
+				case kAnimationFin:
+					break;
 			}
+			Fps(c);
 		}
+	}
+	
+	private void FirstAnimation(Canvas c, long delta) {
+		anim1Count += delta;
+		
+		if (anim1Count >= 2500) {
+		  anim1Count = 0;
+		  mMode = kUserInput;
+		  mSound.playSound(1);
+		  return;
+		} else if (anim1Count >= 2000) {
+	      Tameshigiri.Draw(c);
+		  Samurai.Draw(c);
+		  return;	
+		}
+		
+		Point pTameshigiri = new Point((int)(mCanvasDim.Width * 0.25) + (int)(((double)distTame / 2000.0) * anim1Count), (int)(mCanvasDim.Height * 0.6));
+		Point pSamu = new Point(mCanvasDim.Width - (int)(((double)distSamurai / 2000.0) * anim1Count), (int)(mCanvasDim.Height * 0.7));
+		
+		Samurai.CenterOn(pSamu);
+		Tameshigiri.CenterOn(pTameshigiri);
+		
+		Tameshigiri.Draw(c);
+		Samurai.Draw(c);
+	}
+	
+	private void Fps(Canvas c) {
+		String s = "FPS : " + profiler.PrintFps();
+		c.drawText(s, 5, mCanvasDim.Height - 5, mLinePaint);
 	}
 	
 	public void doTouch(MotionEvent e) {
@@ -165,6 +254,9 @@ public class PlayContentThread extends Thread {
 		  mCanvasDim.Height = height;
 		  mCanvasDim.Width = width;
 		}
+		distSamurai = (int)(mCanvasDim.Width * 0.75);
+		distTame = (int)(mCanvasDim.Width * 0.25);
+		
 	}
 	public void pause() {}
 	public void unpause() {}

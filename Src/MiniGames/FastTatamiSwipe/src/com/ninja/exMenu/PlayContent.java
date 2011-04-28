@@ -110,4 +110,10 @@ public class PlayContent extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
     }
+    
+    @Override
+    public void onStop() {
+      super.onStop();
+  	  mContentThread.Panic();
+    }
 }
