@@ -9,14 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-/**
- * MenuPage représente la première page de l'application celle où l'on
- * reviendra toujours si l'on est en jeu et que l'on appuie sur le
- * bouton back. Elle contient les options majeure. La pluspart des
- * modifications sont à effectuer sur le layout directement.
- */
-public class MenuPage extends Activity {
-	
+public class Difficulty extends Activity {
+
 	/**
 	 * Point de la création dans le cycle de vie, première chance que
 	 * l'on as d'initialiser des choses dans l'application.
@@ -34,7 +28,7 @@ public class MenuPage extends Activity {
      * Cette ligne indique quelle vue sera utilisé par cette activitée. 
      * Vous trouverez cette vue dans res\layout\.
      */
-    setContentView(R.layout.main);
+    setContentView(R.layout.difficulty);
     
     /*
      * Dans Android, le passage d'une activité à l'autre et donc implicitement
@@ -43,9 +37,10 @@ public class MenuPage extends Activity {
      * générale comme "Une applciation capable de prendre des notes" ce qui laisse
      * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
      */
-    final Intent moveToPlay = new Intent(this, Difficulty.class);
+    
+    final Intent moveToPlay = new Intent(this, PlayContent.class);
         
-    ((Button)findViewById(R.id.btnSolo)).setOnClickListener(new OnClickListener() {
+    ((Button)findViewById(R.id.radioButton0)).setOnClickListener(new OnClickListener() {
 	    public void onClick(View v) {
 			  try {
 			    startActivity(moveToPlay);
@@ -54,5 +49,34 @@ public class MenuPage extends Activity {
 			  }
 			}
 		});
+    ((Button)findViewById(R.id.radioButton1)).setOnClickListener(new OnClickListener() {
+	    public void onClick(View v) {
+			  try {
+			    startActivity(moveToPlay);
+			  } catch(ActivityNotFoundException e) {
+			    Log.wtf("Front Screen start button click.", "Activity not found.");
+			  }
+			}
+		});
+    ((Button)findViewById(R.id.radioButton2)).setOnClickListener(new OnClickListener() {
+	    public void onClick(View v) {
+			  try {
+			    startActivity(moveToPlay);
+			  } catch(ActivityNotFoundException e) {
+			    Log.wtf("Front Screen start button click.", "Activity not found.");
+			  }
+			}
+		});
+    ((Button)findViewById(R.id.radioButton3)).setOnClickListener(new OnClickListener() {
+	    public void onClick(View v) {
+			  try {
+			    startActivity(moveToPlay);
+			  } catch(ActivityNotFoundException e) {
+			    Log.wtf("Front Screen start button click.", "Activity not found.");
+			  }
+			}
+		});
+     
   }
+
 }
