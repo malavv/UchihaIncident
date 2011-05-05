@@ -2,6 +2,7 @@ package com.ninja.exMenu;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup.LayoutParams;
@@ -31,12 +32,18 @@ public class PlayContent extends Activity {
   
   /** L'identifiant du boutton option dans le menu en jeu. */
   private static final int kResumeMenu = 3;
+  
+  /** Niveau de difficulté du jeux */
+  private static int kDifficulty = 1;
 	
   /**
    * Phase du cycle de vie correspondant à l'initialisation.
    */
   @Override
   public void onCreate(Bundle savedInstanceState) {
+	    String s = this.getIntent().getAction();
+	    
+		setkDifficulty(Integer.parseInt(s));
     super.onCreate(savedInstanceState);
     
     /* Full screen */
@@ -124,4 +131,12 @@ public class PlayContent extends Activity {
     super.onStop();
     mContentThread.Panic();
   }
+
+	public static void setkDifficulty(int kDifficulty) {
+		PlayContent.kDifficulty = kDifficulty;
+	}
+	
+	public static int getkDifficulty() {
+		return kDifficulty;
+	}
 }

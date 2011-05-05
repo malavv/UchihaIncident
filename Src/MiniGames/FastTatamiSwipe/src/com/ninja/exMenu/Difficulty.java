@@ -43,7 +43,7 @@ public class Difficulty extends Activity {
     ((Button)findViewById(R.id.radioButton0)).setOnClickListener(new OnClickListener() {
 	    public void onClick(View v) {
 			  try {
-			    startActivity(moveToPlay);
+			    startActivity(moveToPlay.setAction("3"));
 			  } catch(ActivityNotFoundException e) {
 			    Log.wtf("Front Screen start button click.", "Activity not found.");
 			  }
@@ -52,7 +52,7 @@ public class Difficulty extends Activity {
     ((Button)findViewById(R.id.radioButton1)).setOnClickListener(new OnClickListener() {
 	    public void onClick(View v) {
 			  try {
-			    startActivity(moveToPlay);
+			    startActivity(moveToPlay.setAction("2"));
 			  } catch(ActivityNotFoundException e) {
 			    Log.wtf("Front Screen start button click.", "Activity not found.");
 			  }
@@ -61,7 +61,7 @@ public class Difficulty extends Activity {
     ((Button)findViewById(R.id.radioButton2)).setOnClickListener(new OnClickListener() {
 	    public void onClick(View v) {
 			  try {
-			    startActivity(moveToPlay);
+			    startActivity(moveToPlay.setAction("1"));
 			  } catch(ActivityNotFoundException e) {
 			    Log.wtf("Front Screen start button click.", "Activity not found.");
 			  }
@@ -70,7 +70,7 @@ public class Difficulty extends Activity {
     ((Button)findViewById(R.id.radioButton3)).setOnClickListener(new OnClickListener() {
 	    public void onClick(View v) {
 			  try {
-			    startActivity(moveToPlay);
+			    startActivity(moveToPlay.setAction("0"));
 			  } catch(ActivityNotFoundException e) {
 			    Log.wtf("Front Screen start button click.", "Activity not found.");
 			  }

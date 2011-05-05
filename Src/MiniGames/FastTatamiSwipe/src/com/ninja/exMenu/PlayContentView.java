@@ -33,7 +33,7 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
       public void handleMessage(Message m) {
         mTextStatus.setText(m.getData().getString("text"));
       }
-    });
+    }, PlayContent.getkDifficulty());
 	
 	  setFocusable(true);
   }

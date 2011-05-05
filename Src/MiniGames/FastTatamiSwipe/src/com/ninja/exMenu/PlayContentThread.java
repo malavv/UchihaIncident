@@ -26,6 +26,17 @@ public class PlayContentThread extends Thread {
     public float superior;
   }
   
+  public class GameContext {
+    public GameContext(int wantedDots, Bound timeBound) {
+      nDots = wantedDots;
+      time = timeBound;
+    }
+    public int nDots;
+    public Bound time;
+  }
+  
+  private GameContext mGameContext;
+  
   /** Le temps après Ready. */
   private static long kTimeBeforeGameMs = 1850;
   
@@ -115,10 +126,25 @@ public class PlayContentThread extends Thread {
    * @param context Le context android dans lequel roule l'application.
    * @param msgHandler La pompe à événement servant à communiqué avec la vue.
    */
-  public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg) {
+  public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg, int difficulty) {
     mSurfaceHolder = surface;
     mContext = context;
     msgHandler = hMsg;
+    
+    switch(difficulty) {
+    case 0 :
+        mGameContext = new GameContext(3, kDiffEasy);
+        break;
+    case 1 :
+        mGameContext = new GameContext(4, kDiffMedium);
+        break;
+    case 2 :
+        mGameContext = new GameContext(4, kDiffHard);
+        break;
+    case 3 :
+        mGameContext = new GameContext(5, kDiffExtreme);
+        break;
+    }
   	
     mCanvasDim = new RectF();    
     profiler = new Profiler();
@@ -144,6 +170,8 @@ public class PlayContentThread extends Thread {
     
     mPlayGrid = new PlayGrid();
     mFollowupLine = new FollowupLine();
+    
+    mPlayGrid.Dots(mGameContext.nDots);
   }
 	
   public void doStart() {
@@ -201,13 +229,14 @@ public class PlayContentThread extends Thread {
   
   private void SetUpAnimationMvt() {
     
+    float halfHeight = mCanvasDim.bottom / 2;
+    long timeToCompletion = countUserInput - timeBeforeGame;
+    
     Katana = new LinearBitmapAnimation(katanaSprite, 500, new Point(350, 130), new Point(200, 190));
     KatanaRot = new RotationBitmapAnimation(katanaSprite, 500, -15);
     
-    float half = mCanvasDim.bottom / 2;
-    
-    tatami_top.SetPosition(new PointF(mCanvasDim.right / 2 - 4, half - 53));
-    tatami_bottom.SetPosition(new PointF(mCanvasDim.right / 2 + 4, half + 53));
+    tatami_top.SetPosition(new PointF(mCanvasDim.right / 2 - 4, halfHeight - 53));
+    tatami_bottom.SetPosition(new PointF(mCanvasDim.right / 2 + 4, halfHeight + 53));
     Katana.Sprite().PlaceRotationCenter(new PointF(mCanvasDim.right / 2, mCanvasDim.bottom / 2));
   }
   
