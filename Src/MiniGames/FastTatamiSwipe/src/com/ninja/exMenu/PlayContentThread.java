@@ -21,9 +21,10 @@ import android.view.SurfaceHolder;
 public class PlayContentThread extends Thread {
   
   public class Bound {
-    public Bound(float min, float max) { inferior = min; superior = max; }
-    public float inferior;
-    public float superior;
+    public Bound(int min, int max) { inferior = min; superior = max; }
+    public int inferior;
+    public int superior;
+    public int Length() { return superior - inferior; }
   }
   
   public class GameContext {
@@ -80,9 +81,6 @@ public class PlayContentThread extends Thread {
   private long countAnimMvt = 0;
   private long timeBeforeGame = 0;
   
-  /** Garde mémoire de si l'utilisateur à gagné. */
-  private boolean hasWon = false;
-  
   /**
    * On retrouve ici les états dans lesquels peut ce situer le minigame.
    */
@@ -97,10 +95,10 @@ public class PlayContentThread extends Thread {
   /*
    * Les bornes pour le calcul du pourcentage de completion.
    */
-  public final Bound kDiffEasy = new Bound(1.3f, 1.9f);
-  private final Bound kDiffMedium = new Bound(.9f, 1.8f);
-  private final Bound kDiffHard = new Bound(.7f, 1.3f);
-  private final Bound kDiffExtreme = new Bound(.55f, .9f);
+  public final Bound kDiffEasy = new Bound(1300, 1900);
+  private final Bound kDiffMedium = new Bound(900, 1800);
+  private final Bound kDiffHard = new Bound(700, 1300);
+  private final Bound kDiffExtreme = new Bound(550, 900);
   
   
   private LinearBitmapAnimation Samurai;
@@ -119,6 +117,8 @@ public class PlayContentThread extends Thread {
 	
   private PlayGrid mPlayGrid;
   private FollowupLine mFollowupLine;
+  
+  private boolean hasWon;
   
   /**
    * Créé un thread sous-jacent au minigame pour géré les animations, la physique et les timers.
@@ -232,11 +232,43 @@ public class PlayContentThread extends Thread {
     float halfHeight = mCanvasDim.bottom / 2;
     long timeToCompletion = countUserInput - timeBeforeGame;
     
-    Katana = new LinearBitmapAnimation(katanaSprite, 500, new Point(350, 130), new Point(200, 190));
-    KatanaRot = new RotationBitmapAnimation(katanaSprite, 500, -15);
+    float percentSpeed = 0f;
+    
+    float diffWithWinningTime = timeToCompletion - mGameContext.time.inferior;
+    
+    if (diffWithWinningTime < 0)  percentSpeed = 1.0f;
+    else {
+      percentSpeed = 1 - (diffWithWinningTime / mGameContext.time.Length());
+      if (percentSpeed < 0.0f)  percentSpeed = 0.0f;
+    }
+    
+    // À ce moment percentSpeed devrais contenir la valeur en pourcentage
+    // du tatami coupé.
+    Point depart;
+    Point arrive;
+    float degree;
+    
+    if (percentSpeed >= 1.0f) {
+      depart = new Point(370, 90);
+      arrive = new Point(200, 190);
+      degree = -18;
+      hasWon = true;
+    } else {
+      int dx = 310 - 230;
+      int dy = 170 - 190;
+      
+      depart = new Point(370, 90);
+      arrive = new Point(310 - (int)(percentSpeed * dx), 170 - (int)(percentSpeed * dy));
+      degree = -11;
+      hasWon = false;
+    }
+    
+    Katana = new LinearBitmapAnimation(katanaSprite, 500, depart, arrive);
+    KatanaRot = new RotationBitmapAnimation(katanaSprite, 500, degree);
     
     tatami_top.SetPosition(new PointF(mCanvasDim.right / 2 - 4, halfHeight - 53));
     tatami_bottom.SetPosition(new PointF(mCanvasDim.right / 2 + 4, halfHeight + 53));
+    Katana.Sprite().Rotate(70.0f);
     Katana.Sprite().PlaceRotationCenter(new PointF(mCanvasDim.right / 2, mCanvasDim.bottom / 2));
   }
   
@@ -263,8 +295,9 @@ public class PlayContentThread extends Thread {
       profiler.Draw(c, mCanvasDim);
       
       if (!stillMoving) {
-        if (hasWon)  Status("Vous avez Gagné! " + Float.toString((float)((countUserInput - timeBeforeGame) / 1000.0)) + " s");
-        else Status("Trop Long");
+        String ms = Float.toString((float)((countUserInput - timeBeforeGame) / 1000.0)) + " s";
+        if (hasWon)  Status("Vous avez Gagné! " + ms);
+        else Status("Trop Long " + ms);
       }
     }
   }
@@ -304,14 +337,13 @@ public class PlayContentThread extends Thread {
     if (countUserInput < timeBeforeGame) return;
     
     // T'es trop long, dsl.
-    if (countUserInput > 5000) {
+    if (countUserInput - timeBeforeGame > 3300) {
       setState(kAnimationMouvement);
       return;
     }
     
     // Tous les cible ont été touchés
     if (mPlayGrid.IsWon()) {
-      hasWon = true;
       setState(kAnimationMouvement);
       return;
     }
