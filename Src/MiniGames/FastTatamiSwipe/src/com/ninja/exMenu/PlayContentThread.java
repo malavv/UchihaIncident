@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,12 @@ import android.view.SurfaceHolder;
  * les animations et les timers.
  */
 public class PlayContentThread extends Thread {
+  
+  public class Bound {
+    public Bound(float min, float max) { inferior = min; superior = max; }
+    public float inferior;
+    public float superior;
+  }
   
   /** Le temps après Ready. */
   private static long kTimeBeforeGameMs = 1850;
@@ -59,6 +66,7 @@ public class PlayContentThread extends Thread {
    */
   private long countReady = 0;
   private long countUserInput = 0;
+  private long countAnimMvt = 0;
   private long timeBeforeGame = 0;
   
   /** Garde mémoire de si l'utilisateur à gagné. */
@@ -75,8 +83,24 @@ public class PlayContentThread extends Thread {
   public static final int kAnimationFin = 5;
   public static final int kPause = 6;
   
+  /*
+   * Les bornes pour le calcul du pourcentage de completion.
+   */
+  public final Bound kDiffEasy = new Bound(1.3f, 1.9f);
+  private final Bound kDiffMedium = new Bound(.9f, 1.8f);
+  private final Bound kDiffHard = new Bound(.7f, 1.3f);
+  private final Bound kDiffExtreme = new Bound(.55f, .9f);
+  
+  
   private LinearBitmapAnimation Samurai;
   private LinearBitmapAnimation Tameshigiri;
+  private LinearBitmapAnimation Katana;
+  private RotationBitmapAnimation KatanaRot;
+  
+  private Sprite tatami_top;
+  private Sprite tatami_bottom;
+  private Sprite tatami_complet;
+  private Sprite katanaSprite;
   
   private SoundManager mSound = new SoundManager();
   
@@ -103,13 +127,20 @@ public class PlayContentThread extends Thread {
     mSound.Load(kSoundSword, R.raw.fourreau);
     
     Sprite samurai = new Sprite(context.getResources().getDrawable(R.drawable.kendo));
-    samurai.Scale(1.1);
+    tatami_top = new Sprite(context.getResources().getDrawable(R.drawable.tatami_top));
+    tatami_bottom = new Sprite(context.getResources().getDrawable(R.drawable.tatami_bottom));
+    tatami_complet = new Sprite(context.getResources().getDrawable(R.drawable.tatami_uncut));
+    katanaSprite =  new Sprite(context.getResources().getDrawable(R.drawable.katana_low_jeu));
     
-    Sprite tameshigiri = new Sprite(context.getResources().getDrawable(R.drawable.tameshigiri));
-    tameshigiri.Scale(0.5);
+    samurai.Scale(1.1);
+    tatami_complet.Scale(0.7);
+    katanaSprite.Scale(0.5);
+    
+    tatami_top.Scale(0.5);
+    tatami_bottom.Scale(0.5);
     
     Samurai = new LinearBitmapAnimation(samurai, 2000, new Point(600, 100), new Point(0, 0));
-    Tameshigiri = new LinearBitmapAnimation(tameshigiri, 2000, new Point(100, 100), new Point(300, 100));
+    Tameshigiri = new LinearBitmapAnimation(tatami_complet, 2000, new Point(100, 100), new Point(300, 100));
     
     mPlayGrid = new PlayGrid();
     mFollowupLine = new FollowupLine();
@@ -168,10 +199,44 @@ public class PlayContentThread extends Thread {
 	  }
 	}
   
+  private void SetUpAnimationMvt() {
+    
+    Katana = new LinearBitmapAnimation(katanaSprite, 500, new Point(350, 130), new Point(200, 190));
+    KatanaRot = new RotationBitmapAnimation(katanaSprite, 500, -15);
+    
+    float half = mCanvasDim.bottom / 2;
+    
+    tatami_top.SetPosition(new PointF(mCanvasDim.right / 2 - 4, half - 53));
+    tatami_bottom.SetPosition(new PointF(mCanvasDim.right / 2 + 4, half + 53));
+    Katana.Sprite().PlaceRotationCenter(new PointF(mCanvasDim.right / 2, mCanvasDim.bottom / 2));
+  }
+  
   private void AnimationMvt(Canvas c, long delta) {
+    
+    boolean stillMoving = true;
+    if (countAnimMvt < 500) {
+      countAnimMvt += delta;
+      stillMoving = false;
+      KatanaRot.Animate(delta);
+    } else if (countAnimMvt < 1600) {
+      stillMoving = false;
+    }
+    
+    Katana.Animate(delta);
+    
     synchronized (mSurfaceHolder) {
       c.drawColor(Color.BLACK);
+      
+      tatami_bottom.Draw(c);
+      Katana.Sprite().Draw(c);
+      tatami_top.Draw(c);
+      
       profiler.Draw(c, mCanvasDim);
+      
+      if (!stillMoving) {
+        if (hasWon)  Status("Vous avez Gagné! " + Float.toString((float)((countUserInput - timeBeforeGame) / 1000.0)) + " s");
+        else Status("Trop Long");
+      }
     }
   }
 	
@@ -260,10 +325,7 @@ public class PlayContentThread extends Thread {
 	      SetUpUserInput();
 	      break;
 	    case kAnimationMouvement:
-	      if (hasWon) {
-	        Status("Vous avez Gagné! " + Float.toString((float)((countUserInput - timeBeforeGame) / 1000.0)) + " s");
-	      }
-	      else Status("Trop Long");
+	      SetUpAnimationMvt();
 	      break;
 	  }
 	  

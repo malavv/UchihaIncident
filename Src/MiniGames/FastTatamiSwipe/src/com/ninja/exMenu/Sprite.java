@@ -16,6 +16,9 @@ public class Sprite {
   // La position de l'image.
   private Point mCenter;
   
+  private float degreeRotation = 0.0f;
+  private PointF mRotationCenter = new PointF();
+  
   /**
    * Construit un sprite à partir de données images.
    * @param d L'image sous-jacente.
@@ -30,6 +33,11 @@ public class Sprite {
    * @param s L'échelle à tranférer l'image.
    */
   public void Scale(double s) { scale = s; }
+  
+  public void PlaceRotationCenter(PointF center) { mRotationCenter = center; }
+  
+  public void SetRotation(float nDegree) { degreeRotation = nDegree; }
+  public void Rotate(float nDegree) { degreeRotation += nDegree; }
   
   /**
    * Place l'image à la nouvelle position.
@@ -53,10 +61,19 @@ public class Sprite {
   public void Draw(Canvas c) {
     int sideBound = (int)(data.getIntrinsicWidth() * scale);
     int heightBound = (int)(data.getIntrinsicHeight() * scale);
-    
-    
-    data.setBounds(mCenter.x - sideBound, mCenter.y - heightBound,
-        mCenter.x + sideBound, mCenter.y + heightBound);
-	  data.draw(c);
+      
+    if (degreeRotation != 0.0f) {
+      c.save();
+      c.rotate(degreeRotation, mRotationCenter.x, mRotationCenter.y);
+      data.setBounds(mCenter.x - sideBound, mCenter.y - heightBound,
+          mCenter.x + sideBound, mCenter.y + heightBound);
+  	  data.draw(c);
+  	  c.restore();
+    } else {
+      data.setBounds(mCenter.x - sideBound, mCenter.y - heightBound,
+          mCenter.x + sideBound, mCenter.y + heightBound);
+      data.draw(c);
+    }
   }
 }
+
