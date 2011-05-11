@@ -2,12 +2,16 @@ package com.ninja.exMenu;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 
 /**
  * MenuPage représente la première page de l'application celle où l'on
@@ -43,16 +47,19 @@ public class MenuPage extends Activity {
      * générale comme "Une applciation capable de prendre des notes" ce qui laisse
      * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
      */
-    final Intent moveToPlay = new Intent(this, Difficulty.class);
-        
-    ((Button)findViewById(R.id.btnSolo)).setOnClickListener(new OnClickListener() {
-	    public void onClick(View v) {
-			  try {
-			    startActivity(moveToPlay);
-			  } catch(ActivityNotFoundException e) {
-			    Log.wtf("Front Screen start button click.", "Activity not found.");
-			  }
-			}
-		});
+    BindIntentToView(findViewById(R.id.btnSolo), new Intent(this, Difficulty.class)); 
   }
+  
+  private void BindIntentToView(View button, final Intent intent) {
+    final int id = button.getId();
+    button.setOnClickListener(new OnClickListener() {
+      public void onClick(View v) {
+        try {
+          startActivity(intent);
+        } catch(ActivityNotFoundException e) {
+          Log.wtf("Activity started with button " + Integer.toString(id), "Activity not found.");
+        }
+      }
+    });
+  }  
 }

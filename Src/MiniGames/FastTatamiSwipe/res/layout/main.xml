@@ -1,82 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Layout pour le mini-jeu. -->
+<!-- Layout pour le menu-principal. -->
 
-<LinearLayout
+<com.ninja.exMenu.MenuBackgroundView
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:orientation="vertical"
-  android:background="@drawable/back"
-  android:id="@+id/verticalMenu">
-
-  <!-- Title -->
-  <TextView 
-    android:text="@string/app_title"
-    android:id="@+id/labelTitle"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:textColor="#FFFFFF"
-    android:textSize="40sp"
-    android:layout_width="fill_parent" 
-    android:paddingBottom="15sp"
-    android:paddingTop="25sp"/>
-  
-  <LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="#111111">
-    
-    <!-- Le mode -->
-    <TextView
-      android:text="@string/mode" 
-      android:id="@+id/labelMode" 
-      android:layout_width="wrap_content" 
-      android:layout_height="wrap_content"
-      android:textSize="25sp"
-      android:paddingLeft="15sp"
-      android:layout_weight="1" />
-   
-    <!-- Le mode -->
-    <TextView
-      android:text="@string/tested_attribute" 
-      android:id="@+id/labelMode" 
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="right"
-      android:textSize="25sp"
-      android:paddingRight="15sp"
-      android:layout_weight="1" />
-  </LinearLayout>
-  
-  <!-- Bouton joueur solo. -->
-  <Button
-    android:id="@+id/btnSolo"
-    android:text="@string/menu_1_joueur"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textColor="#dddddd"
-    android:textSize="40sp"
-    android:background="#d0111111"
-    android:clickable="true"
-    android:layout_gravity="center_horizontal"
-    android:paddingLeft="30sp"
-    android:paddingRight="30sp"
-    android:layout_marginTop="110sp" />
-    
-  <!-- Bouton deux joueurs. -->
-  <Button
-    android:id="@+id/btnDuo"
-    android:text="@string/menu_2_joueurs"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textColor="#dddddd"
-    android:textSize="40sp"
-    android:background="#d0111111"
-    android:clickable="true"
-    android:layout_gravity="center_horizontal"
-    android:paddingLeft="30sp"
-    android:paddingRight="30sp"
-    android:layout_marginTop="30sp" />
-</LinearLayout>
+  android:id="@+id/menuBackground">
+        
+    <ImageView android:src="@drawable/menu_title" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="20dip" android:background="#00000000" android:id="@+id/TitleMenu"></ImageView>
+    <LinearLayout
+      android:id="@+id/linearLayout1"
+      android:layout_height="fill_parent"
+      android:layout_width="match_parent" android:gravity="center"
+      android:layout_marginBottom="-120dip">
+        <ImageButton android:layout_weight="1" android:background="#00111111" android:src="@drawable/menu_btn_single" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginLeft="30dip" android:id="@+id/btnSolo"></ImageButton>
+        <ImageButton android:src="@drawable/menu_btn_dual" android:layout_height="wrap_content" android:layout_width="wrap_content" 
+                     android:layout_weight="1" android:background="#00111111" android:layout_marginRight="30dip" android:id="@+id/btnDual"></ImageButton>
+    </LinearLayout>
+</com.ninja.exMenu.MenuBackgroundView>
