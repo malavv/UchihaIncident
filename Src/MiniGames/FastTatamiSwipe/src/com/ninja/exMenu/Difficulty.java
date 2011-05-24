@@ -1,5 +1,10 @@
 package com.ninja.exMenu;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,16 +28,33 @@ public class Difficulty extends ListActivity {
   	info = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
     setContentView(R.layout.difficulty);
     
+    List<HashMap<String, String>> fillmap = new ArrayList<HashMap<String, String>>();
     
+    HashMap<String, String> map = new HashMap<String, String>();
+    map.put("name", "Mudkipz");
+    map.put("dots", "4"); 
+    map.put("time", "1700");
+    fillmap.add(map);
+    
+    map = new HashMap<String, String>();
+    map.put("name", "Pikachu");
+    map.put("dots", "1"); 
+    map.put("time", "550");
+    fillmap.add(map);
+    
+    String[] from = new String[] {"name", "dots", "time"};
+    int[] to = new int[] { R.id.opp_name, R.id.opp_balle, R.id.opp_speed };
+    
+    setListAdapter(new SimpleAdapter(getApplicationContext(), fillmap, R.layout.opponents, from, to ));
   }
   
-  private class OpponentAdaptor implements SimpleAdapter.ViewBinder {
-    @Override
-    public boolean setViewValue(View view, Object data,
-        String textRepresentation) {
-      return true;
-    }
-  }
+//  private class OpponentAdaptor implements SimpleAdapter.ViewBinder {
+//    @Override
+//    public boolean setViewValue(View view, Object data,
+//        String textRepresentation) {
+//      return true;
+//    }
+//  }
   
 //  public class OpponentsAdapter extends SimpleAdapter {
 //
