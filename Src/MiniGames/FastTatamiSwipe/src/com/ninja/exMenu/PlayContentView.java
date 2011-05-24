@@ -9,55 +9,55 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
-
 /**
- * Vue centrale utilisé par le Mini-jeu, elle dérive de la classe surface
- * qui donne une facon facile de s'occuper de la gestion des événements et
- * de pouvoir dessiner.
+ * Vue centrale utilisé par le Mini-jeu, elle dérive de la classe surface qui
+ * donne une facon facile de s'occuper de la gestion des événements et de
+ * pouvoir dessiner.
  */
-public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback {
+public class PlayContentView extends SurfaceView implements
+    SurfaceHolder.Callback {
 
   /** Le thread sous-jacent à l'application. */
   private PlayContentThread thread;
-  
+
   public TextView mTextStatus;
 
   public PlayContentView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    
-	  SurfaceHolder h = getHolder();
-	  h.addCallback(this);
-	
-	  thread = new PlayContentThread(h, context, new Handler() {
+
+    SurfaceHolder h = getHolder();
+    h.addCallback(this);
+
+    thread = new PlayContentThread(h, context, new Handler() {
       @Override
       public void handleMessage(Message m) {
         mTextStatus.setText(m.getData().getString("text"));
       }
     }, PlayContent.getkDifficulty());
-	
-	  setFocusable(true);
+
+    setFocusable(true);
   }
-  
-  public PlayContentThread getThread() { return thread; }
-  
+
+  public PlayContentThread getThread() {
+    return thread;
+  }
+
   /**
-   * La surface sur laquelle ont dessine a été modifiée.
-   * {@link SurfaceHolder}
+   * La surface sur laquelle ont dessine a été modifiée. {@link SurfaceHolder}
    */
   public void surfaceChanged(SurfaceHolder holder, int format, int width,
       int height) {
-    thread.setSurfaceSize(width, height);		
+    thread.setSurfaceSize(width, height);
   }
 
   /**
    * La surface sur laquelle ont dessine viens c'être créé et est prête à être
-   * utilisée.
-   * {@link SurfaceHolder}
+   * utilisée. {@link SurfaceHolder}
    */
   public void surfaceCreated(SurfaceHolder holder) {
     thread.setRunning(true);
     thread.start();
-    
+
     mTextStatus.setText("Player 1");
   }
 
@@ -72,10 +72,11 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
       try {
         thread.join();
         retry = false;
-      } catch (InterruptedException e) {}
+      } catch (InterruptedException e) {
+      }
     }
   }
-	
+
   /**
    * Handle de touch event.
    */

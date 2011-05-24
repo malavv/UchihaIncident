@@ -21,7 +21,7 @@ public class MenuBackgroundView extends LinearLayout {
     arcPaint.setAntiAlias(true);
     setWillNotDraw(false);
     count = 0;
-    mask = context.getResources().getDrawable(R.drawable.menu_filter);
+    mask = context.getResources().getDrawable(R.drawable.menu_filter_5);
     mask.setBounds(0, 0, getWidth(), getHeight());
   }
   

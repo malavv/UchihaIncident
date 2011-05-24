@@ -2,12 +2,7 @@ package com.ninja.exMenu;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,17 +42,27 @@ public class MenuPage extends Activity {
      * générale comme "Une applciation capable de prendre des notes" ce qui laisse
      * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
      */
-    BindIntentToView(findViewById(R.id.btnSolo), new Intent(this, Difficulty.class)); 
+    final Intent soloMode = new Intent(this, Difficulty.class);
+    final Intent dualMode = new Intent(this, PlayContent.class);
+    
+    GameContext cSolo = new GameContext(), cDual = new GameContext();
+    cDual.SetMultiplayer();
+    
+    soloMode.putExtra("com.ninja.ExMenu.GameContext", cSolo);
+    dualMode.putExtra("com.ninja.ExMenu.GameContext", cDual);
+    
+    
+    BindIntentToView(R.id.btnSolo, soloMode);
+    BindIntentToView(R.id.btnDual, dualMode);
   }
   
-  private void BindIntentToView(View button, final Intent intent) {
-    final int id = button.getId();
-    button.setOnClickListener(new OnClickListener() {
+  private void BindIntentToView(final int buttonID, final Intent intent) {
+    findViewById(buttonID).setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
         try {
           startActivity(intent);
         } catch(ActivityNotFoundException e) {
-          Log.wtf("Activity started with button " + Integer.toString(id), "Activity not found.");
+          Log.wtf("Activity started with button " + Integer.toString(buttonID), "Activity not found.");
         }
       }
     });

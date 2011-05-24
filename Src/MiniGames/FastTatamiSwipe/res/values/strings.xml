@@ -17,4 +17,5 @@
     <string name="difficulty_medium">Medium</string>
     <string name="difficulty_easy">Easy</string>
     <string name="difficulty_vhard">Very Hard</string>
+    <string name="Version">0.3</string>
 </resources>
