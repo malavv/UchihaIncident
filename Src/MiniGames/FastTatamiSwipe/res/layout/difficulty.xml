@@ -1,82 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Layout pour le mini-jeu. -->
+<!-- Ce layout est utilisé pour afficher le listActivity de la page
+     de difficulté. Il est impératif que le list view principal aie
+     le id list. -->
 
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:orientation="horizontal"
-  android:id="@+id/difficulty">
- 	<LinearLayout 
- 		android:id="@+id/linearLayout2" 
- 		android:layout_weight="1"
-		android:layout_height="match_parent"
-		android:layout_width="wrap_content">
-	</LinearLayout>
-
-  	<LinearLayout 
-  		android:layout_height="match_parent"
-  		android:layout_width="wrap_content" 
-  		android:id="@+id/linearLayout1"
- 		android:layout_weight="3" 
-  		android:orientation="vertical">
-  		<LinearLayout 
-  			android:id="@+id/linearLayout2" 
- 			android:layout_weight="1" 
-  			android:layout_width="match_parent" 
-  			android:layout_height="wrap_content">
-		</LinearLayout>
-		<RadioGroup 
-			android:id="@+id/radioGroup1" 
- 			android:layout_weight="3" 
-			android:layout_width="match_parent" 
-			android:layout_height="wrap_content">
-	  		<RadioButton 
-	  			android:gravity="center"
-	  			android:id="@+id/radioButton0" 
-	  			android:text="@string/difficulty_vhard"
-	 			android:layout_weight="1" 
-	  			android:layout_width="match_parent" 
-	  			android:layout_height="wrap_content">
-	 		</RadioButton>
-	  		<RadioButton 
-	  			android:gravity="center"
-	  			android:id="@+id/radioButton1" 
-	  			android:text="@string/difficulty_hard"
-	 			android:layout_weight="1" 
-	  			android:layout_width="match_parent" 
-	  			android:layout_height="wrap_content">
-	 		</RadioButton>
-	  		<RadioButton 
-	  			android:gravity="center"
-	  			android:id="@+id/radioButton2" 
-	  			android:text="@string/difficulty_medium"
-	 			android:layout_weight="1" 
-	  			android:layout_width="match_parent" 
-	  			android:layout_height="wrap_content">
-	  		</RadioButton>
-	  		<RadioButton 
-	  			android:gravity="center"
-	  			android:id="@+id/radioButton3" 
-	  			android:text="@string/difficulty_easy"
-	 			android:layout_weight="1" 
-	  			android:layout_width="match_parent" 
-	  			android:layout_height="wrap_content">
-	  		</RadioButton>
-	  	</RadioGroup>
-  		<LinearLayout 
-  			android:id="@+id/linearLayout3" 
-  			android:layout_weight="1" 
-  			android:layout_width="match_parent" 
-  			android:layout_height="wrap_content">
-  		</LinearLayout>
-  	</LinearLayout>
-  	
- 	<LinearLayout 
- 		android:id="@+id/linearLayout2" 
-		android:layout_weight="1" 
-		android:layout_height="match_parent"
-		android:layout_width="wrap_content" >
-	</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp">
+  
+  <!-- Le listView central -->
+  <ListView android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+            
+    
+  <!-- En cas d'erreure. -->
+  <ListView android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#DD0000"
+            android:text="No data" />
 </LinearLayout>

@@ -1,82 +1,81 @@
 package com.ninja.exMenu;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
+import android.app.ListActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.SimpleAdapter;
 
-public class Difficulty extends Activity {
+public class Difficulty extends ListActivity {
 
+  private GameContext info;
+  
+  //private ArrayList<Opponent> opponentList;
+  
 	/**
-	 * Point de la création dans le cycle de vie, première chance que
-	 * l'on as d'initialiser des choses dans l'application.
-	 * Le bundle peut contenir de l'information concernant la dernière
-	 * utilisation.
-	 * @param savedInstanceState Un lot d'information sur la dernière
-	 *        utilisation de l'application.
+	 * @param 
 	 */
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    /* Il faut toujours, lorsque l'on override, caller l'instance de base. */
   	super.onCreate(savedInstanceState);
-    
-    /* 
-     * Cette ligne indique quelle vue sera utilisé par cette activitée. 
-     * Vous trouverez cette vue dans res\layout\.
-     */
+  	
+  	
+  	// Trouver le context global.
+  	info = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
     setContentView(R.layout.difficulty);
     
-    /*
-     * Dans Android, le passage d'une activité à l'autre et donc implicitement
-     * d'une page à l'autre se fait par "Intent". Un intention peut être directement
-     * le nom de la classe ou nous voulons aller comme ici, ou une intention plus
-     * générale comme "Une applciation capable de prendre des notes" ce qui laisse
-     * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
-     */
     
-    final Intent moveToPlay = new Intent(this, PlayContent.class);
-        
-    ((Button)findViewById(R.id.radioButton0)).setOnClickListener(new OnClickListener() {
-	    public void onClick(View v) {
-			  try {
-			    startActivity(moveToPlay.setAction("3"));
-			  } catch(ActivityNotFoundException e) {
-			    Log.wtf("Front Screen start button click.", "Activity not found.");
-			  }
-			}
-		});
-    ((Button)findViewById(R.id.radioButton1)).setOnClickListener(new OnClickListener() {
-	    public void onClick(View v) {
-			  try {
-			    startActivity(moveToPlay.setAction("2"));
-			  } catch(ActivityNotFoundException e) {
-			    Log.wtf("Front Screen start button click.", "Activity not found.");
-			  }
-			}
-		});
-    ((Button)findViewById(R.id.radioButton2)).setOnClickListener(new OnClickListener() {
-	    public void onClick(View v) {
-			  try {
-			    startActivity(moveToPlay.setAction("1"));
-			  } catch(ActivityNotFoundException e) {
-			    Log.wtf("Front Screen start button click.", "Activity not found.");
-			  }
-			}
-		});
-    ((Button)findViewById(R.id.radioButton3)).setOnClickListener(new OnClickListener() {
-	    public void onClick(View v) {
-			  try {
-			    startActivity(moveToPlay.setAction("0"));
-			  } catch(ActivityNotFoundException e) {
-			    Log.wtf("Front Screen start button click.", "Activity not found.");
-			  }
-			}
-		});
-     
   }
-
+  
+  private class OpponentAdaptor implements SimpleAdapter.ViewBinder {
+    @Override
+    public boolean setViewValue(View view, Object data,
+        String textRepresentation) {
+      return true;
+    }
+  }
+  
+//  public class OpponentsAdapter extends SimpleAdapter {
+//
+//    public OpponentsAdapter(Context context,
+//        List<? extends Map<String, ?>> data, int resource, String[] from,
+//        int[] to) {
+//      super(context, data, resource, from, to);
+//      // TODO Auto-generated constructor stub
+//    }
+//  }
+  
+//  public class OpponentAdapter extends ArrayAdapter<Opponent> {
+//    
+//    private Context mContext;
+//    
+//    public OpponentAdapter(Context context, int textViewResourceId) {
+//      super(context, textViewResourceId);
+//      mContext = context;
+//    }
+//    
+//    @Override
+//    public View getView(int position, View convertView, ViewGroup parent) {
+//      View row;
+//   
+//      if (null == convertView) {
+//        LayoutInflater mInflater = getLayoutInflater();
+//        row = mInflater.inflate(R.layout.opponents, null);
+//      } else {
+//        row = convertView;
+//      }
+//   
+//      ImageView opImg = (ImageView) row.findViewById(R.id.op_img);
+//      TextView opName = (TextView) row.findViewById(R.id.op_name);
+//      TextView opDots = (TextView) row.findViewById(R.id.op_dots);
+//      TextView opTime = (TextView) row.findViewById(R.id.op_time);
+//      
+//      opImg.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.levels));
+//      opName.setText("Item 1");
+//      opDots.setText("1");
+//      opDots.setText("1700");
+//   
+//      return row;
+//    }
+     
+//  }
 }
