@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class PlayContentThread extends Thread {
@@ -29,13 +30,20 @@ public class PlayContentThread extends Thread {
 
 	private boolean obstaclesDrawn = false;
 	
-	public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg) {
+	public PlayContentThread(SurfaceHolder surface, Context context) {
+	    mSurfaceHolder = surface;
 		mParticlesSystem = new ParticlesSystem( context );
+
+	    mCanvasDim = new RectF();  
+	    profiler = new Profiler();
 	}
 	
 	public void Panic() {
 		mRun = false;
 	}
+
+	public void pause() {}
+	public void unpause() {}
 	
 	@Override
 	public void run() {
@@ -46,7 +54,9 @@ public class PlayContentThread extends Thread {
 				synchronized (mSurfaceHolder) {
 					doDraw(c);
 				}
-			} finally {
+			} catch(Exception e) { 
+				Log.wtf("ContentThread::run", "probleme en dessinant le canevas");
+			}finally {
 				if (c != null)
 					mSurfaceHolder.unlockCanvasAndPost(c);
 			}
@@ -54,9 +64,12 @@ public class PlayContentThread extends Thread {
 	}
     public void doDraw(Canvas c) {
     	profiler.Tick();
+    	
+		Log.d("ContentThread::doDraw", "fonction qui dessine le canevas");
+		
     	ArrayList<Collidable> obstacles = mParticlesSystem.GetObstclesList();
     	
-    	if(obstaclesDrawn) {
+    	if(!obstaclesDrawn) {
 	    	for(int i = 0; i < obstacles.size(); i++) {
 	    		// on va dessiner les obstacles ici plus tard
 	    		obstacles.get(i);
@@ -72,13 +85,14 @@ public class PlayContentThread extends Thread {
 	}
 	
 	public void setSurfaceSize(int width, int height) {
+		Log.d("ContentThread::setSurfaceSize", "on get la taillle du canevas");
 		synchronized (mSurfaceHolder) {
 		  mCanvasDim.left = 0;
 		  mCanvasDim.top = 0;
 		  mCanvasDim.right = width;
 		  mCanvasDim.bottom = height;
+		  mParticlesSystem.setSurfaceSize(width, height);
 		}		
-		mParticlesSystem
 	}
 	
 }

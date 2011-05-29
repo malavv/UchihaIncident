@@ -16,10 +16,10 @@
             </intent-filter>
         </activity>
         <activity 
-        	android:name="PlayContent" 
-        	android:label="@string/app_content_label" 
-        	android:screenOrientation="landscape">
-       	</activity>
+	        	android:name="PlayContent" 
+	        	android:label="@string/app_content_label" 
+	        	android:screenOrientation="landscape">
+        </activity>
 
     </application>
     

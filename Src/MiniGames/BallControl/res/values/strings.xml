@@ -3,4 +3,7 @@
     <string name="hello">Hello World, BallCtrl!</string>
     <string name="app_name">BallCtrl</string>
     <string name="app_content_label">PlayContent</string>
+    <string name="menu_options">Options</string>
+    <string name="menu_pause">Pause</string>
+    <string name="menu_resume">Resume</string>
 </resources>

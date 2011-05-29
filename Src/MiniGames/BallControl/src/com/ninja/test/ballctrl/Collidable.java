@@ -11,19 +11,19 @@ public class Collidable {
     	mElasticity = aElasticity;
     }
 
-	public float getmPosX() {
+	public float getX() {
 		return mPosX;
 	}
 
-	public void setmPosX(float mPosX) {
+	public void setX(float mPosX) {
 		this.mPosX = mPosX;
 	}
 
-	public float getmPosY() {
+	public float getY() {
 		return mPosY;
 	}
 
-	public void setmPosY(float mPosY) {
+	public void setY(float mPosY) {
 		this.mPosY = mPosY;
 	}
 
