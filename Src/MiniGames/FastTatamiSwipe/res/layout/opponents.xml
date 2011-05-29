@@ -11,7 +11,7 @@
       android:layout_width="wrap_content"
       android:layout_height="42dp"
       android:layout_gravity="center_vertical"
-      android:src="@drawable/l4"
+      android:id="@+id/opp_times"
       android:layout_weight="1">
    </ImageView>
 
@@ -27,9 +27,8 @@
    </TextView>
    
    <TableLayout
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:layout_weight="3">
+      android:layout_width="100sp"
+      android:layout_height="fill_parent">
       
       <!-- Le nombre de balles -->
       <TableRow

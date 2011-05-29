@@ -1,20 +1,32 @@
 package com.ninja.exMenu;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.R.integer;
 import android.app.ListActivity;
+import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
+import android.util.Xml;
 import android.widget.SimpleAdapter;
 
 public class Difficulty extends ListActivity {
 
+  private static final String[] IdTagXml =
+     new String[] {"name", "dots", "speed", "times"};
+  private static final int[] associatedIdLayout =
+     new int[] { R.id.opp_name, R.id.opp_balle, R.id.opp_speed, R.id.opp_times };
+  private static final int[] idImgNumber =
+     new int[] { R.drawable.dif_n_1, R.drawable.dif_n_2, R.drawable.dif_n_3,
+                 R.drawable.dif_n_4, R.drawable.dif_n_5, R.drawable.dif_n_6};
   private GameContext info;
-  
-  //private ArrayList<Opponent> opponentList;
   
 	/**
 	 * @param 
@@ -28,76 +40,61 @@ public class Difficulty extends ListActivity {
   	info = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
     setContentView(R.layout.difficulty);
     
-    List<HashMap<String, String>> fillmap = new ArrayList<HashMap<String, String>>();
-    
-    HashMap<String, String> map = new HashMap<String, String>();
-    map.put("name", "Mudkipz");
-    map.put("dots", "4"); 
-    map.put("time", "1700");
-    fillmap.add(map);
-    
-    map = new HashMap<String, String>();
-    map.put("name", "Pikachu");
-    map.put("dots", "1"); 
-    map.put("time", "550");
-    fillmap.add(map);
-    
-    String[] from = new String[] {"name", "dots", "time"};
-    int[] to = new int[] { R.id.opp_name, R.id.opp_balle, R.id.opp_speed };
-    
-    setListAdapter(new SimpleAdapter(getApplicationContext(), fillmap, R.layout.opponents, from, to ));
+    setListAdapter(new SimpleAdapter(getApplicationContext(), GetOpponents(), R.layout.opponents, IdTagXml, associatedIdLayout));
   }
   
-//  private class OpponentAdaptor implements SimpleAdapter.ViewBinder {
-//    @Override
-//    public boolean setViewValue(View view, Object data,
-//        String textRepresentation) {
-//      return true;
-//    }
-//  }
+  private List<HashMap<String, String>> GetOpponents() {
+    List<HashMap<String, String>> fillmap = new ArrayList<HashMap<String, String>>();
+    XmlResourceParser parser = getResources().getXml(R.xml.opponents);
+    ArrayList<Integer> unlockedIds = new ArrayList<Integer>();
+    
+    try {
+      while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+        if (parser.getEventType() == XmlPullParser.START_TAG) {
+          if ((parser.getName()).equalsIgnoreCase("Opponent"))
+            processOpponent(parser, unlockedIds, fillmap);
+          else parser.next();
+        } else parser.next();
+      }     
+      
+    } catch (XmlPullParserException e) {
+      throw new RuntimeException("Could not parse opponent xml");
+    } catch (IOException e) {
+      throw new RuntimeException("Could not parse opponent xml");
+    } finally {
+      parser.close();
+    }
+    return fillmap;
+  }
   
-//  public class OpponentsAdapter extends SimpleAdapter {
-//
-//    public OpponentsAdapter(Context context,
-//        List<? extends Map<String, ?>> data, int resource, String[] from,
-//        int[] to) {
-//      super(context, data, resource, from, to);
-//      // TODO Auto-generated constructor stub
-//    }
-//  }
-  
-//  public class OpponentAdapter extends ArrayAdapter<Opponent> {
-//    
-//    private Context mContext;
-//    
-//    public OpponentAdapter(Context context, int textViewResourceId) {
-//      super(context, textViewResourceId);
-//      mContext = context;
-//    }
-//    
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//      View row;
-//   
-//      if (null == convertView) {
-//        LayoutInflater mInflater = getLayoutInflater();
-//        row = mInflater.inflate(R.layout.opponents, null);
-//      } else {
-//        row = convertView;
-//      }
-//   
-//      ImageView opImg = (ImageView) row.findViewById(R.id.op_img);
-//      TextView opName = (TextView) row.findViewById(R.id.op_name);
-//      TextView opDots = (TextView) row.findViewById(R.id.op_dots);
-//      TextView opTime = (TextView) row.findViewById(R.id.op_time);
-//      
-//      opImg.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.levels));
-//      opName.setText("Item 1");
-//      opDots.setText("1");
-//      opDots.setText("1700");
-//   
-//      return row;
-//    }
+  private void processOpponent(XmlResourceParser parser,
+        ArrayList<Integer> unlockedIDs, List<HashMap<String, String>> opponents) throws XmlPullParserException, IOException {
+     int id = Integer.parseInt(parser.getAttributeValue(0));
+     HashMap<String, String> opponent = makeOpponent(
+        parser.getAttributeValue(1),
+        parser.getAttributeValue(2),
+        parser.getAttributeValue(3),
+        parser.getAttributeValue(4));
+      
+     parser.next(); // Goto unlocked
      
-//  }
+     do {
+       parser.next(); // Goto ID
+       if (!parser.getName().equalsIgnoreCase("ID")) break;
+       parser.next(); // Text
+       unlockedIDs.add(Integer.parseInt(parser.getText())); // Enter text
+       parser.next(); // EndID
+     } while (true);
+     
+     if (unlockedIDs.contains(id))  opponents.add(opponent);
+  }
+  
+  private HashMap<String, String> makeOpponent(String name, String dots, String speed, String time) {
+    HashMap<String, String> opp = new HashMap<String, String>();
+    opp.put(IdTagXml[0], name);
+    opp.put(IdTagXml[1], dots);
+    opp.put(IdTagXml[2], speed);
+    opp.put(IdTagXml[3], Integer.toString(idImgNumber[Integer.parseInt(time) - 1]));
+    return opp;
+  }
 }
