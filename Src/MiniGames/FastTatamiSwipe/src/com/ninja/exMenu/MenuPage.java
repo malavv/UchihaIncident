@@ -43,7 +43,7 @@ public class MenuPage extends Activity {
      * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
      */
     final Intent soloMode = new Intent(this, Difficulty.class);
-    final Intent dualMode = new Intent(this, PlayContent.class);
+    final Intent dualMode = new Intent(this, Difficulty.class);
     
     GameContext cSolo = new GameContext(), cDual = new GameContext();
     cDual.SetMultiplayer();

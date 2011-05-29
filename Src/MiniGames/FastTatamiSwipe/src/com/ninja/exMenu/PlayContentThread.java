@@ -19,24 +19,8 @@ import android.view.SurfaceHolder;
  * les animations et les timers.
  */
 public class PlayContentThread extends Thread {
-  
-  public class Bound {
-    public Bound(int min, int max) { inferior = min; superior = max; }
-    public int inferior;
-    public int superior;
-    public int Length() { return superior - inferior; }
-  }
-  
-  public class GameContext {
-    public GameContext(int wantedDots, Bound timeBound) {
-      nDots = wantedDots;
-      time = timeBound;
-    }
-    public int nDots;
-    public Bound time;
-  }
-  
-  private GameContext mGameContext;
+    
+  private Opponent mOpponent;
   
   /** Le temps après Ready. */
   private static long kTimeBeforeGameMs = 1850;
@@ -92,15 +76,6 @@ public class PlayContentThread extends Thread {
   public static final int kAnimationFin = 5;
   public static final int kPause = 6;
   
-  /*
-   * Les bornes pour le calcul du pourcentage de completion.
-   */
-  public final Bound kDiffEasy = new Bound(1300, 1900);
-  private final Bound kDiffMedium = new Bound(900, 1800);
-  private final Bound kDiffHard = new Bound(700, 1300);
-  private final Bound kDiffExtreme = new Bound(550, 900);
-  
-  
   private LinearBitmapAnimation Samurai;
   private LinearBitmapAnimation Tameshigiri;
   private LinearBitmapAnimation Katana;
@@ -126,25 +101,11 @@ public class PlayContentThread extends Thread {
    * @param context Le context android dans lequel roule l'application.
    * @param msgHandler La pompe à événement servant à communiqué avec la vue.
    */
-  public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg, int difficulty) {
+  public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg, Opponent opponent) {
     mSurfaceHolder = surface;
     mContext = context;
     msgHandler = hMsg;
-    
-    switch(difficulty) {
-    case 0 :
-        mGameContext = new GameContext(3, kDiffEasy);
-        break;
-    case 1 :
-        mGameContext = new GameContext(4, kDiffMedium);
-        break;
-    case 2 :
-        mGameContext = new GameContext(4, kDiffHard);
-        break;
-    case 3 :
-        mGameContext = new GameContext(5, kDiffExtreme);
-        break;
-    }
+    mOpponent = opponent;
   	
     mCanvasDim = new RectF();    
     profiler = new Profiler();
@@ -171,7 +132,7 @@ public class PlayContentThread extends Thread {
     mPlayGrid = new PlayGrid();
     mFollowupLine = new FollowupLine();
     
-    mPlayGrid.Dots(mGameContext.nDots);
+    mPlayGrid.Dots(opponent.getNDots());
   }
 	
   public void doStart() {
@@ -227,6 +188,10 @@ public class PlayContentThread extends Thread {
 	  }
 	}
   
+  private int GetJiggerFromTime(int timeMs) {
+    return (timeMs - 200) / 3;
+  }
+  
   private void SetUpAnimationMvt() {
     
     float halfHeight = mCanvasDim.bottom / 2;
@@ -234,11 +199,11 @@ public class PlayContentThread extends Thread {
     
     float percentSpeed = 0f;
     
-    float diffWithWinningTime = timeToCompletion - mGameContext.time.inferior;
+    float diffWithWinningTime = timeToCompletion - mOpponent.getLengthMs();
     
     if (diffWithWinningTime < 0)  percentSpeed = 1.0f;
     else {
-      percentSpeed = 1 - (diffWithWinningTime / mGameContext.time.Length());
+      percentSpeed = 1 - (diffWithWinningTime / GetJiggerFromTime(mOpponent.getLengthMs()));
       if (percentSpeed < 0.0f)  percentSpeed = 0.0f;
     }
     

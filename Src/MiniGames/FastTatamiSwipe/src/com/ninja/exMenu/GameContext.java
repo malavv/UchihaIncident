@@ -54,7 +54,7 @@ public class GameContext implements Parcelable {
     */
    private GameContext(Parcel in) {
      byte opponent = in.readByte();
-     if (opponent == 1)  mOpponent.Read(in);
+     if (opponent == 1)  mOpponent = new Opponent(in);
      else mOpponent = null;
      
      int size = in.readInt();
@@ -63,34 +63,6 @@ public class GameContext implements Parcelable {
      
      modeSolo = in.readByte();
    }
-
-  public class Opponent {
-    private int mIconID;
-    private String mSenseiName;
-    private int mNDots;
-    private int mLengthMs;
-    
-    public Opponent(int iconID, String senseiName, int nDots, int lengthMs) {
-      mIconID = iconID;
-      mSenseiName = senseiName;
-      mNDots = nDots;
-      mLengthMs = lengthMs;
-    }
-    
-    public void Read(Parcel in) {
-      mIconID = in.readInt();
-      mSenseiName = in.readString();
-      mNDots = in.readInt();
-      mLengthMs = in.readInt();
-    }
-    
-    public void Write(Parcel out) {
-      out.writeInt(mIconID);
-      out.writeString(mSenseiName);
-      out.writeInt(mNDots);
-      out.writeInt(mLengthMs);
-    }
-  }
   
   public GameContext() {
     mOpponent = null;
@@ -101,6 +73,10 @@ public class GameContext implements Parcelable {
   public void SetOpponent(Opponent opponent) {
     mOpponent = opponent;
   }
+  
+  public Opponent GetOpponent() { return mOpponent; }
+  
+  public boolean IsSingle() { return modeSolo == 0; }
   
   public void SetMultiplayer() { modeSolo = 1; }
   

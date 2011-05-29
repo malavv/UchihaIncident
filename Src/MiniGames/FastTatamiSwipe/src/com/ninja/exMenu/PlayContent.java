@@ -1,6 +1,7 @@
 package com.ninja.exMenu;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -35,15 +36,14 @@ public class PlayContent extends Activity {
   
   /** Niveau de difficulté du jeux */
   private static int kDifficulty = 1;
+  private static GameContext gContext;
 	
   /**
    * Phase du cycle de vie correspondant à l'initialisation.
    */
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-	    String s = this.getIntent().getAction();
-	    
-		setkDifficulty(Integer.parseInt(s));
+  public void onCreate(Bundle savedInstanceState) {    
+    gContext = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
     super.onCreate(savedInstanceState);
     
     /* Full screen */
@@ -58,6 +58,8 @@ public class PlayContent extends Activity {
     
     mContentView.mTextStatus = (TextView)findViewById(R.id.Status);
   }
+  
+  public static Opponent GetCurrentOpponent() { return gContext.GetOpponent(); }
     
   /**
    * Création du menu et des options qui s'y retrouve.
