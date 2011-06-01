@@ -1,11 +1,11 @@
 package com.ninja.test.ballctrl;
 
-import java.util.ArrayList;
-
+import android.R.color;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -52,10 +52,18 @@ public class PlayContentThread extends Thread {
 			try {
 				c = mSurfaceHolder.lockCanvas(null);
 				synchronized (mSurfaceHolder) {
+
+				    c.drawColor(Color.BLACK);
+				    
+				    
+				    /*Paint p = new Paint();
+				    p.setColor(Color.WHITE);
+				    
+				    c.drawCircle(200, 200, 10, p);
+				    */
 					doDraw(c);
+					 
 				}
-			} catch(Exception e) { 
-				Log.wtf("ContentThread::run", "probleme en dessinant le canevas");
 			}finally {
 				if (c != null)
 					mSurfaceHolder.unlockCanvasAndPost(c);
@@ -66,16 +74,11 @@ public class PlayContentThread extends Thread {
     	profiler.Tick();
     	
 		Log.d("ContentThread::doDraw", "fonction qui dessine le canevas");
-		
-    	ArrayList<Collidable> obstacles = mParticlesSystem.GetObstclesList();
     	
-    	if(!obstaclesDrawn) {
-	    	for(int i = 0; i < obstacles.size(); i++) {
-	    		// on va dessiner les obstacles ici plus tard
-	    		obstacles.get(i);
-	    	}
+    	//if(!obstaclesDrawn) {
+	    	mParticlesSystem.Draw(c, mCanvasDim);
 	    	obstaclesDrawn = true;
-    	}
+    	//}
 
 		// ensuite on dessinera la ninja ball
   	}

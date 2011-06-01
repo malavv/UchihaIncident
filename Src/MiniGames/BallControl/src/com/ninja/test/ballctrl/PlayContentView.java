@@ -17,11 +17,8 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 		Log.d("ContentView::constructor", "on construit l'objet view");
        
          SurfaceHolder h = getHolder();
-         
-         mContentThread = new PlayContentThread(h, context);
-         
          h.addCallback(this);
-      
+         mContentThread = new PlayContentThread(h, context);
       
       setFocusable(true);
    }
@@ -36,8 +33,6 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 
    @Override
    public void surfaceCreated(SurfaceHolder holder) {
-	  	
-		Log.d("ContentView::surfaceCreated", "on créé la surface");
 		
       mContentThread.setRunning(true);
       mContentThread.start();
