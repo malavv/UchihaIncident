@@ -79,35 +79,4 @@ public class GameContext implements Parcelable {
   public boolean IsSingle() { return modeSolo == 0; }
   
   public void SetMultiplayer() { modeSolo = 1; }
-  
-//  public void Init(Context context) {
-//    FileInputStream fs;
-//    try {
-//      fs = context.openFileInput(Filename);
-//      
-//      ArrayList<Integer> opponents = new ArrayList<Integer>();
-//      int tmp = fs.read();
-//      while (tmp != -1) {
-//        opponents.add(tmp);
-//        tmp = fs.read();
-//      }
-//      
-//      defeatedOpponents = new int[opponents.size()];
-//      for (int i = 0; i < opponents.size(); i++) {
-//        defeatedOpponents[i] = opponents.get(i);
-//      }
-//
-//    } catch (FileNotFoundException e) {
-//      CreateSaveFile(context);
-//    } catch (IOException e) {
-//      // Le read a échoué.
-//    }
-//  }
-//  
-//  private void CreateSaveFile(Context c) {
-//    try {
-//      FileOutputStream fos = c.openFileOutput(Filename, Context.MODE_PRIVATE);
-//      fos.close();
-//    } catch (Exception e) {}
-//  }
 }

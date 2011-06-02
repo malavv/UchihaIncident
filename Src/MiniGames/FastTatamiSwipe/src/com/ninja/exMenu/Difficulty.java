@@ -21,7 +21,7 @@ import android.widget.SimpleAdapter;
 public class Difficulty extends ListActivity {
 
    private static final String[] IdTagXml = new String[] {"name", "dots",
-         "speed", "times"};
+         "speed", "nImgId", "nTimes"};
    private static final int[] associatedIdLayout = new int[] {R.id.opp_name,
          R.id.opp_balle, R.id.opp_speed, R.id.opp_times};
    private static final int[] idImgNumber = new int[] { R.drawable.dif_n_1,
@@ -49,7 +49,7 @@ public class Difficulty extends ListActivity {
   protected void onListItemClick (ListView l, View v, int position, long id) {
     HashMap<String, String> opp = mOpponents.get((int)id);
     String name = opp.get("name");
-    int nTime = Integer.parseInt(opp.get("times"));
+    int nTime = Integer.parseInt(opp.get("nTimes"));
     int nDot = Integer.parseInt(opp.get("dots"));
     int speed = (opp.get("speed").equals("N/A")) ? -1 : Integer.parseInt(opp.get("speed"));
 
@@ -62,7 +62,7 @@ public class Difficulty extends ListActivity {
       Log.wtf("Play content activity from difficulty failed.", "Activity not found.");
     }
   }
-  
+ 
   
   private List<HashMap<String, String>> GetOpponents(boolean isSingle) {
     List<HashMap<String, String>> fillmap = new ArrayList<HashMap<String, String>>();
@@ -117,6 +117,7 @@ public class Difficulty extends ListActivity {
     opp.put(IdTagXml[1], dots);
     opp.put(IdTagXml[2], speed);
     opp.put(IdTagXml[3], Integer.toString(idImgNumber[Integer.parseInt(time) - 1]));
+    opp.put(IdTagXml[4], time);
     return opp;
   }
 }

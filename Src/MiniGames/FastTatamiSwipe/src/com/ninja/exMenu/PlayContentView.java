@@ -1,6 +1,8 @@
 package com.ninja.exMenu;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -16,26 +18,50 @@ import android.widget.TextView;
  */
 public class PlayContentView extends SurfaceView implements
     SurfaceHolder.Callback {
-
+  
   /** Le thread sous-jacent à l'application. */
   private PlayContentThread thread;
 
   public TextView mTextStatus;
+  
+  public AlertDialog alert;
 
+  private PlayContent activity;
+  
   public PlayContentView(Context context, AttributeSet attrs) {
     super(context, attrs);
-
-    SurfaceHolder h = getHolder();
-    h.addCallback(this);
-
-    thread = new PlayContentThread(h, context, new Handler() {
+    
+    getHolder().addCallback(this);
+    thread = new PlayContentThread(getHolder(), getContext(), new Handler() {
       @Override
       public void handleMessage(Message m) {
-        mTextStatus.setText(m.getData().getString("text"));
+        if (m.getData().getString("text").equals("Mudkipz"))  alert.show();
+        else
+          mTextStatus.setText(m.getData().getString("text"));
       }
     }, PlayContent.GetCurrentOpponent());
-
     setFocusable(true);
+  }
+  
+  public void SetActivity(final PlayContent content) {
+    activity = content;
+    
+    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    builder.setMessage("Pleasssse Choose wisely.")
+         .setCancelable(false)
+         .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+               content.Retry();
+               dialog.cancel();
+             }
+         })
+         .setNegativeButton("Menu", new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+               content.BackToMenu();
+               dialog.cancel();
+             }
+         });
+    alert = builder.create();
   }
 
   public PlayContentThread getThread() {

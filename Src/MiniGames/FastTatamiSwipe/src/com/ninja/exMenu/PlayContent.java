@@ -1,12 +1,11 @@
 package com.ninja.exMenu;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -37,6 +36,7 @@ public class PlayContent extends Activity {
   /** Niveau de difficulté du jeux */
   private static int kDifficulty = 1;
   private static GameContext gContext;
+  
 	
   /**
    * Phase du cycle de vie correspondant à l'initialisation.
@@ -55,8 +55,9 @@ public class PlayContent extends Activity {
     // On va chercher la référence des trois éléments.
     mContentView = (PlayContentView) findViewById(R.id.ContentView);
     mContentThread = mContentView.getThread();
+    mContentView.SetActivity(this);
     
-    mContentView.mTextStatus = (TextView)findViewById(R.id.Status);
+    mContentView.mTextStatus = (TextView)findViewById(R.id.Status);    
   }
   
   public static Opponent GetCurrentOpponent() { return gContext.GetOpponent(); }
@@ -92,6 +93,13 @@ public class PlayContent extends Activity {
     return false;
   }
     
+  public void BackToMenu() {
+    finish();
+  }
+  
+  public void Retry() {
+    mContentThread.FreshStart();
+  }
   /**
    * Phase du cycle de vie ou nous ne sommes probablement plus visible et
    * prêt à être mis hors de mémoire.
