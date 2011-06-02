@@ -28,7 +28,7 @@ public class PlayContent extends Activity {
 		
 	   	setContentView(R.layout.content);
 		
-		mContentView = (PlayContentView) findViewById(R.id.ContentView);
+		mContentView = (PlayContentView) findViewById(R.id.pc_view);
 		mContentThread = mContentView.getThread();
 	}
     
