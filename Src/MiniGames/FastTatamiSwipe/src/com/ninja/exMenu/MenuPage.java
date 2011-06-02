@@ -1,5 +1,7 @@
 package com.ninja.exMenu;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -46,11 +48,12 @@ public class MenuPage extends Activity {
     final Intent dualMode = new Intent(this, Difficulty.class);
     
     GameContext cSolo = new GameContext(), cDual = new GameContext();
+    ArrayList<OpponentInfo> opponents = GameContext.FetchKnownOpponents(this);
+    cSolo.SetKnownOpponents(opponents);cDual.SetKnownOpponents(opponents);
     cDual.SetMultiplayer();
     
     soloMode.putExtra("com.ninja.ExMenu.GameContext", cSolo);
     dualMode.putExtra("com.ninja.ExMenu.GameContext", cDual);
-    
     
     BindIntentToView(R.id.btnSolo, soloMode);
     BindIntentToView(R.id.btnDual, dualMode);
