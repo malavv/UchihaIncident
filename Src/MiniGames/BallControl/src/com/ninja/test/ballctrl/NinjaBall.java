@@ -1,28 +1,20 @@
 package com.ninja.test.ballctrl;
 
+
 public class NinjaBall extends Movable {
 	
     private float mAccelX;
     private float mAccelY;
-    private float mLastPosX;
-    private float mLastPosY;
+    private int mLastPosX;
+    private int mLastPosY;
 
     /** 
      * Constructor for the NinjaBall 
      * with the start position and rebound 
      * coefficient also called elasticity 
      */
-	NinjaBall(float aPosX, float aPosY, float aElasticity) {
+	NinjaBall(int aPosX, int aPosY, float aElasticity) {
 		super(aPosX, aPosY, aElasticity);
-		// TODO Auto-generated constructor stub
-	}
-	
-	/**
-	 * The same constructor with a default elasticity
-	 */
-	NinjaBall(float aPosX, float aPosY) {
-		super(aPosX, aPosY, (float) 0.9);
-		// TODO Auto-generated constructor stub
 	}
 
 	public float getmAccelX() {
@@ -41,19 +33,19 @@ public class NinjaBall extends Movable {
 		this.mAccelY = mAccelY;
 	}
 
-	public float getmLastPosX() {
+	public int getmLastPosX() {
 		return mLastPosX;
 	}
 
-	public void setmLastPosX(float mLastPosX) {
+	public void setmLastPosX(int mLastPosX) {
 		this.mLastPosX = mLastPosX;
 	}
 
-	public float getmLastPosY() {
+	public int getmLastPosY() {
 		return mLastPosY;
 	}
 
-	public void setmLastPosY(float mLastPosY) {
+	public void setmLastPosY(int mLastPosY) {
 		this.mLastPosY = mLastPosY;
 	}
 

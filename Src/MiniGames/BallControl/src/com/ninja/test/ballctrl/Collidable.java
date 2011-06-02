@@ -1,29 +1,29 @@
 package com.ninja.test.ballctrl;
 
 public class Collidable {
-    private float mPosX;
-    private float mPosY;
+    private int mPosX;
+    private int mPosY;
     private float mElasticity;
     
-    Collidable(float aPosX, float aPosY, float aElasticity) {
+    Collidable(int aPosX, int aPosY, float aElasticity) {
     	mPosX = aPosX;
     	mPosY = aPosY;
     	mElasticity = aElasticity;
     }
 
-	public float getX() {
+	public int getX() {
 		return mPosX;
 	}
 
-	public void setX(float mPosX) {
+	public void setX(int mPosX) {
 		this.mPosX = mPosX;
 	}
 
-	public float getY() {
+	public int getY() {
 		return mPosY;
 	}
 
-	public void setY(float mPosY) {
+	public void setY(int mPosY) {
 		this.mPosY = mPosY;
 	}
 

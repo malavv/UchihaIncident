@@ -19,19 +19,38 @@ public class ParticlesSystem {
 	
 	private Drawable SpikesBall;
 	
+	private Drawable ninjaB;
+	private NinjaBall theOne;
+	
 	// largeur de l'écran
 	private int mWidth;
 
 	// hauteur de l'écran
 	private int mHeight;
 	
+	/*
+	 * Screen looks like (on a Nexus): 
+	 * 
+	 * 				533 px (~ 1)
+	 * _________________________________
+	 * |0--------> x					|
+	 * ||								|
+	 * ||								|
+	 * ||								| 270 px
+	 * ||								| (~ 1/2)
+	 * |V y								|
+	 * |								|
+	 * |________________________________|
+	 */
+	
 	public ParticlesSystem( Context context ) {
 		
 		mObstalcesList = new ArrayList<Collidable>();
-  	
-		Log.d("ParticlesSystem::constructor", "on initialise le drawable de la spikesball");
 		
-		SpikesBall = context.getResources().getDrawable(R.drawable.ball);
+		ninjaB = context.getResources().getDrawable(R.drawable.scared_ball);
+		theOne = new NinjaBall(50, 50, 1);
+		
+		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
 	}
 	
 	public ArrayList<Collidable> GetObstclesList() {
@@ -42,16 +61,26 @@ public class ParticlesSystem {
 	  	
 		Log.d("ParticlesSystem::Draw", "on dessine les particules sur le canvas");
 		
+		// On dessine les obstacles
 		Collidable tmp;
 		for(int i = 0; i < mObstalcesList.size(); i++){
 			tmp = mObstalcesList.get(i);
-			SpikesBall.setBounds((int)(tmp.getX()), 
-								 (int)(tmp.getY()), 
-								 (int)(tmp.getX()+offset), 
-								 (int)(tmp.getY()+offset));
-			//SpikesBall.setBounds(0, 0, 100, 100);
+			SpikesBall.setBounds(tmp.getX(), 
+								 tmp.getY(), 
+								 tmp.getX()+offset, 
+								 tmp.getY()+offset);
+
 			SpikesBall.draw(c);
 		}
+	}
+	
+	public void DrawNinja(Canvas c) {
+		ninjaB.setBounds(theOne.getX(), 
+						 theOne.getY(), 
+						 theOne.getX()+offset, 
+						 theOne.getY()+offset);
+		
+		ninjaB.draw(c);
 	}
 	
 	public void setSurfaceSize(float width, float height) {

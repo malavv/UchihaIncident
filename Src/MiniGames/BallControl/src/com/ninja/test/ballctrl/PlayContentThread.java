@@ -1,10 +1,8 @@
 package com.ninja.test.ballctrl;
 
-import android.R.color;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -55,12 +53,6 @@ public class PlayContentThread extends Thread {
 
 				    c.drawColor(Color.BLACK);
 				    
-				    
-				    /*Paint p = new Paint();
-				    p.setColor(Color.WHITE);
-				    
-				    c.drawCircle(200, 200, 10, p);
-				    */
 					doDraw(c);
 					 
 				}
@@ -81,6 +73,7 @@ public class PlayContentThread extends Thread {
     	//}
 
 		// ensuite on dessinera la ninja ball
+    	mParticlesSystem.DrawNinja(c);
   	}
 
 	public void setRunning(boolean running) {
