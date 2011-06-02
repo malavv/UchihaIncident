@@ -18,4 +18,10 @@
     <string name="difficulty_easy">Easy</string>
     <string name="difficulty_vhard">Very Hard</string>
     <string name="Version">0.3</string>
+    <string name="end_victory">Victory!</string>
+    <string name="end_defeat">Defeat</string>
+    <string name="end_vic_msg">Congrats! You seem to have defeated\nthe all migthy %s in only :</string>
+    <string name="end_def_msg">It seems you ninja abilities were not\nenough this time, you lost to %s in :</string>
+    <string name="end_retry_btn">Retry</string>
+    <string name="end_menu_btn">Menu</string>
 </resources>

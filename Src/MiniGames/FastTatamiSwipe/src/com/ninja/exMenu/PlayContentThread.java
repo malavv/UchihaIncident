@@ -1,7 +1,9 @@
 package com.ninja.exMenu;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -63,7 +65,10 @@ public class PlayContentThread extends Thread {
   private long countReady = 0;
   private long countUserInput = 0;
   private long countAnimMvt = 0;
+  private long countEnd = 0;
   private long timeBeforeGame = 0;
+  private ArrayList<Integer> times = new ArrayList<Integer>();
+  private int nOfGame = 0;
   
   /**
    * On retrouve ici les états dans lesquels peut ce situer le minigame.
@@ -81,6 +86,7 @@ public class PlayContentThread extends Thread {
   private LinearBitmapAnimation Katana;
   private RotationBitmapAnimation KatanaRot;
   
+  private Sprite samurai;
   private Sprite tatami_top;
   private Sprite tatami_bottom;
   private Sprite tatami_complet;
@@ -113,7 +119,7 @@ public class PlayContentThread extends Thread {
     mSound.Init(context);
     mSound.Load(kSoundSword, R.raw.fourreau);
     
-    Sprite samurai = new Sprite(context.getResources().getDrawable(R.drawable.kendo));
+    samurai = new Sprite(context.getResources().getDrawable(R.drawable.kendo));
     tatami_top = new Sprite(context.getResources().getDrawable(R.drawable.tatami_top));
     tatami_bottom = new Sprite(context.getResources().getDrawable(R.drawable.tatami_bottom));
     tatami_complet = new Sprite(context.getResources().getDrawable(R.drawable.tatami_uncut));
@@ -126,18 +132,29 @@ public class PlayContentThread extends Thread {
     tatami_top.Scale(0.5);
     tatami_bottom.Scale(0.5);
     
+    FreshStart();
+  }
+  
+  // Recommence le combat au complet.
+  public void FreshStart() {
+    times.clear();
+    nOfGame = 0;
+    startRun();
+  }
+  
+  // Réinitialise ce qui doit rester entre plusieurs manche d'un combat.
+  private void startRun() {
+    setState(kInitial);
+    countReady = countUserInput = countAnimMvt = timeBeforeGame = countEnd = 0;
     Samurai = new LinearBitmapAnimation(samurai, 2000, new Point(600, 100), new Point(0, 0));
     Tameshigiri = new LinearBitmapAnimation(tatami_complet, 2000, new Point(100, 100), new Point(300, 100));
-    
     mPlayGrid = new PlayGrid();
     mFollowupLine = new FollowupLine();
-    
-    mPlayGrid.Dots(opponent.getNDots());
+    mPlayGrid.Dots(mOpponent.getNDots());
   }
 	
   public void doStart() {
     profiler.Tick();
-    setState(kInitial);
   }
 	
   public void Panic() {
@@ -182,6 +199,7 @@ public class PlayContentThread extends Thread {
 	      AnimationMvt(c, profiler.Delta());
 		    break;
 	    case kAnimationFin:
+	      AnimationEnd(c, profiler.Delta());
 		    break;
       case kPause:
         break;
@@ -237,12 +255,35 @@ public class PlayContentThread extends Thread {
     Katana.Sprite().PlaceRotationCenter(new PointF(mCanvasDim.right / 2, mCanvasDim.bottom / 2));
   }
   
+  private void AnimationEnd(Canvas c, long delta) {
+    
+    // Cas spécial où l'on as gagné et on affiche le menu live.
+    if (nOfGame == 0)  return;
+    
+    // On n'as pas finit, une autre manche arrive.
+    if (nOfGame < mOpponent.getNTimes()) {
+      if (countEnd > 1100)  startRun();
+      else countEnd += delta;
+    
+    // On a gagné ou perdu, on affiche le menu.
+    } else {
+      int moy = 0;
+      for(Integer time : times) moy += time;
+      moy = (int)((moy / (float)times.size()) + 0.5);
+      hasWon = (moy < mOpponent.getLengthMs());
+      
+      if (nOfGame > 0) {
+        nOfGame = 0;
+        ShowMenu(hasWon, moy);
+      }
+    }
+  }
+  
   private void AnimationMvt(Canvas c, long delta) {
     
     boolean stillMoving = true;
     if (countAnimMvt < 500) {
       countAnimMvt += delta;
-      stillMoving = false;
       KatanaRot.Animate(delta);
     } else if (countAnimMvt < 1600) {
       stillMoving = false;
@@ -260,9 +301,10 @@ public class PlayContentThread extends Thread {
       profiler.Draw(c, mCanvasDim);
       
       if (!stillMoving) {
-        String ms = Float.toString((float)((countUserInput - timeBeforeGame) / 1000.0)) + " s";
-        if (hasWon)  Status("Vous avez Gagné! " + ms);
-        else Status("Trop Long " + ms);
+        long time = countUserInput - timeBeforeGame;
+        times.add((int)time);
+        nOfGame++;
+        setState(kAnimationFin);
       }
     }
   }
@@ -371,10 +413,21 @@ public class PlayContentThread extends Thread {
 	public void pause() {}
 	public void unpause() {}
 	
+	private void ShowMenu(boolean hasWon, int time) {
+	   Message msg = msgHandler.obtainMessage();
+	   Bundle b = new Bundle();
+	   b.putInt("mode", PlayContentView.kShowMenu);
+	   b.putBoolean("hasWon", hasWon);
+	   b.putInt("time", time);
+	   msg.setData(b);
+	   msgHandler.sendMessage(msg);
+	}
+	
 	private void Status(String status) {
 	  Message msg = msgHandler.obtainMessage();
 	  Bundle b = new Bundle();
-	  b.putString("text", status);
+	  b.putInt("mode", PlayContentView.kStatusUpdate);
+	  b.putString("status", status);
 	  msg.setData(b);
 	  msgHandler.sendMessage(msg);
 	}

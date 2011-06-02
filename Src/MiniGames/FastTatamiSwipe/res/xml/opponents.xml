@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Opponents>
-   <Opponent id="0" name="Pickachu" dots="2" speed="1700" times="1">
+   <Opponent id="0" name="Pickachu" dots="2" speed="1700" nImgId="1">
 	  <Unlocked>
 	     <ID>0</ID>
 	  </Unlocked>
    </Opponent>
-   <Opponent id="1" name="Raichu" dots="4" speed="1200" times="2">
+   <Opponent id="1" name="Raichu" dots="4" speed="1200" nImgId="2">
      <Unlocked>
         <ID>1</ID>
      </Unlocked>
