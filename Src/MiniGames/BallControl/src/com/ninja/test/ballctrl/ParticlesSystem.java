@@ -13,20 +13,17 @@ public class ParticlesSystem {
 	private final int xDiv = 26;
 	private final int yDiv = 13;
 	
-	private final int offset = 20;
+	private int offset;
 	
 	private ArrayList<Collidable> mObstalcesList;
 	
 	private Drawable SpikesBall;
 	
 	// largeur de l'écran
-	private float mWidth;
+	private int mWidth;
 
 	// hauteur de l'écran
-	private float mHeight;
-
-	private int xScale;
-	private int yScale;
+	private int mHeight;
 	
 	public ParticlesSystem( Context context ) {
 		
@@ -58,20 +55,40 @@ public class ParticlesSystem {
 	}
 	
 	public void setSurfaceSize(float width, float height) {
-		mWidth = width;
-		mHeight = height;
+		mWidth = (int)width;
+		mHeight = (int)height;
 		
-		xScale = (int)(mWidth/xDiv);
-		yScale = (int)(mHeight/yDiv);
+		String s = "with = " + Integer.toString(mWidth) + "\nheight = " + Integer.toString(mHeight);
+		
+		Log.d("sizes check", s);
+		
+		scaler();
 
 		// Obstacles list later i'd want it to be loaded form an XML file
 		PlaceObstacles();
+	}
+	
+	private void scaler() {
+		// comme l'écran est toujours en format paysage (setté dans le xml)
+		// on a toujours with > height
+		
+		// On prend le plus petit coefficient pour que tout l'affichage 
+		// rentre dans l'écran ce qui est une bonne idée selon moi ^^
+		int tmp = (2*mHeight > mWidth) ? mWidth/2 : mHeight;
+		
+		// On a ici la taille des Drawable en pixels de manière a en avoir
+		// N en y et 2N en x (N = yDiv)
+		offset = tmp/yDiv;
+		
+		Log.d("OFFSET", "offset = " + Integer.toString(offset));
 	}
 	
 	private void PlaceObstacles() {
 	  	
 		Log.d("ParticlesSystem::PlaceObstacles", "on place les particules sur le canvas");
 		
+		// Position maximale ou on va placer un élément collisionable 
+		// d'une dimention offset*offset
 		final int maxWidth = offset*(xDiv-1);
 		final int maxHeight = offset*(yDiv-1);
 		
@@ -87,6 +104,7 @@ public class ParticlesSystem {
 			mObstalcesList.add(new Wall(i*offset, maxHeight, 1));
 		}
 
+		// 4 points random pour remplire un peu l'écran
 		mObstalcesList.add(new Wall(100, 100, 1));
 		mObstalcesList.add(new Wall(200, 200, 1));
 		mObstalcesList.add(new Wall(200, 100, 1));
