@@ -256,15 +256,26 @@ public class PlayContentThread extends Thread {
   }
   
   private void AnimationEnd(Canvas c, long delta) {
+    
+    // Cas spécial où l'on as gagné et on affiche le menu live.
+    if (nOfGame == 0)  return;
+    
+    // On n'as pas finit, une autre manche arrive.
     if (nOfGame < mOpponent.getNTimes()) {
       if (countEnd > 1100)  startRun();
       else countEnd += delta;
+    
+    // On a gagné ou perdu, on affiche le menu.
     } else {
       int moy = 0;
       for(Integer time : times) moy += time;
       moy = (int)((moy / (float)times.size()) + 0.5);
+      hasWon = (moy < mOpponent.getLengthMs());
       
-      Status("Mudkipz");
+      if (nOfGame > 0) {
+        nOfGame = 0;
+        ShowMenu(hasWon, moy);
+      }
     }
   }
   
@@ -402,10 +413,21 @@ public class PlayContentThread extends Thread {
 	public void pause() {}
 	public void unpause() {}
 	
+	private void ShowMenu(boolean hasWon, int time) {
+	   Message msg = msgHandler.obtainMessage();
+	   Bundle b = new Bundle();
+	   b.putInt("mode", PlayContentView.kShowMenu);
+	   b.putBoolean("hasWon", hasWon);
+	   b.putInt("time", time);
+	   msg.setData(b);
+	   msgHandler.sendMessage(msg);
+	}
+	
 	private void Status(String status) {
 	  Message msg = msgHandler.obtainMessage();
 	  Bundle b = new Bundle();
-	  b.putString("text", status);
+	  b.putInt("mode", PlayContentView.kStatusUpdate);
+	  b.putString("status", status);
 	  msg.setData(b);
 	  msgHandler.sendMessage(msg);
 	}
