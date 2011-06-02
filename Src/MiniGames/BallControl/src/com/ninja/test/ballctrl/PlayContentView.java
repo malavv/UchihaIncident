@@ -1,15 +1,14 @@
 package com.ninja.test.ballctrl;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback {
+public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback{
 
-   private PlayContentThread mContentThread;
+   public PlayContentThread mContentThread;
    
    public PlayContentView(Context context, AttributeSet attrs) {
       super(context, attrs);

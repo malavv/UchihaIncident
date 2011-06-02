@@ -20,7 +20,7 @@ public class ParticlesSystem {
 	private Drawable SpikesBall;
 	
 	private Drawable ninjaB;
-	private NinjaBall theOne;
+	public NinjaBall theOne;
 	
 	// largeur de l'écran
 	private int mWidth;
@@ -74,7 +74,10 @@ public class ParticlesSystem {
 		}
 	}
 	
-	public void DrawNinja(Canvas c) {
+	public void DrawNinja(Canvas c, long delta) {
+		
+		theOne.computePhysics(delta/10);
+		
 		ninjaB.setBounds(theOne.getX(), 
 						 theOne.getY(), 
 						 theOne.getX()+offset, 

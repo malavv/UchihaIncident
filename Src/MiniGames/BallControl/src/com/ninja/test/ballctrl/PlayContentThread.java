@@ -24,7 +24,7 @@ public class PlayContentThread extends Thread {
 	/** Les dimensions du canvas de l'écran. */
 	private RectF mCanvasDim;
 	
-	private ParticlesSystem mParticlesSystem;
+	public ParticlesSystem mParticlesSystem;
 
 	private boolean obstaclesDrawn = false;
 	
@@ -62,8 +62,14 @@ public class PlayContentThread extends Thread {
 			}
 		}
 	}
+	
+	public void Tick() {
+		profiler.Tick();
+	}
+	
     public void doDraw(Canvas c) {
     	profiler.Tick();
+    	long delta = profiler.Delta();
     	
 		Log.d("ContentThread::doDraw", "fonction qui dessine le canevas");
     	
@@ -73,7 +79,7 @@ public class PlayContentThread extends Thread {
     	//}
 
 		// ensuite on dessinera la ninja ball
-    	mParticlesSystem.DrawNinja(c);
+    	mParticlesSystem.DrawNinja(c, delta);
   	}
 
 	public void setRunning(boolean running) {
