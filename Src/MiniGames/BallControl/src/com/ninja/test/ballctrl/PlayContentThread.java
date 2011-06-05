@@ -1,8 +1,11 @@
 package com.ninja.test.ballctrl;
 
+import java.util.Iterator;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -47,6 +50,7 @@ public class PlayContentThread extends Thread {
 	public void run() {
 		while (mRun) {
 			Canvas c = null;
+			computeCollisions();
 			try {
 				c = mSurfaceHolder.lockCanvas(null);
 				synchronized (mSurfaceHolder) {
@@ -60,6 +64,76 @@ public class PlayContentThread extends Thread {
 				if (c != null)
 					mSurfaceHolder.unlockCanvasAndPost(c);
 			}
+		}
+	}
+	
+	private void computeCollisions() {
+		
+		// On prend la ninjaBall et on la fait collisionner avec le systeme de particules
+		NinjaBall ball = mParticlesSystem.theOne;
+		// l'offset correspond à la taille en x et en y des différents éléments du terrain
+		int offset = mParticlesSystem.getOffset();
+		
+		int rayonN = ball.getRayon();
+		
+		// collision avec le bord de l'écran
+		if(ball.getX()-rayonN < mCanvasDim.left){
+			ball.setX((int) (mCanvasDim.left + rayonN));
+		} else if(ball.getX()+rayonN > mCanvasDim.right) {
+			ball.setX((int) (mCanvasDim.right - rayonN));
+		}
+		if(ball.getY()-rayonN < mCanvasDim.top){
+			ball.setY((int) (mCanvasDim.top + rayonN));
+		} else if(ball.getY()+rayonN > mCanvasDim.bottom) {
+			ball.setY((int) (mCanvasDim.bottom - rayonN));
+		}
+		
+		// boucle qui gère les collisions entre les obstacles et le Ninja
+		for(Iterator<Collidable> i = mParticlesSystem.GetObstclesList(); i.hasNext();) {
+			Collidable it = i.next();
+			
+			// S'il y a collision entre les 2 objets
+			if(Collidable.collided(ball, it)) {
+				
+				// on calcule le produit vectoriel entre le vecteur déplacement de la balle
+				// et le vecteur de collision entre les deux éléments
+				Point translateVect = new Point(ball.getLastPosX()-ball.getX(), ball.getLastPosY()-ball.getY());
+				Point collideVect = new Point(it.getX()-ball.getX(), it.getY()-ball.getY());
+				
+				// produit vectoriel entr eles 2 vecteurs (règle de la main droite)
+				int prodVect = translateVect.x * collideVect.y - translateVect.y * collideVect.x;
+				
+				int newX;
+				int newY;
+				
+				// si le centre de l'obstacle est a gauche du déplacement
+				if(prodVect > 0) {
+					newX = ball.getX() + translateVect.y;
+					newY = ball.getY() - translateVect.x;
+				} 
+				// si le centre de l'obstacle est à droite du déplacement
+				else if (prodVect < 0) {
+					newX = ball.getX() - translateVect.y;
+					newY = ball.getY() + translateVect.x;
+				} 
+				// si les 3 points sont allignés (prodVect == 0)
+				else {
+					newX = ball.getX() - translateVect.x;
+					newY = ball.getY() - translateVect.y;
+				}
+				
+				
+				// on gèrera la perte (ou gain) d'énerdie plus tard...
+				newX *= ball.getElasticity()*it.getElasticity();
+				newY *= ball.getElasticity()*it.getElasticity();
+				
+				ball.updatePosition(newX, newY);
+				
+				// si on a trouvé une collision, on ne regardera pas les autres murs
+				return;
+			}
+			
+			
 		}
 	}
 	

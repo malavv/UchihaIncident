@@ -1,6 +1,7 @@
 package com.ninja.test.ballctrl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,15 +11,19 @@ import android.util.Log;
 
 public class ParticlesSystem {
 	
+	// nombre d'éléments du mur dans la largeur (x) et dans la hauteur (y)
 	private final int xDiv = 26;
 	private final int yDiv = 13;
 	
+	// largeur et hauteur des éléments dessinables
 	private int offset;
 	
+	// liste des éléments de murs
 	private ArrayList<Collidable> mObstalcesList;
 	
+	// Objets qui seront dessinés à l'écran
 	private Drawable SpikesBall;
-	
+	private Drawable BlkSquare;
 	private Drawable ninjaB;
 	public NinjaBall theOne;
 	
@@ -27,6 +32,9 @@ public class ParticlesSystem {
 
 	// hauteur de l'écran
 	private int mHeight;
+	
+	// permet de savoir si les éléments du mur on déjà été dessinés ou pas
+	private boolean placed;
 	
 	/*
 	 * Screen looks like (on a Nexus): 
@@ -51,10 +59,12 @@ public class ParticlesSystem {
 		theOne = new NinjaBall(50, 50, 1);
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
+		
+		BlkSquare = context.getResources().getDrawable(R.drawable.blk_square);
 	}
 	
-	public ArrayList<Collidable> GetObstclesList() {
-		return mObstalcesList;
+	public Iterator<Collidable> GetObstclesList() {
+		return mObstalcesList.iterator();
 	}
 	
 	public void Draw(Canvas c, RectF bounds) {
@@ -65,39 +75,50 @@ public class ParticlesSystem {
 		Collidable tmp;
 		for(int i = 0; i < mObstalcesList.size(); i++){
 			tmp = mObstalcesList.get(i);
-			SpikesBall.setBounds(tmp.getX(), 
-								 tmp.getY(), 
-								 tmp.getX()+offset, 
-								 tmp.getY()+offset);
+			SpikesBall.setBounds(tmp.getX() - tmp.getRayon(), 
+								 tmp.getY() - tmp.getRayon(), 
+								 tmp.getX() + tmp.getRayon(), 
+								 tmp.getY() + tmp.getRayon() );
 
 			SpikesBall.draw(c);
 		}
 	}
 	
 	public void DrawNinja(Canvas c, long delta) {
+
+		// On place un carré noire à la position précédente ou se trouvait le Ninja
+		BlkSquare.setBounds(theOne.getX() - theOne.getRayon(), 
+						 theOne.getY() - theOne.getRayon(), 
+						 theOne.getX() + theOne.getRayon(), 
+						 theOne.getY() + theOne.getRayon() );
 		
+		// Puis on calcule le déplacement des objets notemment le Ninja
 		theOne.computePhysics(delta/10);
 		
-		ninjaB.setBounds(theOne.getX(), 
-						 theOne.getY(), 
-						 theOne.getX()+offset, 
-						 theOne.getY()+offset);
-		
+		ninjaB.setBounds(theOne.getX() - theOne.getRayon(), 
+						 theOne.getY() - theOne.getRayon(), 
+						 theOne.getX() + theOne.getRayon(), 
+						 theOne.getY() + theOne.getRayon() );
+
+		//BlkSquare.draw(c);
 		ninjaB.draw(c);
 	}
 	
 	public void setSurfaceSize(float width, float height) {
-		mWidth = (int)width;
-		mHeight = (int)height;
 		
-		String s = "with = " + Integer.toString(mWidth) + "\nheight = " + Integer.toString(mHeight);
-		
-		Log.d("sizes check", s);
-		
-		scaler();
-
-		// Obstacles list later i'd want it to be loaded form an XML file
-		PlaceObstacles();
+		// on set la taille de l'écran et on places les éléments statiques
+		// mais on s'assure de ne l'effectuer qu'une seule fois
+		if(!placed) {
+			mWidth = (int)width;
+			mHeight = (int)height;
+			
+			scaler();
+	
+			// Obstacles list later i'd want it to be loaded form an XML file
+			PlaceObstacles();
+			
+			placed = true;
+		}
 	}
 	
 	private void scaler() {
@@ -112,12 +133,10 @@ public class ParticlesSystem {
 		// N en y et 2N en x (N = yDiv)
 		offset = tmp/yDiv;
 		
-		Log.d("OFFSET", "offset = " + Integer.toString(offset));
+		Collidable.setOffset(offset);
 	}
 	
 	private void PlaceObstacles() {
-	  	
-		Log.d("ParticlesSystem::PlaceObstacles", "on place les particules sur le canvas");
 		
 		// Position maximale ou on va placer un élément collisionable 
 		// d'une dimention offset*offset
@@ -125,7 +144,7 @@ public class ParticlesSystem {
 		final int maxHeight = offset*(yDiv-1);
 		
 		// place des murs sur les cotés
-		for(int i = 0; i < yDiv; i++) {
+		/*for(int i = 0; i < yDiv; i++) {
 			mObstalcesList.add(new Wall(0, i*offset, 1));
 			mObstalcesList.add(new Wall(maxWidth,i*offset, 1));
 		}
@@ -134,14 +153,19 @@ public class ParticlesSystem {
 		for(int i = 0; i < xDiv-1; i++) {
 			mObstalcesList.add(new Wall(i*offset, 0, 1));
 			mObstalcesList.add(new Wall(i*offset, maxHeight, 1));
-		}
+		}*/
 
 		// 4 points random pour remplire un peu l'écran
 		mObstalcesList.add(new Wall(100, 100, 1));
 		mObstalcesList.add(new Wall(200, 200, 1));
 		mObstalcesList.add(new Wall(200, 100, 1));
 		mObstalcesList.add(new Wall(100, 200, 1));
+			
 		
+	}
+
+	public int getOffset() {
+		return offset;
 	}
 	
 }
