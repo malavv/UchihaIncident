@@ -1,15 +1,27 @@
 package com.ninja.test.ballctrl;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
-public class PlayContent extends Activity {
+public class PlayContent extends Activity implements SensorEventListener{
 	
 	private PlayContentView mContentView;
 	private PlayContentThread mContentThread;
+	   
+    private Display mDisplay;
+    private WindowManager mWindowManager;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
     
 	/** L'identifiant du boutton option dans le menu en jeu. */
 	private static final int kOptionMenu = 1;
@@ -25,11 +37,19 @@ public class PlayContent extends Activity {
 		super.onCreate(savedInstanceState);
   	
 		Log.d("PlayContent::onCreate", "on cree l'activite");
+
+        // Get an instance of the SensorManager
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		
 	   	setContentView(R.layout.content);
 		
 		mContentView = (PlayContentView) findViewById(R.id.pc_view);
 		mContentThread = mContentView.getThread();
+         
+		mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
+		mDisplay = mWindowManager.getDefaultDisplay();
 	}
     
 	  /**
@@ -70,6 +90,8 @@ public class PlayContent extends Activity {
 	  @Override
 	  public void onPause() {
 	    super.onPause();
+	    
+        mSensorManager.unregisterListener(this);
 	    Pause();
 	  }
 	    
@@ -80,6 +102,8 @@ public class PlayContent extends Activity {
 	  @Override
 	  public void onResume() {
 	    super.onResume();
+	    
+	    mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
 	    Resume();
 	  }
 	    
@@ -104,5 +128,22 @@ public class PlayContent extends Activity {
 	    super.onStop();
 	    mContentThread.Panic();
 	  }
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+
+        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
+            return;
+        
+		mContentView.mContentThread.mParticlesSystem.theOne.onAccelerometerEvent(event, mDisplay);
+		mContentView.mContentThread.Tick();
+		
+	}
 	
 }

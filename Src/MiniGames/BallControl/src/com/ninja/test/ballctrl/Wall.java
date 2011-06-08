@@ -8,7 +8,7 @@ public class Wall extends Collidable {
 	 * @param aPosY
 	 * @param aElasticity
 	 */
-	Wall(float aPosX, float aPosY, float aElasticity) {
+	Wall(int aPosX, int aPosY, float aElasticity) {
 		super(aPosX, aPosY, aElasticity);
 	}
 
