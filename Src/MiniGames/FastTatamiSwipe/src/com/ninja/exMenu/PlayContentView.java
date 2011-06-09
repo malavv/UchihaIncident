@@ -60,6 +60,8 @@ public class PlayContentView extends SurfaceView
   }
   
   private void ShowEndGameMenu(boolean hasWon, int time) {
+    PlayContent.gContext.SaveInfos(activity);
+    
     String msg;
     Opponent op = PlayContent.GetCurrentOpponent();
     if (hasWon) {
@@ -74,8 +76,6 @@ public class PlayContentView extends SurfaceView
     float timeS = time / 1000.0f;
     ((TextView)alert.findViewById(R.id.time)).setText(Float.toString(timeS) + " s");
     alert.show();
-    PlayContent.gContext.EndGame(hasWon, time);
-    PlayContent.gContext.SaveInfos(activity);
   }
   
   public void SetActivity(final PlayContent content) {

@@ -48,8 +48,6 @@ public class MenuPage extends Activity {
     final Intent dualMode = new Intent(this, Difficulty.class);
     
     GameContext cSolo = new GameContext(), cDual = new GameContext();
-    ArrayList<OpponentInfo> opponents = GameContext.FetchKnownOpponents(this);
-    cSolo.SetKnownOpponents(opponents);cDual.SetKnownOpponents(opponents);
     cDual.SetMultiplayer();
     
     soloMode.putExtra("com.ninja.ExMenu.GameContext", cSolo);

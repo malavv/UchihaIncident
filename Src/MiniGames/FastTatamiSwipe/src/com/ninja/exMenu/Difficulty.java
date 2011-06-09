@@ -46,12 +46,20 @@ public class Difficulty extends ListActivity {
       super.onCreate(savedInstanceState);
   	  setContentView(R.layout.difficulty);
   	
-  	  infos = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
-      mOpponents = fetchOpponentsFromFile(infos.IsSingle());
-      setListAdapter(new SimpleAdapter(getApplicationContext(), mOpponents,
-          R.layout.opponents, IdTagXml, associatedIdLayout));
+      infos = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
    }
   
+   @Override
+   public void onResume() { 
+     super.onResume();
+     ArrayList<OpponentInfo> opponents = GameContext.FetchKnownOpponents(this);
+     infos.SetKnownOpponents(opponents);
+
+     mOpponents = fetchOpponentsFromFile(infos.IsSingle());
+     setListAdapter(new SimpleAdapter(getApplicationContext(), mOpponents,
+         R.layout.opponents, IdTagXml, associatedIdLayout));
+   }
+   
    @Override
    protected void onListItemClick (ListView l, View v, int position, long id) {
       HashMap<String, String> clickedOpponent = mOpponents.get((int)id);
@@ -119,13 +127,17 @@ public class Difficulty extends ListActivity {
        parser.next(); // EndID
      } while (true);
      
-     if (unlockedList.contains(kDefaultOpponents))  opponents.add(opponent);
-     else {
-       for (OpponentInfo info : infos.GetKnownOpponents())
-         unlockedList.remove(info.Id);
+     if (unlockedList.contains(kDefaultOpponents)) {
+       opponents.add(opponent);
+       return;
      }
      
-     if (unlockedList.size() < 0)  opponents.add(opponent);
+     for (OpponentInfo info : infos.GetKnownOpponents()) {
+       if (unlockedList.contains(info.Id))  unlockedList.remove(info.Id);
+     }
+     
+     if (unlockedList.size() < 1)
+       opponents.add(opponent);
   }
   
   private HashMap<String, String> makeOpponent(int id, String name, String dots, String speed, String time) {

@@ -1,7 +1,6 @@
 package com.ninja.exMenu;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -12,6 +11,7 @@ import android.os.Parcelable;
 public class GameContext implements Parcelable {
    
    private static final String kPrefFile = "preferences";
+   private static final String kDefault= "-1";
    
    private ArrayList<OpponentInfo> knownOpponent_;
   
@@ -94,34 +94,44 @@ public class GameContext implements Parcelable {
   public void SetMultiplayer() { modeSolo = 1; }
   
   public void EndGame(boolean hasWon, long time) {
-    if (knownOpponent_.contains(mOpponent.getID())) {
-      OpponentInfo modOpp = null;
-      for (OpponentInfo info : knownOpponent_) {
-        if (info.Id == mOpponent.getID())  modOpp = info;
-      }
-      
-      modOpp.Defeated = (hasWon && modOpp.Defeated == 0) ? 1 : modOpp.Defeated;
-      
-      PriorityQueue<Integer> highScores = new PriorityQueue<Integer>();
-      for (int curTime : modOpp.Highscores)  highScores.add(curTime);
-      highScores.add((int)time);
-      
-      int[] highScoresArray = new int[5];
-      int max = (highScores.size() > 5) ? 5 : highScores.size();
-      for (int i = 0; i < max; i++) highScoresArray[i] = highScores.poll();
-      for (int i = max - 1; i < 5; i++)  highScoresArray[i] = 9999999;
-      
-    } else {
-      int[] highscore = new int[5];
-      highscore[0] = (int)time;
-      for (int i = 1; i < 5; i++) highscore[i] = 9999999;
-      knownOpponent_.add(new OpponentInfo((hasWon) ? (byte)1 : (byte)0, mOpponent.getID(), highscore));
+    OpponentInfo opponent = null;
+    for (OpponentInfo info : knownOpponent_) {
+      if (info.Id == mOpponent.getID())  opponent = info;
     }
+    
+    if (opponent == null) {
+      CreateNewKnownOpponent(hasWon, time);
+      return;
+    }
+    
+    boolean needToChange = (opponent.Defeated == 0 && hasWon) || (time < opponent.Highscores[4]);
+    if (!needToChange)  return;
+    
+    opponent.Defeated = (hasWon && opponent.Defeated == 0) ? 1 : opponent.Defeated;
+    
+    ArrayList<Integer> highScores = new ArrayList<Integer>();
+    for (int i : opponent.Highscores)  highScores.add(i);
+    for (int i = 0; i < highScores.size(); i++)
+      if (time < highScores.get(i)) {
+        highScores.add(i, (int)time); break;
+      }
+
+    for (int i = 0; i < 5; i++)
+      opponent.Highscores[i] = highScores.get(i);
+  }
+  
+  private void CreateNewKnownOpponent(boolean hasWon, long time) {
+    OpponentInfo basic = new OpponentInfo();
+    basic.Defeated = (hasWon) ? (byte)1 : (byte)0;
+    basic.Id = mOpponent.getID();
+    basic.Highscores[0] = (int)time;
+    knownOpponent_.add(basic);
   }
   
   private String Implode(ArrayList<String> strs) {
-    String result = "";
-    for (String str : strs) result.concat(str + " ");
+    String result = new String();
+    for (int i = 0; i < strs.size(); i++)
+      result += (strs.get(i) + " ");
     return result.trim();
   }
   
@@ -131,35 +141,49 @@ public class GameContext implements Parcelable {
     
     ArrayList<String> ids = new ArrayList<String>();
     for (OpponentInfo info : knownOpponent_)  ids.add(Integer.toString(info.Id));
-    editor.putString("idList", Implode(ids));
+    String fina = Implode(ids);
+    editor.putString("idList", fina);
     
-    for (OpponentInfo info : knownOpponent_) {
+    for (OpponentInfo info : knownOpponent_)
       info.Save(editor);
-    }
     
     editor.commit();
   }
   
   public static ArrayList<OpponentInfo> FetchKnownOpponents(Activity act) {
     SharedPreferences settings = act.getSharedPreferences(kPrefFile, 0);
-    if (!settings.contains("idList"))  return new ArrayList<OpponentInfo>();
+   
+    String idList = settings.getString("idList", kDefault);
+    if (idList.equals(kDefault))  return new ArrayList<OpponentInfo>();
     
     ArrayList<OpponentInfo> known = new ArrayList<OpponentInfo>();
-    String idList = settings.getString("idList", "");
-    
     String[] ids = idList.split(" ");
     
     for (String id : ids) {
-      String buffer = settings.getString(id, "");
-      String[] tokens = buffer.split(" ");
-      String[] highscores = tokens[1].split(" ");
-      int[] highscoreArray = new int[highscores.length];
-      for(int i = 0; i < highscores.length; i++)
-        highscoreArray[i] = Integer.parseInt(settings.getString(highscores[i], ""));
-      known.add(new OpponentInfo(Byte.parseByte(tokens[0]), Integer.parseInt(id), highscoreArray));
+      if (id.length() == 0)  continue;
+      known.add(FetchSingleOpponent(settings, id));
     }
     
     return known;
+  }
+  
+  private static OpponentInfo FetchSingleOpponent(SharedPreferences set, String id) {
+    OpponentInfo opp = new OpponentInfo();
+    
+    String buffer = set.getString("opp" + id, kDefault);
+    if (buffer.equals(kDefault))  return opp;
+
+    String[] tokens = buffer.split(":");
+    String[] highscores = tokens[1].split("-");
+    
+    int[] highscoreArray = new int[5];
+    for(int i = 0; i < highscores.length; i++)
+      highscoreArray[i] = Integer.parseInt(highscores[i]);
+    
+    opp.Id = Integer.parseInt(id);
+    opp.Defeated = Byte.parseByte(tokens[0]);
+    opp.Highscores = highscoreArray;
+    return opp;
   }
   
   public void SetKnownOpponents(ArrayList<OpponentInfo> opponents) {

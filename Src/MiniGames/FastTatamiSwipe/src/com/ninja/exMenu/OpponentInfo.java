@@ -4,10 +4,11 @@ import android.content.SharedPreferences;
 import android.os.Parcel;
 
 public class OpponentInfo {
-  OpponentInfo(byte defeated, int id, int[] highscore) {
-     Defeated = defeated;
-     Id = id;
-     Highscores = highscore;
+  OpponentInfo() {
+     Defeated = 0;
+     Id = -1;
+     Highscores = new int[5];
+     Highscores[0] = Highscores[1] = Highscores[2] = Highscores[3] = Highscores[4] = 999999;
   }
   OpponentInfo(Parcel in) {
     Defeated = in.readByte();
@@ -25,11 +26,12 @@ public class OpponentInfo {
   }
   void Save(SharedPreferences.Editor ed) {
     String id = Integer.toString(Id);
-    String desc = (Defeated == 0) ? "0" : "1";
-    desc.concat(" " + id + "high1 " + id + "high2 " + id + "high3 " + id + "high4 " + id + "high5");
-    ed.putString("id", desc);
+    String desc = (Defeated == 0) ? "0:" : "1:";
     
-    for (int i = 0; i < 5; i++)
-      ed.putInt(id + "high" + Integer.toString(i), Highscores[i]);
+    for (int i = 0; i < 5; i++) {
+      if (i == 4)  desc += Integer.toString(Highscores[i]);
+      else desc += Integer.toString(Highscores[i]) + "-";
+    }
+    ed.putString("opp" + id, desc);
   }
 }
