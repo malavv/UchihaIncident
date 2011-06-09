@@ -21,15 +21,14 @@ public class Collidable {
     
     public static boolean collided(Collidable a, Collidable b) {
     	int collideDistance = a.getRayon() + b.getRayon();
+    	int collideDistance2 = collideDistance*collideDistance - 30;
     	
     	int distX = a.getX() - b.getX();
     	int distY = a.getY() - b.getY();
     	
-    	int normaliseur = (int) Math.pow(distX*distX + distY*distY, 1/2);
+    	int dist2 = (int) distX*distX + distY*distY;
     	
-    	int distAbs = (int) Math.abs(distX / normaliseur) + Math.abs(distY / normaliseur);
-    	
-    	if(distAbs <= collideDistance)
+    	if(dist2 <= collideDistance2)
     		return true;
     	else 
     		return false;

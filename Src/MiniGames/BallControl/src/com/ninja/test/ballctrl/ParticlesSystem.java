@@ -2,6 +2,7 @@ package com.ninja.test.ballctrl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.util.Log;
 
 public class ParticlesSystem {
 	
+	private static final int NB_SHURIKEN = 5;
 	// nombre d'éléments du mur dans la largeur (x) et dans la hauteur (y)
 	private final int xDiv = 26;
 	private final int yDiv = 13;
@@ -21,10 +23,13 @@ public class ParticlesSystem {
 	// liste des éléments de murs
 	private ArrayList<Collidable> mObstalcesList;
 	
+	// liste des éléments de murs
+	private ArrayList<Collidable> mCoinsList;
+	
 	// Objets qui seront dessinés à l'écran
 	private Drawable SpikesBall;
-	private Drawable BlkSquare;
 	private Drawable ninjaB;
+	private Drawable shuriken;
 	public NinjaBall theOne;
 	
 	// largeur de l'écran
@@ -54,17 +59,22 @@ public class ParticlesSystem {
 	public ParticlesSystem( Context context ) {
 		
 		mObstalcesList = new ArrayList<Collidable>();
+		mCoinsList = new ArrayList<Collidable>();
 		
 		ninjaB = context.getResources().getDrawable(R.drawable.scared_ball);
 		theOne = new NinjaBall(50, 50, 1);
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
-		
-		BlkSquare = context.getResources().getDrawable(R.drawable.blk_square);
+
+		shuriken = context.getResources().getDrawable(R.drawable.w_shuriken);
 	}
 	
 	public Iterator<Collidable> GetObstclesList() {
 		return mObstalcesList.iterator();
+	}
+	
+	public Iterator<Collidable> GetCoinsList() {
+		return mCoinsList.iterator();
 	}
 	
 	public void Draw(Canvas c, RectF bounds) {
@@ -84,16 +94,13 @@ public class ParticlesSystem {
 		}
 	}
 	
-	public void DrawNinja(Canvas c, long delta) {
-
-		// On place un carré noire à la position précédente ou se trouvait le Ninja
-		BlkSquare.setBounds(theOne.getX() - theOne.getRayon(), 
-						 theOne.getY() - theOne.getRayon(), 
-						 theOne.getX() + theOne.getRayon(), 
-						 theOne.getY() + theOne.getRayon() );
+	public void MoveNinja(long delta) {
 		
 		// Puis on calcule le déplacement des objets notemment le Ninja
 		theOne.computePhysics(delta/10);
+	}
+	
+	public void DrawNinja(Canvas c) {
 		
 		ninjaB.setBounds(theOne.getX() - theOne.getRayon(), 
 						 theOne.getY() - theOne.getRayon(), 
@@ -102,6 +109,20 @@ public class ParticlesSystem {
 
 		//BlkSquare.draw(c);
 		ninjaB.draw(c);
+	}
+	
+	public void DrawShurikens(Canvas c) {
+		// On dessine les obstacles
+		Collidable tmp;
+		for(int i = 0; i < mCoinsList.size(); i++){
+			tmp = mCoinsList.get(i);
+			shuriken.setBounds(tmp.getX() - tmp.getRayon(), 
+					 tmp.getY() - tmp.getRayon(), 
+					 tmp.getX() + tmp.getRayon(), 
+					 tmp.getY() + tmp.getRayon() );
+			
+			shuriken.draw(c);
+		}
 	}
 	
 	public void setSurfaceSize(float width, float height) {
@@ -116,6 +137,8 @@ public class ParticlesSystem {
 	
 			// Obstacles list later i'd want it to be loaded form an XML file
 			PlaceObstacles();
+			
+			PlaceShurikens();
 			
 			placed = true;
 		}
@@ -134,6 +157,15 @@ public class ParticlesSystem {
 		offset = tmp/yDiv;
 		
 		Collidable.setOffset(offset);
+	}
+	
+	private void PlaceShurikens() {
+		for(int i = 0; i < NB_SHURIKEN; i++) {
+			int x = 10*i + 5;//(int) (Math.random() % mWidth);
+			int y = 10*i + 5;//(int) (Math.random() % mWidth);
+			
+			mCoinsList.add(new Coin(x, y, 1));
+		}
 	}
 	
 	private void PlaceObstacles() {

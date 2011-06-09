@@ -5,6 +5,7 @@ import java.util.Iterator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
@@ -31,9 +32,18 @@ public class PlayContentThread extends Thread {
 
 	private boolean obstaclesDrawn = false;
 	
+	// nombre de shurikens ramassés durant le jeu
+	private int shurikensCollected = 0;
+
+	private Paint stringBrush;
+	private final static int stringColor = Color.WHITE;
+	
 	public PlayContentThread(SurfaceHolder surface, Context context) {
 	    mSurfaceHolder = surface;
 		mParticlesSystem = new ParticlesSystem( context );
+
+		stringBrush = new Paint();
+	    stringBrush.setColor(stringColor);
 
 	    mCanvasDim = new RectF();  
 	    profiler = new Profiler();
@@ -49,13 +59,23 @@ public class PlayContentThread extends Thread {
 	@Override
 	public void run() {
 		while (mRun) {
-			Canvas c = null;
+	    	profiler.Tick();
+	    	
+	    	long delta = profiler.Delta();
+	    	mParticlesSystem.MoveNinja(delta);
 			computeCollisions();
+			
+			Canvas c = null;
 			try {
 				c = mSurfaceHolder.lockCanvas(null);
 				synchronized (mSurfaceHolder) {
 
+					// reset l'écran
 				    c.drawColor(Color.BLACK);
+				    
+				    // affiche les fps
+					profiler.Draw(c, mCanvasDim);
+					c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
 				    
 					doDraw(c);
 					 
@@ -67,74 +87,100 @@ public class PlayContentThread extends Thread {
 		}
 	}
 	
-	private void computeCollisions() {
-		
+	private void computeCollisionWithBounds() {
 		// On prend la ninjaBall et on la fait collisionner avec le systeme de particules
 		NinjaBall ball = mParticlesSystem.theOne;
-		// l'offset correspond à la taille en x et en y des différents éléments du terrain
-		int offset = mParticlesSystem.getOffset();
-		
 		int rayonN = ball.getRayon();
 		
 		// collision avec le bord de l'écran
 		if(ball.getX()-rayonN < mCanvasDim.left){
+			ball.setLastPosX(ball.getX());
 			ball.setX((int) (mCanvasDim.left + rayonN));
 		} else if(ball.getX()+rayonN > mCanvasDim.right) {
+			ball.setLastPosX(ball.getX());
 			ball.setX((int) (mCanvasDim.right - rayonN));
 		}
 		if(ball.getY()-rayonN < mCanvasDim.top){
+			ball.setLastPosY(ball.getY());
 			ball.setY((int) (mCanvasDim.top + rayonN));
 		} else if(ball.getY()+rayonN > mCanvasDim.bottom) {
+			ball.setLastPosY(ball.getY());
 			ball.setY((int) (mCanvasDim.bottom - rayonN));
 		}
+	}
+	
+	private void findShuriken() {
+		// On prend la ninjaBall et on la fait collisionner avec le systeme de particules
+		NinjaBall ball = mParticlesSystem.theOne;
 		
-		// boucle qui gère les collisions entre les obstacles et le Ninja
-		for(Iterator<Collidable> i = mParticlesSystem.GetObstclesList(); i.hasNext();) {
-			Collidable it = i.next();
+		for(Iterator<Collidable> i = mParticlesSystem.GetCoinsList(); i.hasNext();) {
+			Coin it = (Coin) i.next();
 			
-			// S'il y a collision entre les 2 objets
 			if(Collidable.collided(ball, it)) {
-				
-				// on calcule le produit vectoriel entre le vecteur déplacement de la balle
-				// et le vecteur de collision entre les deux éléments
-				Point translateVect = new Point(ball.getLastPosX()-ball.getX(), ball.getLastPosY()-ball.getY());
-				Point collideVect = new Point(it.getX()-ball.getX(), it.getY()-ball.getY());
-				
-				// produit vectoriel entr eles 2 vecteurs (règle de la main droite)
-				int prodVect = translateVect.x * collideVect.y - translateVect.y * collideVect.x;
-				
-				int newX;
-				int newY;
-				
-				// si le centre de l'obstacle est a gauche du déplacement
-				if(prodVect > 0) {
-					newX = ball.getX() + translateVect.y;
-					newY = ball.getY() - translateVect.x;
-				} 
-				// si le centre de l'obstacle est à droite du déplacement
-				else if (prodVect < 0) {
-					newX = ball.getX() - translateVect.y;
-					newY = ball.getY() + translateVect.x;
-				} 
-				// si les 3 points sont allignés (prodVect == 0)
-				else {
-					newX = ball.getX() - translateVect.x;
-					newY = ball.getY() - translateVect.y;
-				}
-				
-				
-				// on gèrera la perte (ou gain) d'énerdie plus tard...
-				newX *= ball.getElasticity()*it.getElasticity();
-				newY *= ball.getElasticity()*it.getElasticity();
-				
-				ball.updatePosition(newX, newY);
-				
-				// si on a trouvé une collision, on ne regardera pas les autres murs
-				return;
+				shurikensCollected++;
+				it.replace((int)mCanvasDim.right, (int)mCanvasDim.bottom);
 			}
-			
-			
 		}
+	}
+	
+	private void computeCollisions() {
+		
+		// On prend la ninjaBall et on la fait collisionner avec le systeme de particules
+		NinjaBall ball = mParticlesSystem.theOne;
+		
+		final int NB_MAX_ITERATIONS = 10;
+		
+		boolean more = true;
+		
+		for(int count = 0; count < NB_MAX_ITERATIONS && more; ++count) {
+			more = false;
+			// boucle qui gère les collisions entre les obstacles et le Ninja
+			for(Iterator<Collidable> i = mParticlesSystem.GetObstclesList(); i.hasNext();) {
+				Collidable it = i.next();
+				
+				// S'il y a collision entre les 2 objets
+				if(Collidable.collided(ball, it)) {
+					
+					// on calcule le produit vectoriel entre le vecteur déplacement de la balle
+					// et le vecteur de collision entre les deux éléments
+					Point translateVect = new Point(ball.getLastPosX()-ball.getX(), ball.getLastPosY()-ball.getY());
+					Point collideVect = new Point(it.getX()-ball.getX(), it.getY()-ball.getY());
+					
+					// produit vectoriel entre les 2 vecteurs (règle de la main droite)
+					int prodVect = translateVect.x * collideVect.y - translateVect.y * collideVect.x;
+					
+					int newX;
+					int newY;
+					
+					// si le centre de l'obstacle est a gauche du déplacement
+					if(prodVect > 0) {
+						newX = ball.getX() + translateVect.y;
+						newY = ball.getY() - translateVect.x;
+					} 
+					// si le centre de l'obstacle est à droite du déplacement
+					else if (prodVect < 0) {
+						newX = ball.getX() - translateVect.y;
+						newY = ball.getY() + translateVect.x;
+					} 
+					// si les 3 points sont allignés (prodVect == 0)
+					else {
+						newX = ball.getX() + translateVect.x;
+						newY = ball.getY() + translateVect.y;
+					}
+					
+					
+					// on gèrera la perte (ou gain) d'énerdie plus tard...
+					newX *= ball.getElasticity()*it.getElasticity();
+					newY *= ball.getElasticity()*it.getElasticity();
+					
+					ball.updatePosition(newX, newY);
+					
+					more = true;
+				}
+			}
+			computeCollisionWithBounds();
+		}
+		findShuriken();
 	}
 	
 	public void Tick() {
@@ -142,8 +188,6 @@ public class PlayContentThread extends Thread {
 	}
 	
     public void doDraw(Canvas c) {
-    	profiler.Tick();
-    	long delta = profiler.Delta();
     	
 		Log.d("ContentThread::doDraw", "fonction qui dessine le canevas");
     	
@@ -151,9 +195,11 @@ public class PlayContentThread extends Thread {
 	    	mParticlesSystem.Draw(c, mCanvasDim);
 	    	obstaclesDrawn = true;
     	//}
+	    
+	    mParticlesSystem.DrawShurikens(c);
 
 		// ensuite on dessinera la ninja ball
-    	mParticlesSystem.DrawNinja(c, delta);
+    	mParticlesSystem.DrawNinja(c);
   	}
 
 	public void setRunning(boolean running) {
