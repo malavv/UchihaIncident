@@ -52,6 +52,7 @@ public class Difficulty extends ListActivity {
    @Override
    public void onResume() { 
      super.onResume();
+     SoundManager.PlayBGMusic();
      ArrayList<OpponentInfo> opponents = GameContext.FetchKnownOpponents(this);
      infos.SetKnownOpponents(opponents);
 
@@ -59,6 +60,13 @@ public class Difficulty extends ListActivity {
      setListAdapter(new SimpleAdapter(getApplicationContext(), mOpponents,
          R.layout.opponents, IdTagXml, associatedIdLayout));
    }
+   
+   @Override
+   public void onPause() {
+     super.onPause();
+     SoundManager.PauseBGMusic();
+   }
+   
    
    @Override
    protected void onListItemClick (ListView l, View v, int position, long id) {

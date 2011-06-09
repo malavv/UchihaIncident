@@ -1,7 +1,5 @@
 package com.ninja.exMenu;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -17,7 +15,7 @@ import android.view.View.OnClickListener;
  * modifications sont à effectuer sur le layout directement.
  */
 public class MenuPage extends Activity {
-	
+  
 	/**
 	 * Point de la création dans le cycle de vie, première chance que
 	 * l'on as d'initialiser des choses dans l'application.
@@ -28,6 +26,7 @@ public class MenuPage extends Activity {
 	 */
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    SoundManager.InitBG(getApplicationContext(), R.raw.black_and_yellow_sea);
     /* Il faut toujours, lorsque l'on override, caller l'instance de base. */
   	super.onCreate(savedInstanceState);
     
@@ -55,6 +54,24 @@ public class MenuPage extends Activity {
     
     BindIntentToView(R.id.btnSolo, soloMode);
     BindIntentToView(R.id.btnDual, dualMode);
+  }
+  
+  @Override
+  public void onResume() {
+    super.onResume();
+    SoundManager.PlayBGMusic();
+  }
+  
+  @Override
+  public void onPause() {
+    super.onPause();
+    SoundManager.PauseBGMusic();
+  }
+  
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    SoundManager.ReleaseBG();
   }
   
   private void BindIntentToView(final int buttonID, final Intent intent) {

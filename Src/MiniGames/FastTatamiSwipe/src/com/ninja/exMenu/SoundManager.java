@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 public class SoundManager {
@@ -11,6 +12,24 @@ public class SoundManager {
 	private HashMap<Integer, Integer> mSoundPoolMap;
 	private AudioManager mAudioManager;
 	private Context mContext;
+	private static MediaPlayer mPlayer_;
+	
+	public static void InitBG(Context ctx, int resId) {
+	   if (mPlayer_ == null)
+	      mPlayer_ = MediaPlayer.create(ctx, resId);
+	   mPlayer_.setLooping(true);
+	}
+	
+	public static void PlayBGMusic() {
+	  mPlayer_.start();
+	}
+	public static void PauseBGMusic() {
+	  if (mPlayer_.isPlaying())  mPlayer_.pause();
+	}
+	public static void ReleaseBG() {
+	  mPlayer_.seekTo(0);
+	}
+	
 	public void Init(Context c) {
 		mContext = c;
 		mSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
