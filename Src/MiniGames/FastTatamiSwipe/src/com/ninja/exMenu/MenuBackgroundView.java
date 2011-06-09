@@ -13,6 +13,7 @@ public class MenuBackgroundView extends LinearLayout {
   private Paint arcPaint;
   private long count;
   private Drawable mask;
+  private Profiler prof_;
   
   public MenuBackgroundView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -23,11 +24,14 @@ public class MenuBackgroundView extends LinearLayout {
     count = 0;
     mask = context.getResources().getDrawable(R.drawable.menu_filter_5);
     mask.setBounds(0, 0, getWidth(), getHeight());
+    prof_ = new Profiler();
+    prof_.SetCapAt(30);
   }
   
   @Override 
   public void onDraw(Canvas canvas) {
     canvas.drawColor(Color.BLACK);
+    prof_.Tick();
     
     if (count > 18)  count = -18;
     

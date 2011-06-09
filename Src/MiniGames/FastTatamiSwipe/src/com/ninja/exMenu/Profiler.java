@@ -16,12 +16,15 @@ public class Profiler {
   private long tickDiff;
   /** La brosse utilisé pour imprimer le fps. */
   private Paint fpsBrush;
+  
+  private long capMs;
   /** La couleur utilisé pour imprimer le fps. */
   private final static int fpsColor = Color.WHITE;
   
   public Profiler() {
     fpsBrush = new Paint();
     fpsBrush.setColor(fpsColor);
+    capMs = -1;
   }
   
   /**
@@ -41,10 +44,19 @@ public class Profiler {
   /** Retourne le temps en milisecondes avec le dernier draw. */
   public long Delta() { return tickDiff; }
   
+  public void SetCapAt(long fps) {
+    capMs = 1000 / fps;
+  }
+  
   /** Doit être appeler à chaque draw pour calculer les informations. */
   public void Tick() {
     long time = System.currentTimeMillis();
     tickDiff = time - lastTick;
     lastTick = time;
+    if (capMs != -1) {
+      if (capMs > tickDiff) {
+        try {  Thread.sleep(capMs - tickDiff); } catch (Exception e) {}
+      }
+    }
   }
 }
