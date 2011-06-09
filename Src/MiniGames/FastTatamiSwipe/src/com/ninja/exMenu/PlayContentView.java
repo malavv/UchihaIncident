@@ -1,9 +1,7 @@
 package com.ninja.exMenu;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -19,20 +17,22 @@ import android.widget.TextView;
  * donne une facon facile de s'occuper de la gestion des événements et de
  * pouvoir dessiner.
  */
-public class PlayContentView extends SurfaceView implements
-    SurfaceHolder.Callback {
+public class PlayContentView extends SurfaceView 
+                             implements SurfaceHolder.Callback {
+  
+  /** Envoyé si le message demande un ajustement de status. */
+  public static final int kStatusUpdate = 0;
+  /** Envoyé si le message demande d'afficher le menu. */
+  public static final int kShowMenu = 1;
   
   /** Le thread sous-jacent à l'application. */
   private PlayContentThread thread;
-
+  /** Le text de status au milieu de l'écran. */
   public TextView mTextStatus;
-  
+  /** Le menu qui apparait à la fin de l'application. */
   public Dialog alert;
-
-  private PlayContent activity;
   
-  public static final int kStatusUpdate = 0;
-  public static final int kShowMenu = 1;
+  private PlayContent activity;
   
   public PlayContentView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -60,6 +60,8 @@ public class PlayContentView extends SurfaceView implements
   }
   
   private void ShowEndGameMenu(boolean hasWon, int time) {
+    PlayContent.gContext.SaveInfos(activity);
+    
     String msg;
     Opponent op = PlayContent.GetCurrentOpponent();
     if (hasWon) {

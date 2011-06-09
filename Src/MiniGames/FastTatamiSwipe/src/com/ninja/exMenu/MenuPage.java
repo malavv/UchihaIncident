@@ -1,5 +1,7 @@
 package com.ninja.exMenu;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -50,7 +52,6 @@ public class MenuPage extends Activity {
     
     soloMode.putExtra("com.ninja.ExMenu.GameContext", cSolo);
     dualMode.putExtra("com.ninja.ExMenu.GameContext", cDual);
-    
     
     BindIntentToView(R.id.btnSolo, soloMode);
     BindIntentToView(R.id.btnDual, dualMode);

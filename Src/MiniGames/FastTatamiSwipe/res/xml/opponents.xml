@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Voici la liste des adversaires qu'il sera possible d'affronter dans le jeu,
+     les valeurs dans unlocked signifie qu'un ou plusieurs adversaires
+     possédant ces ids doivent être battu avant de pouvoir affronter cette
+     adversaire. -1 = Disponnible au départ. -->
+
 <Opponents>
    <Opponent id="0" name="Pickachu" dots="2" speed="1700" nImgId="1">
 	  <Unlocked>
-	     <ID>0</ID>
+	     <ID>-1</ID>
 	  </Unlocked>
    </Opponent>
    <Opponent id="1" name="Raichu" dots="4" speed="1200" nImgId="2">
      <Unlocked>
-        <ID>1</ID>
+        <ID>-1</ID>
+     </Unlocked>
+   </Opponent>
+   <Opponent id="2" name="Bulbosaure" dots="3" speed="1900" nImgId="1">
+     <Unlocked>
+        <ID>0</ID>
      </Unlocked>
    </Opponent>
 </Opponents>

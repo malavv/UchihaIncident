@@ -3,7 +3,6 @@ package com.ninja.exMenu;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,9 +39,6 @@ public class PlayContentThread extends Thread {
 	 /** Les dimensions du canvas de l'écran. */
   private RectF mCanvasDim;
 	
-	/** Renseignement sur le context dans lequel l'application roule. */
-	private Context mContext;
-	
 	/** Petit profiler rapide pour garder compte du FPS et obtenir le temps entre les frames. */
   private Profiler profiler;
   
@@ -51,12 +47,6 @@ public class PlayContentThread extends Thread {
   
   /** Le mode dans lequel l'application se trouve en se moment. */
   private int mMode = kInitial;
-  
-  /**
-   * Le mode dans lequel nous nous trouvions avant le dernier changement
-   * d'état, il sert principalement à revenir d'un resume.
-   */
-  private int mLastMode = kInitial;
   
   
   /**
@@ -109,7 +99,6 @@ public class PlayContentThread extends Thread {
    */
   public PlayContentThread(SurfaceHolder surface, Context context, Handler hMsg, Opponent opponent) {
     mSurfaceHolder = surface;
-    mContext = context;
     msgHandler = hMsg;
     mOpponent = opponent;
   	
@@ -274,6 +263,7 @@ public class PlayContentThread extends Thread {
       
       if (nOfGame > 0) {
         nOfGame = 0;
+        PlayContent.gContext.EndGame(hasWon, moy);
         ShowMenu(hasWon, moy);
       }
     }
