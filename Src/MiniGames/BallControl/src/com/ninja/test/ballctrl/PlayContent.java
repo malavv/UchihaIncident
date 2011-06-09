@@ -142,7 +142,7 @@ public class PlayContent extends Activity implements SensorEventListener{
             return;
         
 		mContentView.mContentThread.mParticlesSystem.theOne.onAccelerometerEvent(event, mDisplay);
-		mContentView.mContentThread.Tick();
+		//mContentView.mContentThread.Tick();
 		
 	}
 	

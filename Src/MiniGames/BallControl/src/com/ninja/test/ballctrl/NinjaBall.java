@@ -51,7 +51,7 @@ public class NinjaBall extends Movable{
                 break;
         }
         // on normalise la vitesse en x,y
-        float norme = (float) Math.pow( Math.pow(mSensorX, 2) + Math.pow(mSensorY, 2), 1/2 );
+        float norme = 5;//(float) Math.pow( Math.pow(mSensorX, 2) + Math.pow(mSensorY, 2), 1/2 );
         
         mCoefX = - mSensorX/norme;
         mCoefY = - mSensorY/norme;
