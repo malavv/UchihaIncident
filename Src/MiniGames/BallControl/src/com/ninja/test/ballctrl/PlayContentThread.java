@@ -16,9 +16,6 @@ public class PlayContentThread extends Thread {
 	/** La suface de la vue de l'écran. */
 	private SurfaceHolder mSurfaceHolder;
 
-	/** Renseignement sur le context dans lequel l'application roule. */
-	private Context mContext;
-
 	/** Petit profiler rapide pour garder compte du FPS et obtenir le temps entre les frames. */
 	private Profiler profiler;
 
@@ -53,8 +50,14 @@ public class PlayContentThread extends Thread {
 		mRun = false;
 	}
 
-	public void pause() {}
-	public void unpause() {}
+	public void pause() {
+		mRun = false;
+	}
+	
+	public void unpause() {
+		mRun = true;
+    	profiler.Tick();
+	}
 	
 	@Override
 	public void run() {
@@ -189,8 +192,6 @@ public class PlayContentThread extends Thread {
 	
     public void doDraw(Canvas c) {
     	
-		Log.d("ContentThread::doDraw", "fonction qui dessine le canevas");
-    	
     	//if(!obstaclesDrawn) {
 	    	mParticlesSystem.Draw(c, mCanvasDim);
 	    	obstaclesDrawn = true;
@@ -207,7 +208,6 @@ public class PlayContentThread extends Thread {
 	}
 	
 	public void setSurfaceSize(int width, int height) {
-		Log.d("ContentThread::setSurfaceSize", "on get la taillle du canevas");
 		synchronized (mSurfaceHolder) {
 		  mCanvasDim.left = 0;
 		  mCanvasDim.top = 0;

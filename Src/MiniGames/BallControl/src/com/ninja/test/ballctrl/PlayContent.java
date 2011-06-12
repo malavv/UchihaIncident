@@ -35,8 +35,6 @@ public class PlayContent extends Activity implements SensorEventListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-  	
-		Log.d("PlayContent::onCreate", "on cree l'activite");
 
         // Get an instance of the SensorManager
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

@@ -85,7 +85,6 @@ public class PlayContentView extends SurfaceView
     
     Button btnRetry = (Button)alert.findViewById(R.id.btn_retry);
     btnRetry.setOnClickListener(new OnClickListener() {
-      @Override
       public void onClick(View v) {
         content.Retry();
         alert.cancel();
@@ -94,7 +93,6 @@ public class PlayContentView extends SurfaceView
     
     Button btnMenu = (Button)alert.findViewById(R.id.btn_menu);
     btnMenu.setOnClickListener(new OnClickListener() {
-      @Override
       public void onClick(View v) {
         content.BackToMenu();
         alert.cancel();

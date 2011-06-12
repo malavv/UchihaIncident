@@ -32,13 +32,6 @@ public class Collidable {
     		return true;
     	else 
     		return false;
-    	
-    	// distance entre le centre du mur et la droite de déplacement de l'objet dois être
-    	// inférieur à a.rayon + b.rayon
-    	//int collideDistance = a.getRayon() + b.getRayon();
-    	
-    	
-    	//return true;
     }
     
     /*

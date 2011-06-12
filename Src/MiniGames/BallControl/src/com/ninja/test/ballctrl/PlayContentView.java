@@ -13,8 +13,6 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
    public PlayContentView(Context context, AttributeSet attrs) {
       super(context, attrs);
   	
-		Log.d("ContentView::constructor", "on construit l'objet view");
-       
          SurfaceHolder h = getHolder();
          h.addCallback(this);
          mContentThread = new PlayContentThread(h, context);
