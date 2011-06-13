@@ -34,15 +34,12 @@ public class PlayContent extends Activity {
   /** Niveau de difficulté du jeux */
   private static int kDifficulty = 1;
   
-  public static GameContext gContext;
-  
 	
   /**
    * Phase du cycle de vie correspondant à l'initialisation.
    */
   @Override
-  public void onCreate(Bundle savedInstanceState) {    
-    gContext = getIntent().getParcelableExtra("com.ninja.ExMenu.GameContext");
+  public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
     /* Full screen */
@@ -50,7 +47,7 @@ public class PlayContent extends Activity {
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);    
     
    	setContentView(R.layout.content);
-
+    
     // On va chercher la référence des trois éléments.
     mContentView = (PlayContentView) findViewById(R.id.ContentView);
     mContentThread = mContentView.getThread();
@@ -58,8 +55,6 @@ public class PlayContent extends Activity {
     
     mContentView.mTextStatus = (TextView)findViewById(R.id.Status);    
   }
-  
-  public static Opponent GetCurrentOpponent() { return gContext.GetOpponent(); }
     
   /**
    * Création du menu et des options qui s'y retrouve.

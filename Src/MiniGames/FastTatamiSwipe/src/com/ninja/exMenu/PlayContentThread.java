@@ -263,7 +263,7 @@ public class PlayContentThread extends Thread {
       
       if (nOfGame > 0) {
         nOfGame = 0;
-        PlayContent.gContext.EndGame(hasWon, moy);
+        GameContext.SetEndGameInfo(hasWon, moy);
         ShowMenu(hasWon, moy);
       }
     }
