@@ -2,8 +2,6 @@ package com.ninja.exMenu;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -21,20 +19,7 @@ public class PlayContent extends Activity {
 
   /** La vue s'occupant de tout le input/output. */
   private PlayContentView mContentView;
-    
-  /** L'identifiant du boutton option dans le menu en jeu. */
-  private static final int kOptionMenu = 1;
-    
-  /** L'identifiant du boutton option dans le menu en jeu. */
-  private static final int kPauseMenu = 2;
-  
-  /** L'identifiant du boutton option dans le menu en jeu. */
-  private static final int kResumeMenu = 3;
-  
-  /** Niveau de difficulté du jeux */
-  private static int kDifficulty = 1;
-  
-	
+  	
   /**
    * Phase du cycle de vie correspondant à l'initialisation.
    */
@@ -56,37 +41,6 @@ public class PlayContent extends Activity {
     mContentView.mTextStatus = (TextView)findViewById(R.id.Status);    
   }
     
-  /**
-   * Création du menu et des options qui s'y retrouve.
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-        
-    menu.add(0, kOptionMenu, 0, R.string.menu_options);
-    menu.add(0, kPauseMenu, 0, R.string.menu_pause);
-    menu.add(0, kResumeMenu, 0, R.string.menu_resume);
-        
-    return true;
-  }
-    
-  /**
-   * Actions à prendre dépendament de l'option choisit dans le menu.
-   */
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-  	  case 1:  return true;
-  	  case 2:
-        Pause();
-  		return true;
-  	  case 3:
-  		Resume();
-  		return true;
-  	}
-    return false;
-  }
-    
   public void BackToMenu() {
     finish();
   }
@@ -94,6 +48,7 @@ public class PlayContent extends Activity {
   public void Retry() {
     mContentThread.FreshStart();
   }
+  
   /**
    * Phase du cycle de vie ou nous ne sommes probablement plus visible et
    * prêt à être mis hors de mémoire.
@@ -120,27 +75,9 @@ public class PlayContent extends Activity {
   /** Méthode privé permettant de géré l'événement resumé. */
   private void Resume() {  mContentThread.unpause();  }
     
-  /**
-   * Méthode que nous donne Android pour nous permettre de sauvegarder notre
-   * état en mémoire juste avant que notre application se fasse fermer pour
-   * libéré de la mémoire.
-   */
-  @Override
-  protected void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-  }
-    
   @Override
   public void onStop() {
     super.onStop();
     mContentThread.Panic();
   }
-
-	public static void setkDifficulty(int kDifficulty) {
-		PlayContent.kDifficulty = kDifficulty;
-	}
-	
-	public static int getkDifficulty() {
-		return kDifficulty;
-	}
 }

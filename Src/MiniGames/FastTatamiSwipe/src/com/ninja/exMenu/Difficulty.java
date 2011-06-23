@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class Difficulty extends ListActivity {
 
-   private static final int[] kImgId = new int[] { R.drawable.dif_n_1,
+   private static final int[] kImgId = new int[] { 0, R.drawable.dif_n_1,
      R.drawable.dif_n_2, R.drawable.dif_n_3, R.drawable.dif_n_4,
      R.drawable.dif_n_5, R.drawable.dif_n_6};
   

@@ -55,4 +55,9 @@
         <ID>2</ID>
      </Unlocked>
    </Opponent>
+   <Opponent id="9" name="Mong Tnoka" dots="14" speed="2300" nImgId="6">
+     <Unlocked>
+        <ID>2</ID>
+     </Unlocked>
+   </Opponent>
 </Opponents>
