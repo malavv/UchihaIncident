@@ -44,6 +44,8 @@ public class ParticlesSystem {
 	// Variable temporaire pour les objets collisionables
 	private Collidable tmp;
 	
+	private MapsManager mapMan;
+	
 	/*
 	 * Screen looks like (on a Nexus): 
 	 * 
@@ -126,23 +128,36 @@ public class ParticlesSystem {
 		}
 	}
 	
+	public void placeItems() {
+		if(!placed) {
+			Map map = MapsManager.testMap1();
+			mObstalcesList = map.mObstaclesList;
+			mCoinsList = map.mItemsList;
+			placed = true;
+		}
+	}
+	
 	public void setSurfaceSize(float width, float height) {
 		
 		// on set la taille de l'écran et on places les éléments statiques
 		// mais on s'assure de ne l'effectuer qu'une seule fois
-		if(!placed) {
+		//if(!placed) {
 			mWidth = (int)width;
 			mHeight = (int)height;
 			
 			scaler();
 	
+			//MapsManager.LoadMaps();
+//			Map map = MapsManager.testMap1();
+//			mObstalcesList = map.mObstaclesList;
+//			mCoinsList = map.mItemsList;
 			// Obstacles list later i'd want it to be loaded form an XML file
-			PlaceObstacles();
+//			PlaceObstacles();
+//			
+//			PlaceShurikens();
 			
-			PlaceShurikens();
-			
-			placed = true;
-		}
+			//placed = true;
+		//}
 	}
 	
 	private void scaler() {

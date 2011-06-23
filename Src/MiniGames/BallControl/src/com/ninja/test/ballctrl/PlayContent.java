@@ -35,6 +35,9 @@ public class PlayContent extends Activity implements SensorEventListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	    
+		// On loade toutes les cartes du jeux
+	    //MapsManager.LoadMaps();
 
         // Get an instance of the SensorManager
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

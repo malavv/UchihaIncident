@@ -67,6 +67,7 @@ public class PlayContentThread extends Thread {
 	public PlayContentThread(SurfaceHolder surface, Context context) {
 	    mSurfaceHolder = surface;
 		mParticlesSystem = new ParticlesSystem( context );
+		mParticlesSystem.placeItems();
 
 		stringBrush = new Paint();
 	    stringBrush.setColor(stringColor);
@@ -231,8 +232,8 @@ public class PlayContentThread extends Thread {
 		  mCanvasDim.top = 0;
 		  mCanvasDim.right = width;
 		  mCanvasDim.bottom = height;
-		  mParticlesSystem.setSurfaceSize(width, height);
 		}		
+		  mParticlesSystem.setSurfaceSize(width, height);
 	}
 	
 }
