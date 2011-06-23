@@ -41,6 +41,9 @@ public class ParticlesSystem {
 	// permet de savoir si les éléments du mur on déjà été dessinés ou pas
 	private boolean placed;
 	
+	// Variable temporaire pour les objets collisionables
+	private Collidable tmp;
+	
 	/*
 	 * Screen looks like (on a Nexus): 
 	 * 
@@ -82,7 +85,6 @@ public class ParticlesSystem {
 		Log.d("ParticlesSystem::Draw", "on dessine les particules sur le canvas");
 		
 		// On dessine les obstacles
-		Collidable tmp;
 		for(int i = 0; i < mObstalcesList.size(); i++){
 			tmp = mObstalcesList.get(i);
 			SpikesBall.setBounds(tmp.getX() - tmp.getRayon(), 
@@ -113,7 +115,6 @@ public class ParticlesSystem {
 	
 	public void DrawShurikens(Canvas c) {
 		// On dessine les obstacles
-		Collidable tmp;
 		for(int i = 0; i < mCoinsList.size(); i++){
 			tmp = mCoinsList.get(i);
 			shuriken.setBounds(tmp.getX() - tmp.getRayon(), 
@@ -172,8 +173,8 @@ public class ParticlesSystem {
 		
 		// Position maximale ou on va placer un élément collisionable 
 		// d'une dimention offset*offset
-		final int maxWidth = offset*(xDiv-1);
-		final int maxHeight = offset*(yDiv-1);
+//		final int maxWidth = offset*(xDiv-1);
+//		final int maxHeight = offset*(yDiv-1);
 		
 		// place des murs sur les cotés
 		/*for(int i = 0; i < yDiv; i++) {

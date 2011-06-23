@@ -4,6 +4,11 @@ public class Collidable {
     private int mPosX;
     private int mPosY;
     private float mElasticity;
+    private int collideDistance;
+    private int collideDistance2;
+    private int distX;
+    private int distY;
+    private int dist2;
     
     private static int rayon;
     
@@ -19,14 +24,14 @@ public class Collidable {
     	rayon = offset/2;
     }
     
-    public static boolean collided(Collidable a, Collidable b) {
-    	int collideDistance = a.getRayon() + b.getRayon();
-    	int collideDistance2 = collideDistance*collideDistance - 30;
+    public boolean collided( Collidable c) {
+    	collideDistance = this.getRayon() + c.getRayon();
+    	collideDistance2 = collideDistance*collideDistance;
     	
-    	int distX = a.getX() - b.getX();
-    	int distY = a.getY() - b.getY();
+    	distX = this.getX() - c.getX();
+    	distY = this.getY() - c.getY();
     	
-    	int dist2 = (int) distX*distX + distY*distY;
+    	dist2 = (int) distX*distX + distY*distY;
     	
     	if(dist2 <= collideDistance2)
     		return true;

@@ -7,9 +7,13 @@ public class Coin extends Collidable {
 		// TODO Auto-generated constructor stub
 	}
 	
+	// Variables de positions
+	private int x;
+	private int y;
+	
 	public void replace(int Xmax, int Ymax) {
-		int x = (int) (Math.random() *Xmax );
-		int y = (int) (Math.random() *Ymax);
+		x = (int) (Math.random() *Xmax );
+		y = (int) (Math.random() *Ymax);
 		
 		setX(x);
 		setY(y);
