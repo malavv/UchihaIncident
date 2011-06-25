@@ -43,17 +43,12 @@ public class MenuPage extends Activity {
      * générale comme "Une applciation capable de prendre des notes" ce qui laisse
      * à l'utilisateur le choix de choisir l'application de notes qu'il veut.
      */
-    final Intent soloMode = new Intent(this, Difficulty.class);
-    final Intent dualMode = new Intent(this, Difficulty.class);
+    final Intent toDifficultyMenu = new Intent(this, Difficulty.class);
+    GameContext.Init(getApplicationContext());
+    GameContext.Load();
     
-    GameContext cSolo = new GameContext(), cDual = new GameContext();
-    cDual.SetMultiplayer();
-    
-    soloMode.putExtra("com.ninja.ExMenu.GameContext", cSolo);
-    dualMode.putExtra("com.ninja.ExMenu.GameContext", cDual);
-    
-    BindIntentToView(R.id.btnSolo, soloMode);
-    BindIntentToView(R.id.btnDual, dualMode);
+    BindIntentToView(R.id.btnSolo, toDifficultyMenu);
+    BindIntentToView(R.id.btnDual, toDifficultyMenu);
   }
   
   @Override
@@ -79,6 +74,7 @@ public class MenuPage extends Activity {
       public void onClick(View v) {
         try {
           startActivity(intent);
+          GameContext.SetIsSingle(buttonID == R.id.btnSolo);
         } catch(ActivityNotFoundException e) {
           Log.wtf("Activity started with button " + Integer.toString(buttonID), "Activity not found.");
         }

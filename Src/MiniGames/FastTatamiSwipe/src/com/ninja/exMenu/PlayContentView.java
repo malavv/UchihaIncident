@@ -32,8 +32,6 @@ public class PlayContentView extends SurfaceView
   /** Le menu qui apparait à la fin de l'application. */
   public Dialog alert;
   
-  private PlayContent activity;
-  
   public PlayContentView(Context context, AttributeSet attrs) {
     super(context, attrs);
     
@@ -55,15 +53,15 @@ public class PlayContentView extends SurfaceView
             break;
         }
       }
-    }, PlayContent.GetCurrentOpponent());
+    }, GameContext.GetCurrent());
     setFocusable(true);
   }
   
   private void ShowEndGameMenu(boolean hasWon, int time) {
-    PlayContent.gContext.SaveInfos(activity);
+    GameContext.Save();
     
     String msg;
-    Opponent op = PlayContent.GetCurrentOpponent();
+    Opponent op = GameContext.GetCurrent();
     if (hasWon) {
       alert.setTitle(R.string.end_victory);
       msg = getResources().getString(R.string.end_vic_msg);
@@ -79,7 +77,6 @@ public class PlayContentView extends SurfaceView
   }
   
   public void SetActivity(final PlayContent content) {
-    activity = content;
     alert = new Dialog(getContext());
     alert.setContentView(R.layout.end_game_menu);
     

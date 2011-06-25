@@ -6,19 +6,58 @@
      adversaire. -1 = Disponnible au départ. -->
 
 <Opponents>
-   <Opponent id="0" name="Pickachu" dots="2" speed="1700" nImgId="1">
+<!-- Les Ennemis avec lesquels on commence -->
+   <Opponent id="0" name="Zhu Chang" dots="2" speed="1700" nImgId="1">
 	  <Unlocked>
 	     <ID>-1</ID>
 	  </Unlocked>
    </Opponent>
-   <Opponent id="1" name="Raichu" dots="4" speed="1200" nImgId="2">
-     <Unlocked>
-        <ID>-1</ID>
-     </Unlocked>
+   <Opponent id="1" name="Geng Mang" dots="3" speed="1500" nImgId="1">
+	  <Unlocked>
+	     <ID>-1</ID>
+	  </Unlocked>
    </Opponent>
-   <Opponent id="2" name="Bulbosaure" dots="3" speed="1900" nImgId="1">
+   <Opponent id="2" name="Zhi Tao" dots="1" speed="2000" nImgId="1">
+	  <Unlocked>
+	     <ID>-1</ID>
+	  </Unlocked>
+   </Opponent>
+<!-- quand on bat id=0 -->
+   <Opponent id="3" name="Zhu Ben" dots="2" speed="1900" nImgId="2">
      <Unlocked>
         <ID>0</ID>
+     </Unlocked>
+   </Opponent>
+   <Opponent id="4" name="Zhu Ya" dots="2" speed="2100" nImgId="1">
+     <Unlocked>
+        <ID>0</ID>
+     </Unlocked>
+   </Opponent>
+<!-- quand on bat id=1 -->
+   <Opponent id="5" name="Guan Mang" dots="3" speed="1700" nImgId="1">
+     <Unlocked>
+        <ID>1</ID>
+     </Unlocked>
+   </Opponent>
+   <Opponent id="6" name="Chen Mang" dots="3" speed="1500" nImgId="2">
+     <Unlocked>
+        <ID>1</ID>
+     </Unlocked>
+   </Opponent>
+<!-- quand on bat id=2 -->
+   <Opponent id="7" name="Hua Tao" dots="2" speed="2000" nImgId="1">
+     <Unlocked>
+        <ID>2</ID>
+     </Unlocked>
+   </Opponent>
+   <Opponent id="8" name="Qiu Tao" dots="1" speed="2000" nImgId="2">
+     <Unlocked>
+        <ID>2</ID>
+     </Unlocked>
+   </Opponent>
+   <Opponent id="9" name="Mong Tnoka" dots="14" speed="2300" nImgId="6">
+     <Unlocked>
+        <ID>2</ID>
      </Unlocked>
    </Opponent>
 </Opponents>

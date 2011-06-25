@@ -21,7 +21,7 @@ public class PlayGrid {
   /** Maximum de colonnes permises. */
   private static int kMaxCols = 50;
   /** Maximum de points sur la grille permis. */
-  private static int kMaxDots = 10;
+  private static int kMaxDots = 14;
   /** Le rayons des points à dessiner. */
   private static float kPointRadius = 10;
   /** 
@@ -128,8 +128,8 @@ public class PlayGrid {
    */
   public PlayGrid() {
     nDots = 4;
-    nCols = 10;
-    nRows = 10;
+    nCols = 15;
+    nRows = 15;
     
     unclickedItem.setAntiAlias(true);
     unclickedItem.setColor(unclickedColor);

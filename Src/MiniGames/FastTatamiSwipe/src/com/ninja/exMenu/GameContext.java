@@ -1,192 +1,143 @@
 package com.ninja.exMenu;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import android.app.Activity;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.content.res.XmlResourceParser;
+import android.util.Log;
 
-
-public class GameContext implements Parcelable {
-   
-   private static final String kPrefFile = "preferences";
-   private static final String kDefault= "-1";
-   
-   private ArrayList<OpponentInfo> knownOpponent_;
+/**
+ * Cette classe représente le contexte général de l'application. Elle est
+ * maintenu durant tout le jeu.
+ */
+public class GameContext {
+   private static final String kSaveFile = "Tameshigiri";
+   private static final String kDefaultString = "-1";
+   private static final String kIdKey = "idList";
+   private static final String kIdSeparator = " ";
   
-   private Opponent mOpponent;
+   private static ArrayList<Opponent> mOpponents_;
+   private static boolean isSinglePlayer_;
+   private static int mCurrent_;
+   private static SharedPreferences mFile_;
+   private static SharedPreferences.Editor mWriteFile_;
+   private static Context mCtx;
    
-   private byte modeSolo;
-  
-   /**
-    * Méthode static permettant à java de paquetter et dépaquetter mon paquet.
-    * @see {@link Pacelable}
-    */
-   public static final Parcelable.Creator<GameContext> CREATOR
-     = new Parcelable.Creator<GameContext>() {
-     public GameContext createFromParcel(Parcel in) { return new GameContext(in); }
-     public GameContext[] newArray(int size) { return new GameContext[size]; }
-   };
-   
-   /**
-    * Méthode permettant au parcel de savoir s'il y a des trucs spécial la dedans.
-    * Il n'y en as pas pour l'instant.
-    * @see {@link Pacelable}
-    */
-   public int describeContents() { return 0; }
-
-   /**
-    * Méthode static permettant à java de paquetter et dépaquetter mon paquet.
-    * @see {@link Pacelable}
-    */
-   public void writeToParcel(Parcel out, int flags) {
+   public static void Init(Context ctx) {
+     mCtx = ctx;
+     mOpponents_ = new ArrayList<Opponent>();
+     isSinglePlayer_ = true;
+     mCurrent_ = -1;
      
-     // Les stats
-     out.writeInt(knownOpponent_.size());
-     for (OpponentInfo info : knownOpponent_)
-       info.Write(out);
-     
-     // L'opposant
-     if (mOpponent != null) {
-       out.writeByte((byte)0x1);
-       mOpponent.Write(out);
-     } else out.writeByte((byte)0x0);
-     
-     out.writeByte(modeSolo);
+     mFile_ = ctx.getSharedPreferences(kSaveFile, 0);
+     mWriteFile_ = mFile_.edit();
    }
+   
+   public static ArrayList<Opponent> GetOpponents() { return mOpponents_; }
+   public static Opponent Get(int index) { return mOpponents_.get(index); }
+   public static Opponent GetVisible(int index) {
+     final int max = mOpponents_.size();
+     int realIndex = 0;
+     for (int i = 0; i < max; i++) {
+       if (IsVisible(Get(i))) {
+         if (realIndex == index)  return Get(realIndex);
+         else realIndex++;
+       }
+     }
+     return null;
+   }
+   public static boolean IsSinglePlayer() { return isSinglePlayer_; }
+   public static Opponent GetCurrent() { return mOpponents_.get(mCurrent_); }
+   public static boolean IsVisible(Opponent op) {
+     boolean isVisible = true;
+     for (Integer id : op.GetNeedToUnlock())  if (!isDefeated(id))  isVisible = false;
+     return isVisible;
+   }
+   public static int GetNVisible() {
+     int n = 0;
+     for (Opponent op : mOpponents_) if (IsVisible(op)) n++;
+     return n;
+   }
+   private static boolean isDefeated(int id) {
+     for (Opponent op : mOpponents_)  if (op.getID() == id && op.getIsDefeated())  return true;
+     return false;
+   }
+   
+   public static void SetIsSingle(boolean isSingle) { isSinglePlayer_ = isSingle; }
+   public static void SetCurrentPlayer(int index) { mCurrent_ = index; }
 
-   /**
-    * Méthode static permettant à java de paquetter et dépaquetter mon paquet.
-    * @see {@link Pacelable}
-    */
-   private GameContext(Parcel in) {
-     
-      // Les stats
-      knownOpponent_ = new ArrayList<OpponentInfo>();
-      final int arraySize = in.readInt();
-      for (int i = 0; i < arraySize; i++)
-        knownOpponent_.add(new OpponentInfo(in));
-     
-     // Opponent
-     byte opponent = in.readByte();
-     if (opponent == 1)  mOpponent = new Opponent(in);
-     else mOpponent = null;
-     
-     modeSolo = in.readByte();
+   public static void SetEndGameInfo(boolean hasWon, int time) {
+     Opponent op = mOpponents_.get(mCurrent_);
+     if (hasWon)  op.setDefeated(true);
+     op.addNewTime(time);
    }
   
-  public GameContext() {
-    mOpponent = null;
-    knownOpponent_ = new ArrayList<OpponentInfo>();
-    modeSolo = 0;
-  }
-  
-  public void SetOpponent(Opponent opponent) {
-    mOpponent = opponent;
-  }
-  
-  public Opponent GetOpponent() { return mOpponent; }
-  public ArrayList<OpponentInfo> GetKnownOpponents() { return knownOpponent_; }
-  
-  public boolean IsSingle() { return modeSolo == 0; }
-  
-  public void SetMultiplayer() { modeSolo = 1; }
-  
-  public void EndGame(boolean hasWon, long time) {
-    OpponentInfo opponent = null;
-    for (OpponentInfo info : knownOpponent_) {
-      if (info.Id == mOpponent.getID())  opponent = info;
-    }
-    
-    if (opponent == null) {
-      CreateNewKnownOpponent(hasWon, time);
-      return;
-    }
-    
-    boolean needToChange = (opponent.Defeated == 0 && hasWon) || (time < opponent.Highscores[4]);
-    if (!needToChange)  return;
-    
-    opponent.Defeated = (hasWon && opponent.Defeated == 0) ? 1 : opponent.Defeated;
-    
-    ArrayList<Integer> highScores = new ArrayList<Integer>();
-    for (int i : opponent.Highscores)  highScores.add(i);
-    for (int i = 0; i < highScores.size(); i++)
-      if (time < highScores.get(i)) {
-        highScores.add(i, (int)time); break;
-      }
-
-    for (int i = 0; i < 5; i++)
-      opponent.Highscores[i] = highScores.get(i);
-  }
-  
-  private void CreateNewKnownOpponent(boolean hasWon, long time) {
-    OpponentInfo basic = new OpponentInfo();
-    basic.Defeated = (hasWon) ? (byte)1 : (byte)0;
-    basic.Id = mOpponent.getID();
-    basic.Highscores[0] = (int)time;
-    knownOpponent_.add(basic);
-  }
-  
-  private String Implode(ArrayList<String> strs) {
-    String result = new String();
-    for (int i = 0; i < strs.size(); i++)
-      result += (strs.get(i) + " ");
-    return result.trim();
-  }
-  
-  public void SaveInfos(Activity ac) {
-    SharedPreferences settings = ac.getSharedPreferences(kPrefFile, 0);
-    SharedPreferences.Editor editor = settings.edit();
-    
-    ArrayList<String> ids = new ArrayList<String>();
-    for (OpponentInfo info : knownOpponent_)  ids.add(Integer.toString(info.Id));
-    String fina = Implode(ids);
-    editor.putString("idList", fina);
-    
-    for (OpponentInfo info : knownOpponent_)
-      info.Save(editor);
-    
-    editor.commit();
-  }
-  
-  public static ArrayList<OpponentInfo> FetchKnownOpponents(Activity act) {
-    SharedPreferences settings = act.getSharedPreferences(kPrefFile, 0);
+   public static void Save() {
+     mOpponents_.get(mCurrent_).Save(mWriteFile_);
+     mWriteFile_.commit();
+   }
    
-    String idList = settings.getString("idList", kDefault);
-    if (idList.equals(kDefault))  return new ArrayList<OpponentInfo>();
-    
-    ArrayList<OpponentInfo> known = new ArrayList<OpponentInfo>();
-    String[] ids = idList.split(" ");
-    
-    for (String id : ids) {
-      if (id.length() == 0)  continue;
-      known.add(FetchSingleOpponent(settings, id));
-    }
-    
-    return known;
-  }
-  
-  private static OpponentInfo FetchSingleOpponent(SharedPreferences set, String id) {
-    OpponentInfo opp = new OpponentInfo();
-    
-    String buffer = set.getString("opp" + id, kDefault);
-    if (buffer.equals(kDefault))  return opp;
-
-    String[] tokens = buffer.split(":");
-    String[] highscores = tokens[1].split("-");
-    
-    int[] highscoreArray = new int[5];
-    for(int i = 0; i < highscores.length; i++)
-      highscoreArray[i] = Integer.parseInt(highscores[i]);
-    
-    opp.Id = Integer.parseInt(id);
-    opp.Defeated = Byte.parseByte(tokens[0]);
-    opp.Highscores = highscoreArray;
-    return opp;
-  }
-  
-  public void SetKnownOpponents(ArrayList<OpponentInfo> opponents) {
-    knownOpponent_ = opponents;
-  }
+   public static void Load() {
+     LoadFromXml();
+     LoadUserData();
+   }
+   
+   private static void LoadFromXml() {
+     XmlResourceParser parser = mCtx.getResources().getXml(R.xml.opponents);
+     try {
+       parser.next();parser.next();parser.next();
+     } catch (XmlPullParserException e) {
+       Log.wtf("Load from xml", "parser.next trew an exception.");
+       e.printStackTrace();
+     } catch (IOException e) {
+       Log.wtf("Load from xml", "parser.next trew an exception.");
+     }
+     
+     while (LoadOneOpponent(parser));   
+   }
+   
+   private static boolean LoadOneOpponent(XmlResourceParser xml) {
+      if (!xml.getName().equals("Opponent"))  return false;
+      mOpponents_.add(Opponent.Create(xml));
+      return true;
+   }
+   
+   private static String[] getSavedID() {
+     String ids = mFile_.getString(kIdKey, kDefaultString);
+     if (ids.contentEquals(kDefaultString))  return new String[0];
+     
+     String[] tokens = ids.split(kIdSeparator);
+     if (tokens[0].length() == 0)  return new String[0];
+     else return tokens;
+   }
+   
+   private static void LoadUserData() {
+     String[] ids = getSavedID();
+     
+     if (ids.length == 0) {
+       String[] names = new String[mOpponents_.size()];
+       for (int i = 0; i < mOpponents_.size(); i++)
+         names[i] = Integer.toString(mOpponents_.get(i).getID());
+       mWriteFile_.putString(kIdKey, Implode(names));
+       
+       for (Opponent op : mOpponents_)  op.Save(mWriteFile_);
+       mWriteFile_.commit();
+     } else {
+       for (String id : ids) {
+         if (id.length() == 0)  continue;
+         Get(Integer.parseInt(id)).LoadPref(mFile_);
+       }
+     }
+   }
+   
+   public static String Implode(String[] sstr) {
+     String ret = sstr[0];
+     for (int i = 1; i < sstr.length; i++)
+       ret += " " + sstr[i];
+     return ret;
+   }
 }
