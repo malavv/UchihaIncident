@@ -10,6 +10,8 @@ public class Map {
 	public ArrayList<Collidable> mItemsList;
 	
 	Map() {
-		// TODO : implementer
+		mObstaclesList = new ArrayList<Collidable>();
+		mEnnemiesList = new ArrayList<Movable>();
+		mItemsList = new ArrayList<Collidable>();
 	}
 }

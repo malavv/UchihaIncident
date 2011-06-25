@@ -12,11 +12,6 @@ import android.util.Log;
 
 public class ParticlesSystem {
 	
-	private static final int NB_SHURIKEN = 5;
-	// nombre d'éléments du mur dans la largeur (x) et dans la hauteur (y)
-	private final int xDiv = 26;
-	private final int yDiv = 13;
-	
 	// largeur et hauteur des éléments dessinables
 	private int offset;
 	
@@ -43,8 +38,6 @@ public class ParticlesSystem {
 	
 	// Variable temporaire pour les objets collisionables
 	private Collidable tmp;
-	
-	private MapsManager mapMan;
 	
 	/*
 	 * Screen looks like (on a Nexus): 
@@ -130,7 +123,7 @@ public class ParticlesSystem {
 	
 	public void placeItems() {
 		if(!placed) {
-			Map map = MapsManager.testMap1();
+			Map map = MapsManager.GetMapFromID(1);
 			mObstalcesList = map.mObstaclesList;
 			mCoinsList = map.mItemsList;
 			placed = true;
@@ -139,25 +132,11 @@ public class ParticlesSystem {
 	
 	public void setSurfaceSize(float width, float height) {
 		
-		// on set la taille de l'écran et on places les éléments statiques
-		// mais on s'assure de ne l'effectuer qu'une seule fois
-		//if(!placed) {
-			mWidth = (int)width;
-			mHeight = (int)height;
-			
-			scaler();
-	
-			//MapsManager.LoadMaps();
-//			Map map = MapsManager.testMap1();
-//			mObstalcesList = map.mObstaclesList;
-//			mCoinsList = map.mItemsList;
-			// Obstacles list later i'd want it to be loaded form an XML file
-//			PlaceObstacles();
-//			
-//			PlaceShurikens();
-			
-			//placed = true;
-		//}
+		// on set la taille de l'écran
+		mWidth = (int)width;
+		mHeight = (int)height;
+		
+		scaler();
 	}
 	
 	private void scaler() {
@@ -170,46 +149,9 @@ public class ParticlesSystem {
 		
 		// On a ici la taille des Drawable en pixels de manière a en avoir
 		// N en y et 2N en x (N = yDiv)
-		offset = tmp/yDiv;
+		offset = tmp/Global.yDiv;
 		
 		Collidable.setOffset(offset);
-	}
-	
-	private void PlaceShurikens() {
-		for(int i = 0; i < NB_SHURIKEN; i++) {
-			int x = 10*i + 5;//(int) (Math.random() % mWidth);
-			int y = 10*i + 5;//(int) (Math.random() % mWidth);
-			
-			mCoinsList.add(new Coin(x, y, 1));
-		}
-	}
-	
-	private void PlaceObstacles() {
-		
-		// Position maximale ou on va placer un élément collisionable 
-		// d'une dimention offset*offset
-//		final int maxWidth = offset*(xDiv-1);
-//		final int maxHeight = offset*(yDiv-1);
-		
-		// place des murs sur les cotés
-		/*for(int i = 0; i < yDiv; i++) {
-			mObstalcesList.add(new Wall(0, i*offset, 1));
-			mObstalcesList.add(new Wall(maxWidth,i*offset, 1));
-		}
-
-		//place des murs en haut et en bas
-		for(int i = 0; i < xDiv-1; i++) {
-			mObstalcesList.add(new Wall(i*offset, 0, 1));
-			mObstalcesList.add(new Wall(i*offset, maxHeight, 1));
-		}*/
-
-		// 4 points random pour remplire un peu l'écran
-		mObstalcesList.add(new Wall(100, 100, 1));
-		mObstalcesList.add(new Wall(200, 200, 1));
-		mObstalcesList.add(new Wall(200, 100, 1));
-		mObstalcesList.add(new Wall(100, 200, 1));
-			
-		
 	}
 
 	public int getOffset() {

@@ -24,6 +24,10 @@ public class Collidable {
     	rayon = offset/2;
     }
     
+    public static int getOffset() {
+    	return rayon*2;
+    }
+    
     public boolean collided( Collidable c) {
     	collideDistance = this.getRayon() + c.getRayon();
     	collideDistance2 = collideDistance*collideDistance;
