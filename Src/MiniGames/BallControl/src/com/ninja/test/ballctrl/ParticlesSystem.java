@@ -59,8 +59,7 @@ public class ParticlesSystem {
 		mObstalcesList = new ArrayList<Collidable>();
 		mCoinsList = new ArrayList<Collidable>();
 		
-		ninjaB = context.getResources().getDrawable(R.drawable.scared_ball);
-		theOne = new NinjaBall(50, 50, 1);
+		theOne = new NinjaBall(50, 50, 1, context);
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
 
@@ -76,8 +75,6 @@ public class ParticlesSystem {
 	}
 	
 	public void Draw(Canvas c, RectF bounds) {
-	  	
-		Log.d("ParticlesSystem::Draw", "on dessine les particules sur le canvas");
 		
 		// On dessine les obstacles
 		for(int i = 0; i < mObstalcesList.size(); i++){
@@ -99,8 +96,9 @@ public class ParticlesSystem {
 	
 	public void DrawNinja(Canvas c) {
 		
+		ninjaB = theOne.getNinja();
 		ninjaB.setBounds(theOne.getX() - theOne.getRayon(), 
-						 theOne.getY() - theOne.getRayon(), 
+						 theOne.getY() - theOne.getRayon()-5, 
 						 theOne.getX() + theOne.getRayon(), 
 						 theOne.getY() + theOne.getRayon() );
 

@@ -10,6 +10,13 @@ public class Movable extends Collidable{
     private int mLastPosY;
 	
 	private int speed = 10;
+	
+	protected int orientation = 0;
+	
+	protected final int FRONT = 0;
+	protected final int BACK = 1;
+	protected final int LEFT = 2;
+	protected final int RIGHT = 3;
 
 	Movable(int aPosX, int aPosY, float aElasticity) {
 		super(aPosX, aPosY, aElasticity);
@@ -35,6 +42,28 @@ public class Movable extends Collidable{
 		
 		setX((int)x);
 		setY((int)y);
+		
+		// vitesse entre la position précédente et l'actuelle
+		int dx = getX() - mLastPosX;
+		int dy = getY() - mLastPosY;
+		
+		// booléen pour savoir si notre direction est verticale ou horizontale
+		boolean horizontal = (Math.abs(dx) > Math.abs(dy))?true:false;
+		
+		// puis on trouve la direction exacte
+		if(horizontal) {
+			if(dx > 0) {
+				orientation = RIGHT;
+			} else {
+				orientation = LEFT;
+			}
+		} else {
+			if(dy > 0) {
+				orientation = FRONT;
+			} else {
+				orientation = BACK;
+			}
+		}
 	}
 	
 	/**

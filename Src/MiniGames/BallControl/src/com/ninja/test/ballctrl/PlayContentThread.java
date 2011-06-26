@@ -91,9 +91,7 @@ public class PlayContentThread extends Thread {
 	@Override
 	public void run() {
 		Canvas c;
-		Log.d("DEBUG", "aVant placeItems");
 		mParticlesSystem.placeItems();
-		Log.d("DEBUG", "aPres placeItems");
 		
 		while (mRun) {
 	    	profiler.Tick();
@@ -115,9 +113,6 @@ public class PlayContentThread extends Thread {
 				    // affiche les fps
 					profiler.Draw(c, mCanvasDim);
 					c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
-
-					//c.drawText(Integer.toString(MapsManager.getBounds().x), 500, 200, stringBrush);
-					//c.drawText(Integer.toString(MapsManager.getBounds().y), 500, 220, stringBrush);
 					 
 				}
 			}finally {
@@ -233,15 +228,14 @@ public class PlayContentThread extends Thread {
 	}
 	
 	public void setSurfaceSize(int width, int height) {
-		Log.d("DEBUG", "aVant set Surface");
 		synchronized (mSurfaceHolder) {
-		  mCanvasDim.left = 0;
-		  mCanvasDim.top = 0;
-		  mCanvasDim.right = width;
-		  mCanvasDim.bottom = height;
 		  mParticlesSystem.setSurfaceSize(width, height);
 		  MapsManager.setBounds(mParticlesSystem.getOffset());
-		}	Log.d("DEBUG", "aPres set Surface");
+		  mCanvasDim.left = 0;
+		  mCanvasDim.top = 0;
+		  mCanvasDim.right = MapsManager.getBounds().x;
+		  mCanvasDim.bottom = MapsManager.getBounds().y;
+		}
 	}
 	
 }
