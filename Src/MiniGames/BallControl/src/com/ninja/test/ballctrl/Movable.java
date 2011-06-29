@@ -12,11 +12,6 @@ public class Movable extends Collidable{
 	private int speed = 10;
 	
 	protected int orientation = 0;
-	
-	protected final int FRONT = 0;
-	protected final int BACK = 1;
-	protected final int LEFT = 2;
-	protected final int RIGHT = 3;
 
 	Movable(int aPosX, int aPosY, float aElasticity) {
 		super(aPosX, aPosY, aElasticity);
@@ -53,15 +48,15 @@ public class Movable extends Collidable{
 		// puis on trouve la direction exacte
 		if(horizontal) {
 			if(dx > 0) {
-				orientation = RIGHT;
+				orientation = Global.RIGHT;
 			} else {
-				orientation = LEFT;
+				orientation = Global.LEFT;
 			}
 		} else {
 			if(dy > 0) {
-				orientation = FRONT;
+				orientation = Global.FRONT;
 			} else {
-				orientation = BACK;
+				orientation = Global.BACK;
 			}
 		}
 	}

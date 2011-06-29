@@ -64,9 +64,9 @@ public class PlayContentThread extends Thread {
 	// Variable pour la fonction computeCollisionWithBounds
 	private int rayonN;
 	
-	public PlayContentThread(SurfaceHolder surface, Context context) {
+	public PlayContentThread(SurfaceHolder surface) {
 	    mSurfaceHolder = surface;
-		mParticlesSystem = new ParticlesSystem( context );
+		mParticlesSystem = new ParticlesSystem( PlayContentView.sContext );
 
 		stringBrush = new Paint();
 	    stringBrush.setColor(stringColor);
@@ -106,7 +106,7 @@ public class PlayContentThread extends Thread {
 				synchronized (mSurfaceHolder) {
 
 					// reset l'écran
-				    c.drawColor(Color.BLACK);
+					mParticlesSystem.DrawBackground(c);
 				    
 					doDraw(c);
 				    

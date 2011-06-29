@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
- 	android:background="@drawable/wall"
+ 	android:background="@drawable/wallpaper"
     android:orientation="horizontal">
     <LinearLayout 
     	android:layout_weight="1"
@@ -13,21 +13,22 @@
         <FrameLayout 
         	android:layout_height="wrap_content" 
         	android:id="@+id/frameLayout2" 
-			android:layout_weight="4"
+			android:layout_weight="2"
         	android:layout_width="match_parent">
         </FrameLayout>
         <Button 
         	android:layout_weight="1" 
     		android:layout_height="wrap_content" 
         	android:layout_width="match_parent" 
-        	android:text="Button" 
+         android:background="#00000000"
+        	android:text="      " 
         	android:id="@+id/button1">
         </Button>
     </LinearLayout>
     <FrameLayout 
     	android:layout_height="match_parent" 
     	android:id="@+id/frameLayout1" 
-    	android:layout_weight="6"
+    	android:layout_weight="1"
     	android:layout_width="wrap_content">
    	</FrameLayout>
     <LinearLayout 
@@ -38,7 +39,7 @@
     	android:orientation="vertical">
         <FrameLayout 
         	android:id="@+id/frameLayout3" 
-			android:layout_weight="4"
+			android:layout_weight="2"
         	android:layout_height="wrap_content" 
         	android:layout_width="match_parent">
        	</FrameLayout>
@@ -46,7 +47,8 @@
         	android:layout_width="match_parent"  
     		android:layout_height="wrap_content" 
         	android:layout_weight="1" 
-        	android:text="Button" 
+         android:background="#00000000"
+         android:text="      " 
         	android:id="@+id/button2" >
        	</Button>
     </LinearLayout>

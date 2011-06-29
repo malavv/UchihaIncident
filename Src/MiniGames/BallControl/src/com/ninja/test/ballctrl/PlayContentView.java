@@ -10,12 +10,16 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 
    public PlayContentThread mContentThread;
    
+   public static Context sContext;
+   
    public PlayContentView(Context context, AttributeSet attrs) {
       super(context, attrs);
+      
+      sContext = context;
   	
-         SurfaceHolder h = getHolder();
-         h.addCallback(this);
-         mContentThread = new PlayContentThread(h, context);
+      SurfaceHolder h = getHolder();
+      h.addCallback(this);
+      mContentThread = new PlayContentThread(h);
       
       setFocusable(true);
    }

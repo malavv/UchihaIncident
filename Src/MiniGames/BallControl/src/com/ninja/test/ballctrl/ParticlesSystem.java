@@ -25,6 +25,7 @@ public class ParticlesSystem {
 	private Drawable SpikesBall;
 	private Drawable ninjaB;
 	private Drawable shuriken;
+	private Drawable background;
 	public NinjaBall theOne;
 	
 	// largeur de l'écran
@@ -63,7 +64,7 @@ public class ParticlesSystem {
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
 
-		shuriken = context.getResources().getDrawable(R.drawable.w_shuriken);
+		shuriken = context.getResources().getDrawable(R.drawable.b_shuriken);
 	}
 	
 	public Iterator<Collidable> GetObstclesList() {
@@ -119,11 +120,17 @@ public class ParticlesSystem {
 		}
 	}
 	
+	public void DrawBackground(Canvas c) {
+		background.setBounds(0, 0, mWidth, mHeight);
+		background.draw(c);
+	}
+	
 	public void placeItems() {
 		if(!placed) {
 			Map map = MapsManager.GetMapFromID(1);
 			mObstalcesList = map.mObstaclesList;
 			mCoinsList = map.mItemsList;
+			background = map.mBackground;
 			placed = true;
 		}
 	}
