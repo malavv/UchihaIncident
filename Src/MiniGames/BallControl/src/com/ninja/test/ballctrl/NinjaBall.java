@@ -33,13 +33,13 @@ public class NinjaBall extends Movable{
 	
 	public Drawable getNinja() {
 		switch(orientation) {
-		case 0:
+		case Global.FRONT:
 			return front;
-		case 1:
+		case Global.BACK:
 			return back;
-		case 2:
+		case Global.LEFT:
 			return left;
-		default: // 3
+		default: // Global.RIGHT
 			return right;
 		}
 	}
