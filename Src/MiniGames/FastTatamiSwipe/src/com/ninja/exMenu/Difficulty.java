@@ -1,9 +1,11 @@
 package com.ninja.exMenu;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -26,7 +28,6 @@ public class Difficulty extends ListActivity {
    
    private int facebookPrompt_ = -1;
    private int statsPrompt_ = -1;
-   private static final int kStatsID = 0;
   
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class Difficulty extends ListActivity {
      SoundManager.PlayBGMusic();
      setListAdapter(new OpponentAdapter(getApplicationContext()));
      DialogManager.SetNewParent(this, findViewById(R.layout.difficulty));
+     if (!GameContext.ConnecteFB && GameContext.CanAskFB())  DialogManager.Get(facebookPrompt_).show();
    }
    
    @Override
@@ -65,7 +67,6 @@ public class Difficulty extends ListActivity {
    @Override
    protected void onListItemClick (ListView l, View v, int position, long id) {
      GameContext.SetCurrentPlayer((int)id);
-     
      try { startActivity(new Intent(this, PlayContent.class)); }
      catch(ActivityNotFoundException e) {
        Log.wtf("Play content activity from difficulty failed.", "Activity not found.");
@@ -80,14 +81,24 @@ public class Difficulty extends ListActivity {
    private void RegisterStats() {
      Dialog d = new Dialog(this);
      d.setTitle(R.string.diag_stats_title);
-     d.setContentView(R.layout.dialog_stats);
+     d.setContentView(R.layout.dialogs_statistics);
      statsPrompt_ = DialogManager.Push(d);
    }
    
    private void RegisterFB() {
-     Dialog d = new Dialog(this);
-     d.setTitle("Facebook");
-     facebookPrompt_ = DialogManager.Push(d);
+     LayoutInflater inflater = getLayoutInflater();
+     final View fbDialog = inflater.inflate(R.layout.dialogs_facebook,
+       (ViewGroup)findViewById(R.layout.difficulty));
+     AlertDialog.Builder build = new AlertDialog.Builder(this);
+     build.setTitle(R.string.diag_fb_title).setView(fbDialog)
+        .setPositiveButton("NEVER", new DialogInterface.OnClickListener() {
+           @Override public void onClick(DialogInterface dialog, int which) { GameContext.NeverAskFB(); }
+        })
+        .setNegativeButton("SKIP", new DialogInterface.OnClickListener() {
+           @Override public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
+        });
+     
+     facebookPrompt_ = DialogManager.Push(build.create());
    }
    
    private class OpponentAdapter extends BaseAdapter {

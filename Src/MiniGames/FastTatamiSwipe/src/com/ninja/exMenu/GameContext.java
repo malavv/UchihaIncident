@@ -19,19 +19,25 @@ public class GameContext {
    private static final String kDefaultString = "-1";
    private static final String kIdKey = "idList";
    private static final String kIdSeparator = " ";
+   private static final String kFbAsk = "fbAsk";
   
    private static ArrayList<Opponent> mOpponents_;
    private static boolean isSinglePlayer_;
    private static int mCurrent_;
+   private static boolean neverAskFacebook_;
    private static SharedPreferences mFile_;
    private static SharedPreferences.Editor mWriteFile_;
    private static Context mCtx;
+   
+   // TODO<malavv> : Temporaire le temps que facebook sois implémenté.
+   public static boolean ConnecteFB = false;
    
    public static void Init(Context ctx) {
      mCtx = ctx;
      mOpponents_ = new ArrayList<Opponent>();
      isSinglePlayer_ = true;
      mCurrent_ = -1;
+     neverAskFacebook_ = false;
      
      mFile_ = ctx.getSharedPreferences(kSaveFile, 0);
      mWriteFile_ = mFile_.edit();
@@ -50,6 +56,8 @@ public class GameContext {
      }
      return null;
    }
+   public static boolean CanAskFB() { return !neverAskFacebook_; }
+   public static void NeverAskFB() { neverAskFacebook_ = true; }
    public static boolean IsSinglePlayer() { return isSinglePlayer_; }
    public static Opponent GetCurrent() { return mOpponents_.get(mCurrent_); }
    public static boolean IsVisible(Opponent op) {
@@ -77,6 +85,7 @@ public class GameContext {
    }
   
    public static void Save() {
+     mWriteFile_.putString(kFbAsk, (neverAskFacebook_) ? "1" : "0");
      mOpponents_.get(mCurrent_).Save(mWriteFile_);
      mWriteFile_.commit();
    }
@@ -117,6 +126,12 @@ public class GameContext {
    
    private static void LoadUserData() {
      String[] ids = getSavedID();
+     
+     String fb = mFile_.getString(kFbAsk, kDefaultString);
+     if (!fb.contentEquals(kDefaultString))
+       neverAskFacebook_ = (fb.contentEquals("0")) ? false : true;
+     else
+       mWriteFile_.putString(kFbAsk, "0");
      
      if (ids.length == 0) {
        String[] names = new String[mOpponents_.size()];

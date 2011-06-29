@@ -26,4 +26,6 @@
     <string name="end_menu_btn">Menu</string>
     <string name="diag_stats_text">Pour consulter les statistiques liés à chaque ennemi, vous devez pressez une seconde sur l\'ennemi à consulter et ensuite glisser votre doigt vers le bas pour les statistiques locales et vers le haut pour voir votre ranking facebook.</string>
     <string name="diag_stats_title">Statistics</string>
+    <string name="diag_fb_title">Friend Connect</string>
+    <string name="diag_fb_text">Ce jeu à été conçu de manière à s\'intégré avec facebook pour vous permettre de compétitionner avec vos amis.</string>
 </resources>
