@@ -2,13 +2,11 @@ package com.ninja.test.ballctrl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 public class ParticlesSystem {
 	
@@ -71,8 +69,16 @@ public class ParticlesSystem {
 		return mObstalcesList.iterator();
 	}
 	
+	public int GetObstaclesListeSize() {
+		return mObstalcesList.size();
+	}
+	
 	public Iterator<Collidable> GetCoinsList() {
 		return mCoinsList.iterator();
+	}
+	
+	public int GetCoinsListeSize() {
+		return mCoinsList.size();
 	}
 	
 	public void Draw(Canvas c, RectF bounds) {

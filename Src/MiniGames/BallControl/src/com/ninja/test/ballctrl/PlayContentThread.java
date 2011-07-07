@@ -2,13 +2,11 @@ package com.ninja.test.ballctrl;
 
 import java.util.Iterator;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class PlayContentThread extends Thread {
@@ -60,9 +58,12 @@ public class PlayContentThread extends Thread {
 //	private Collidable it;
 	private boolean more;
 	final int NB_MAX_ITERATIONS = 10;
+	private int gameMode;
 	
 	// Variable pour la fonction computeCollisionWithBounds
 	private int rayonN;
+
+	private boolean finished;
 	
 	public PlayContentThread(SurfaceHolder surface) {
 	    mSurfaceHolder = surface;
@@ -73,6 +74,13 @@ public class PlayContentThread extends Thread {
 
 	    mCanvasDim = new RectF();  
 	    profiler = new Profiler();
+	    
+	    gameMode = MenuPage.gameMode;
+	    finished = false;
+	}
+	
+	public boolean isGameFinished() {
+		return finished;
 	}
 	
 	public void Panic() {
@@ -92,8 +100,7 @@ public class PlayContentThread extends Thread {
 	public void run() {
 		Canvas c;
 		mParticlesSystem.placeItems();
-		
-		while (mRun) {
+		while (mRun && !finished) {
 	    	profiler.Tick();
 	    	
 	    	delta = profiler.Delta();
@@ -150,7 +157,19 @@ public class PlayContentThread extends Thread {
 			
 			if(ball.collided(it)) {
 				shurikensCollected++;
-				it.replace((int)mCanvasDim.right, (int)mCanvasDim.bottom);
+				
+				// Timed ou Survival
+				if(gameMode > 0) {
+					it.replace((int)mCanvasDim.right, (int)mCanvasDim.bottom);
+					if(gameMode == 1){ // Survival
+						ball.increaseSpeed(1f);
+					}
+				} else {
+					if(shurikensCollected >= mParticlesSystem.GetCoinsListeSize()) {
+						finished = true;
+					}
+					it.replace(0, 0);
+				}
 			}
 		}
 	}

@@ -9,7 +9,7 @@ public class Movable extends Collidable{
     private int mLastPosX;
     private int mLastPosY;
 	
-	private int speed = 10;
+	private float speed = 10;
 	
 	protected int orientation = 0;
 
@@ -17,6 +17,10 @@ public class Movable extends Collidable{
 		super(aPosX, aPosY, aElasticity);
 		mLastPosX = aPosX;
 		mLastPosY = aPosY;
+	}
+	
+	public void increaseSpeed(float increment) {
+		speed += increment;
 	}
 
 
