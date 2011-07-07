@@ -58,7 +58,7 @@ public class ParticlesSystem {
 		mObstalcesList = new ArrayList<Collidable>();
 		mCoinsList = new ArrayList<Collidable>();
 		
-		theOne = new NinjaBall(50, 50, 1, context);
+		theOne = new NinjaBall(250, 120, 1, context);
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
 
@@ -133,7 +133,7 @@ public class ParticlesSystem {
 	
 	public void placeItems() {
 		if(!placed) {
-			Map map = MapsManager.GetMapFromID(1);
+			Map map = MapsManager.GetMapFromID(0);
 			mObstalcesList = map.mObstaclesList;
 			mCoinsList = map.mItemsList;
 			background = map.mBackground;

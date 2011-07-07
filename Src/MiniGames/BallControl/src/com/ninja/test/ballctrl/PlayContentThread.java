@@ -16,6 +16,8 @@ public class PlayContentThread extends Thread {
 
 	/** Petit profiler rapide pour garder compte du FPS et obtenir le temps entre les frames. */
 	private Profiler profiler;
+	
+	private StopWatch stopWatch;
 
 	/** Es-ce que le thread de l'application est actif? */
 	private boolean mRun = false;
@@ -74,6 +76,7 @@ public class PlayContentThread extends Thread {
 
 	    mCanvasDim = new RectF();  
 	    profiler = new Profiler();
+	    stopWatch = new StopWatch();
 	    
 	    gameMode = MenuPage.gameMode;
 	    finished = false;
@@ -84,49 +87,62 @@ public class PlayContentThread extends Thread {
 	}
 	
 	public void Panic() {
-		mRun = false;
+		pause();
+		finished = true;
 	}
 
 	public void pause() {
 		mRun = false;
+		stopWatch.Pause();
 	}
 	
 	public void unpause() {
+		stopWatch.Resume();
 		mRun = true;
     	profiler.Tick();
+	}
+	
+	public void stopGame() {
+		finished = true;
 	}
 	
 	@Override
 	public void run() {
 		Canvas c;
 		mParticlesSystem.placeItems();
-		while (mRun && !finished) {
-	    	profiler.Tick();
-	    	
-	    	delta = profiler.Delta();
-	    	mParticlesSystem.MoveNinja(delta);
-			computeCollisions();
-			
-			c = null;
-			try {
-				c = mSurfaceHolder.lockCanvas(null);
-				synchronized (mSurfaceHolder) {
-
-					// reset l'écran
-					mParticlesSystem.DrawBackground(c);
-				    
-					doDraw(c);
-				    
-				    // affiche les fps
-					profiler.Draw(c, mCanvasDim);
-					c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
-					 
+		stopWatch.Start();
+		while (!finished) {
+			if(mRun)
+			{
+		    	profiler.Tick();
+		    	
+		    	delta = profiler.Delta();
+		    	mParticlesSystem.MoveNinja(delta);
+				computeCollisions();
+				
+				c = null;
+				try {
+					c = mSurfaceHolder.lockCanvas(null);
+					synchronized (mSurfaceHolder) {
+	
+						// reset l'écran
+						mParticlesSystem.DrawBackground(c);
+					    
+						doDraw(c);
+					    
+					    // affiche les fps
+						profiler.Draw(c, mCanvasDim);
+						stopWatch.Draw(c, 400, 20);
+						c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
+						 
+					}
+				}finally {
+					if (c != null)
+						mSurfaceHolder.unlockCanvasAndPost(c);
 				}
-			}finally {
-				if (c != null)
-					mSurfaceHolder.unlockCanvasAndPost(c);
 			}
 		}
+		double timeSpent = stopWatch.Diff();
 	}
 	
 	private void computeCollisionWithBounds() {
@@ -159,10 +175,10 @@ public class PlayContentThread extends Thread {
 				shurikensCollected++;
 				
 				// Timed ou Survival
-				if(gameMode > 0) {
+				if(gameMode > Global.MODE_NORMAL) {
 					it.replace((int)mCanvasDim.right, (int)mCanvasDim.bottom);
-					if(gameMode == 1){ // Survival
-						ball.increaseSpeed(1f);
+					if(gameMode == Global.MODE_SURVIVAL){
+						ball.increaseSpeed(.5f);
 					}
 				} else {
 					if(shurikensCollected >= mParticlesSystem.GetCoinsListeSize()) {
@@ -187,6 +203,12 @@ public class PlayContentThread extends Thread {
 				
 				// S'il y a collision entre les 2 objets
 				if(ball.collided(it)) {
+					
+					if(gameMode == Global.MODE_SURVIVAL) {
+						mRun = false;
+						finished = true;
+						return;
+					}
 					
 					// on calcule le produit vectoriel entre le vecteur déplacement de la balle
 					// et le vecteur de collision entre les deux éléments

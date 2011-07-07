@@ -43,6 +43,7 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
    public void surfaceDestroyed(SurfaceHolder holder) {
       boolean retry = true;
       mContentThread.setRunning(false);
+      mContentThread.stopGame();
       while (retry) {
         try {
            mContentThread.join();

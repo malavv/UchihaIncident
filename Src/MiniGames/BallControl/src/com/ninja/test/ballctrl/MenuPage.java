@@ -30,10 +30,10 @@ public class MenuPage  extends Activity {
          */
         final Intent moveToPlay = new Intent(this, PlayContent.class);
         
-        buttonOption(moveToPlay, R.id.Normal, 0);
-        buttonOption(moveToPlay, R.id.Timed, 1);
-        buttonOption(moveToPlay, R.id.Survival, 2);
-        buttonOption(moveToPlay, R.id.Help_Credits, 3);
+        buttonOption(moveToPlay, R.id.Normal, Global.MODE_NORMAL);
+        buttonOption(moveToPlay, R.id.Timed, Global.MODE_TIMED);
+        buttonOption(moveToPlay, R.id.Survival, Global.MODE_SURVIVAL);
+        buttonOption(moveToPlay, R.id.Help_Credits, Global.MODE_CREDITS);
     }
 
 	private void buttonOption(final Intent intent, final int id, final int mode) {
