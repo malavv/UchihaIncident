@@ -24,4 +24,6 @@
     <string name="end_def_msg">It seems you ninja abilities were not\nenough this time, you lost to %s in :</string>
     <string name="end_retry_btn">Retry</string>
     <string name="end_menu_btn">Menu</string>
+    <string name="diag_fb_text">Argh fb lolsaure truc binouche.</string>
+    <string name="diag_stats_text">blah blah blah blah</string>
 </resources>

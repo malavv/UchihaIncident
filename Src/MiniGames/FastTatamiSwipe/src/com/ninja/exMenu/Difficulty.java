@@ -1,13 +1,7 @@
 package com.ninja.exMenu;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.util.ArrayList;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -25,15 +19,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
+import com.ninja.exMenu.FbConnect.Identity;
 
-public class Difficulty extends ListActivity {
+public class Difficulty extends ListActivity implements FbConnect.FbConnectCallback {
 
+   private static final int kStatsBtn = 0;
+   private static final int kFbBtn = 1;
+  
    private static final int[] kImgId = new int[] { 0, R.drawable.dif_n_1,
      R.drawable.dif_n_2, R.drawable.dif_n_3, R.drawable.dif_n_4,
      R.drawable.dif_n_5, R.drawable.dif_n_6};
@@ -70,22 +62,24 @@ public class Difficulty extends ListActivity {
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
      super.onCreateOptionsMenu(menu);
-     menu.add(0, 0, 0, "FB");
+     
+     menu.add(0, kStatsBtn, 0, "FB");
+     menu.add(0, kFbBtn, 0, "FB");     
      return true;
    }
    
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
      switch (item.getItemId()) {
-       case 0: FbLogin();  return true;
+       case kStatsBtn: onStatisticBtnClicked();  return true;
+       case kFbBtn: onFacebookBtnClicked();  return true;
      }
      return false;
    }
    
-   private void FbLogin() {
-     final Facebook fb = new Facebook(GameContext.kFbAppId);
-     Session.waitForAuthCallback(fb);
-     fb.authorize(this, GameContext.kFbAppPermissions, new AppLoginListener(fb, this));
+   private void onStatisticBtnClicked() {}
+   private void onFacebookBtnClicked() {
+     FbConnect.Get().Login(this, GameContext.kFbAppId, GameContext.kFbAppPermissions, this);
    }
   
    private class OpponentAdapter extends BaseAdapter {
@@ -128,87 +122,19 @@ public class Difficulty extends ListActivity {
         return view;
       }
    }
-   
-   
-   private class AppLoginListener implements DialogListener {
-      
-      private Facebook fb_;
-      private Activity act_;
 
-      public AppLoginListener(Facebook fb, Activity act) {
-        fb_ = fb; act_ = act;
-      }
-
-      public void onCancel() {
-         Log.d("app", "login canceled");
-      }
-
-      public void onComplete(Bundle values) {
-         /**
-          * We request the user's info so we can cache it locally and
-          * use it to render the new html snippets
-          * when the user updates her status or comments on a post. 
-          */
-         new AsyncFacebookRunner(fb_).request("/me", 
-            new AsyncRequestListener() {
-               public void onComplete(JSONObject obj, final Object state) {
-                  // save the session data
-                  String uid = obj.optString("id");
-                  String name = obj.optString("name");
-                  new Session(fb_, uid, name).save(act_);
-
-                  // render the Stream page in the UI thread
-                  Log.d("fb", "Nous sommes maintenant connecté.");
-               }
-            }, null
-         );
-         
-         new AsyncFacebookRunner(fb_).request("/me/friends", 
-             new AsyncRequestListener() {
-                public void onComplete(JSONObject obj, final Object state) {
-                   // save the session data
-                   String uid = obj.optString("id");
-                   String name = obj.optString("name");
-                   new Session(fb_, uid, name).save(act_);
-
-                   // render the Stream page in the UI thread
-                   Log.d("fb", "Nous sommes maintenant connecté.");
-                }
-             }, null
-          );
-         
-         Bundle params = new Bundle();
-         params.putString("message", "Maxime Lavigne did an awesome job at beating Harend Muary in combat training.");
-         
-         try {
-             Util.parseJson(fb_.request("/me/feed", params, "POST"));
-         } catch (FacebookError e) {
-             Log.d("Tests", "*" + e.getMessage() + "*");
-             if (!e.getMessage().equals("(#200) The user hasn't " +
-                 "authorized the application to perform this action")) {
-             }
-         } catch (FileNotFoundException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } catch (MalformedURLException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } catch (JSONException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-      
-   @Override
-     public void onError(DialogError e) {
-         Log.d("app", "dialog error: " + e);               
-     }
-   @Override
-     public void onFacebookError(FacebookError e) {
-         Log.d("app", "facebook error: " + e);
-     }
+  @Override
+  public void onComplete(boolean isAuth) {
+    /*
+    Log.d("Difficulty", "Yay, Complete! " + Boolean.toString(isAuth));
+    
+    Identity id = FbConnect.Get().GetIdentity();
+    Log.d("Difficulty", id.toString());
+    
+    ArrayList<FbConnect.Identity> friends = FbConnect.Get().GetFriends();
+    Log.d("Difficulty", friends.toString());
+    
+    FbConnect.Get().PostOnFeed("Maxime Lavigne Took less than 1230ms to beat the game.");
+    */
   }
 }
