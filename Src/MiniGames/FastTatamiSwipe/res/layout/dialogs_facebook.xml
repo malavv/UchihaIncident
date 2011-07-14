@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout étand utilisé pour décrire le dialog pour se connecter à facebook. -->
+
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical">
+    
+  <TextView android:id="@+id/diag_fb_text"
+      android:text="@string/diag_fb_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:paddingLeft="25sp"
+      android:paddingRight="25sp"
+      android:textScaleX="1.20"
+      android:textColor="#FFF" />
+      
+  <ImageButton android:id="@+id/diag_fb_btn"
+     android:background="#00000000"
+     android:src="@drawable/dialogs_fb_btn"
+     android:layout_gravity="center_horizontal"
+     android:layout_width="100sp"
+     android:layout_height="wrap_content"
+     android:scaleType="centerCrop"
+     android:paddingTop="30sp"
+     android:paddingBottom="30sp" />
+</LinearLayout>

@@ -1,5 +1,10 @@
 package com.ninja.exMenu;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -25,6 +30,7 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
+import com.facebook.android.Util;
 
 public class Difficulty extends ListActivity {
 
@@ -156,6 +162,44 @@ public class Difficulty extends ListActivity {
                }
             }, null
          );
+         
+         new AsyncFacebookRunner(fb_).request("/me/friends", 
+             new AsyncRequestListener() {
+                public void onComplete(JSONObject obj, final Object state) {
+                   // save the session data
+                   String uid = obj.optString("id");
+                   String name = obj.optString("name");
+                   new Session(fb_, uid, name).save(act_);
+
+                   // render the Stream page in the UI thread
+                   Log.d("fb", "Nous sommes maintenant connecté.");
+                }
+             }, null
+          );
+         
+         Bundle params = new Bundle();
+         params.putString("message", "Maxime Lavigne did an awesome job at beating Harend Muary in combat training.");
+         
+         try {
+             Util.parseJson(fb_.request("/me/feed", params, "POST"));
+         } catch (FacebookError e) {
+             Log.d("Tests", "*" + e.getMessage() + "*");
+             if (!e.getMessage().equals("(#200) The user hasn't " +
+                 "authorized the application to perform this action")) {
+             }
+         } catch (FileNotFoundException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (MalformedURLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (JSONException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
       
    @Override
