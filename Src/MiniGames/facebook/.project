@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>UchihaIncident</name>
+	<name>FacebookAPI</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -30,11 +30,4 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>FacebookAPI_src</name>
-			<type>2</type>
-			<locationURI>_android_FacebookAPI_9c84cd54/src</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

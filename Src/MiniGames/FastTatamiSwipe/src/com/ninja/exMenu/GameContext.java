@@ -19,7 +19,10 @@ public class GameContext {
    private static final String kDefaultString = "-1";
    private static final String kIdKey = "idList";
    private static final String kIdSeparator = " ";
-  
+   public static final String kFbAppId = "183360128390669";
+   public static final String[] kFbAppPermissions = 
+     new String[] { "offline_access", "read_stream", "publish_stream" };
+   
    private static ArrayList<Opponent> mOpponents_;
    private static boolean isSinglePlayer_;
    private static int mCurrent_;

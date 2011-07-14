@@ -1,5 +1,8 @@
 package com.ninja.exMenu;
 
+import org.json.JSONObject;
+
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -8,12 +11,20 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.facebook.android.AsyncFacebookRunner;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 public class Difficulty extends ListActivity {
 
@@ -48,6 +59,27 @@ public class Difficulty extends ListActivity {
      catch(ActivityNotFoundException e) {
        Log.wtf("Play content activity from difficulty failed.", "Activity not found.");
      }
+   }
+   
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu) {
+     super.onCreateOptionsMenu(menu);
+     menu.add(0, 0, 0, "FB");
+     return true;
+   }
+   
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+     switch (item.getItemId()) {
+       case 0: FbLogin();  return true;
+     }
+     return false;
+   }
+   
+   private void FbLogin() {
+     final Facebook fb = new Facebook(GameContext.kFbAppId);
+     Session.waitForAuthCallback(fb);
+     fb.authorize(this, GameContext.kFbAppPermissions, new AppLoginListener(fb, this));
    }
   
    private class OpponentAdapter extends BaseAdapter {
@@ -90,4 +122,49 @@ public class Difficulty extends ListActivity {
         return view;
       }
    }
+   
+   
+   private class AppLoginListener implements DialogListener {
+      
+      private Facebook fb_;
+      private Activity act_;
+
+      public AppLoginListener(Facebook fb, Activity act) {
+        fb_ = fb; act_ = act;
+      }
+
+      public void onCancel() {
+         Log.d("app", "login canceled");
+      }
+
+      public void onComplete(Bundle values) {
+         /**
+          * We request the user's info so we can cache it locally and
+          * use it to render the new html snippets
+          * when the user updates her status or comments on a post. 
+          */
+         new AsyncFacebookRunner(fb_).request("/me", 
+            new AsyncRequestListener() {
+               public void onComplete(JSONObject obj, final Object state) {
+                  // save the session data
+                  String uid = obj.optString("id");
+                  String name = obj.optString("name");
+                  new Session(fb_, uid, name).save(act_);
+
+                  // render the Stream page in the UI thread
+                  Log.d("fb", "Nous sommes maintenant connecté.");
+               }
+            }, null
+         );
+      }
+      
+   @Override
+     public void onError(DialogError e) {
+         Log.d("app", "dialog error: " + e);               
+     }
+   @Override
+     public void onFacebookError(FacebookError e) {
+         Log.d("app", "facebook error: " + e);
+     }
+  }
 }
