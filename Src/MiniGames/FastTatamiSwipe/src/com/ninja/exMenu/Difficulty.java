@@ -1,5 +1,7 @@
 package com.ninja.exMenu;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -8,6 +10,8 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,8 +19,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Difficulty extends ListActivity {
+import com.ninja.exMenu.FbConnect.Identity;
 
+public class Difficulty extends ListActivity implements FbConnect.FbConnectCallback {
+
+   private static final int kStatsBtn = 0;
+   private static final int kFbBtn = 1;
+  
    private static final int[] kImgId = new int[] { 0, R.drawable.dif_n_1,
      R.drawable.dif_n_2, R.drawable.dif_n_3, R.drawable.dif_n_4,
      R.drawable.dif_n_5, R.drawable.dif_n_6};
@@ -48,6 +57,29 @@ public class Difficulty extends ListActivity {
      catch(ActivityNotFoundException e) {
        Log.wtf("Play content activity from difficulty failed.", "Activity not found.");
      }
+   }
+   
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu) {
+     super.onCreateOptionsMenu(menu);
+     
+     menu.add(0, kStatsBtn, 0, "FB");
+     menu.add(0, kFbBtn, 0, "FB");     
+     return true;
+   }
+   
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+     switch (item.getItemId()) {
+       case kStatsBtn: onStatisticBtnClicked();  return true;
+       case kFbBtn: onFacebookBtnClicked();  return true;
+     }
+     return false;
+   }
+   
+   private void onStatisticBtnClicked() {}
+   private void onFacebookBtnClicked() {
+     FbConnect.Get().Login(this, GameContext.kFbAppId, GameContext.kFbAppPermissions, this);
    }
   
    private class OpponentAdapter extends BaseAdapter {
@@ -90,4 +122,19 @@ public class Difficulty extends ListActivity {
         return view;
       }
    }
+
+  @Override
+  public void onComplete(boolean isAuth) {
+    /*
+    Log.d("Difficulty", "Yay, Complete! " + Boolean.toString(isAuth));
+    
+    Identity id = FbConnect.Get().GetIdentity();
+    Log.d("Difficulty", id.toString());
+    
+    ArrayList<FbConnect.Identity> friends = FbConnect.Get().GetFriends();
+    Log.d("Difficulty", friends.toString());
+    
+    FbConnect.Get().PostOnFeed("Maxime Lavigne Took less than 1230ms to beat the game.");
+    */
+  }
 }
