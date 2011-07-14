@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.SurfaceHolder;
 
 public class PlayContentThread extends Thread {
@@ -66,19 +69,27 @@ public class PlayContentThread extends Thread {
 	private int rayonN;
 
 	private boolean finished;
+
+	private Handler msgHandler;
 	
-	public PlayContentThread(SurfaceHolder surface) {
+	public PlayContentThread(SurfaceHolder surface, Handler hMsg) {
 	    mSurfaceHolder = surface;
+	    msgHandler = hMsg;
+	    
 		mParticlesSystem = new ParticlesSystem( PlayContentView.sContext );
-
 		stringBrush = new Paint();
-	    stringBrush.setColor(stringColor);
-
 	    mCanvasDim = new RectF();  
 	    profiler = new Profiler();
 	    stopWatch = new StopWatch();
+
+	    stringBrush.setColor(stringColor);
 	    
 	    gameMode = MenuPage.gameMode;
+	    finished = false;
+	}
+	
+	public void FreshStart() {
+		stopWatch.Start();
 	    finished = false;
 	}
 	
@@ -142,7 +153,7 @@ public class PlayContentThread extends Thread {
 				}
 			}
 		}
-		double timeSpent = stopWatch.Diff();
+		ShowMenu(true, stopWatch.Diff());
 	}
 	
 	private void computeCollisionWithBounds() {
@@ -277,6 +288,15 @@ public class PlayContentThread extends Thread {
 		  mCanvasDim.right = MapsManager.getBounds().x;
 		  mCanvasDim.bottom = MapsManager.getBounds().y;
 		}
+	}
+	
+	private void ShowMenu(boolean hasWon, double time) {
+		Message msg = msgHandler.obtainMessage();
+		Bundle b = new Bundle();
+		b.putBoolean("hasWon", hasWon);
+		b.putDouble("time", time);
+		msg.setData(b);
+		msgHandler.sendMessage(msg);
 	}
 	
 }

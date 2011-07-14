@@ -6,4 +6,10 @@
     <string name="menu_options">Options</string>
     <string name="menu_pause">Pause</string>
     <string name="menu_resume">Resume</string>
+    <string name="endgame_win">YOU WON!</string>
+    <string name="endgame_lose">YOU LOSE!</string>
+    <string name="end_retry_btn">Retry</string>
+    <string name="end_menu_btn">Menu</string>
+    <string name="end_win_msg">Yeah! You did it! A Ninja master\ncannot be faster!</string>
+    <string name="end_lose_msg">Go to your mummy, baby ninja!</string>
 </resources>

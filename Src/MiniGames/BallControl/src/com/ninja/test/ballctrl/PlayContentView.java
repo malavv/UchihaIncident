@@ -1,13 +1,22 @@
 package com.ninja.test.ballctrl;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback{
 
    public PlayContentThread mContentThread;
+   
+   /** Le menu qui apparait à la fin de l'application. */
+   public Dialog alert;
    
    public static Context sContext;
    
@@ -16,12 +25,57 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
       
       sContext = context;
   	
-      SurfaceHolder h = getHolder();
-      h.addCallback(this);
-      mContentThread = new PlayContentThread(h);
+      SurfaceHolder holder = getHolder();
+      holder.addCallback(this);
+      mContentThread = new PlayContentThread(holder, new Handler() {
+          @Override
+          public void handleMessage(Message m) {
+        	boolean hasWon = m.getData().getBoolean("hasWon");
+        	double time = m.getData().getDouble("time");
+        	ShowEndGameMenu(hasWon, time);
+          }
+      	}
+      );
       
       setFocusable(true);
    }
+
+   protected void ShowEndGameMenu(boolean hasWon, double time) {
+	   String msg;
+      if(hasWon) {
+         alert.setTitle(R.string.endgame_win);
+         msg = getResources().getString(R.string.end_win_msg);
+      } else {
+         alert.setTitle(R.string.endgame_lose);
+         msg = getResources().getString(R.string.end_lose_msg);
+      }
+
+      ((TextView)alert.findViewById(R.id.text)).setText(msg);
+      ((TextView)alert.findViewById(R.id.time)).setText(Double.toString(time) + " s");
+      alert.show();
+   }
+   
+   public void SetActivity(final PlayContent content) {
+	    alert = new Dialog(getContext());
+	    alert.setContentView(R.layout.end_game_menu);
+	    
+	    Button btnRetry = (Button)alert.findViewById(R.id.btn_retry);
+	    btnRetry.setOnClickListener(new OnClickListener() {
+	      public void onClick(View v) {
+	        content.Retry();
+	        alert.cancel();
+	      }
+	    });
+	    
+	    Button btnMenu = (Button)alert.findViewById(R.id.btn_menu);
+	    btnMenu.setOnClickListener(new OnClickListener() {
+	      public void onClick(View v) {
+	        content.BackToMenu();
+	        alert.cancel();
+	      }
+	    });
+	    
+	  }
 
    public PlayContentThread getThread() { return mContentThread; }
 

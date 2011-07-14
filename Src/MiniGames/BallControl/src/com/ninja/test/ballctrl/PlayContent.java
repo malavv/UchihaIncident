@@ -44,10 +44,19 @@ public class PlayContent extends Activity implements SensorEventListener{
 		
 		mContentView = (PlayContentView) findViewById(R.id.pc_view);
 		mContentThread = mContentView.getThread();
+		mContentView.SetActivity(this);
          
 		mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
 		mDisplay = mWindowManager.getDefaultDisplay();
 	}
+    
+	  public void BackToMenu() {
+	    finish();
+	  }
+	  
+	  public void Retry() {
+		    mContentThread.FreshStart();
+	  }
     
 	  /**
 	   * Création du menu et des options qui s'y retrouve.
@@ -123,6 +132,7 @@ public class PlayContent extends Activity implements SensorEventListener{
 	  @Override
 	  public void onStop() {
 	    super.onStop();
+        mSensorManager.unregisterListener(this);
 	    mContentThread.Panic();
 	  }
 
