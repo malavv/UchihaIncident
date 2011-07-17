@@ -30,9 +30,17 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
       mContentThread = new PlayContentThread(holder, new Handler() {
           @Override
           public void handleMessage(Message m) {
-        	boolean hasWon = m.getData().getBoolean("hasWon");
-        	double time = m.getData().getDouble("time");
-        	ShowEndGameMenu(hasWon, time);
+        	int mode = m.getData().getInt("mode");
+        	switch(mode) {
+        	case Global.MSG_PANIC:
+        		//TODO
+        		break;
+        	case Global.MSG_SHOW_MENU:
+	        	boolean hasWon = m.getData().getBoolean("hasWon");
+	        	double time = m.getData().getDouble("time");
+	        	ShowEndGameMenu(hasWon, time);
+	        	break;
+        	}
           }
       	}
       );

@@ -54,6 +54,10 @@ public class PlayContentThread extends Thread {
 	private Paint stringBrush;
 	private final static int stringColor = Color.WHITE;
 
+	private static final int kRun = 0;
+	private static final int kFinished = 1;
+	private static final int kReady = 2;
+
 	// Varialbles utiles dans la fonctions computeCollisions
 	private int prodVect;
 	private int newX;
@@ -68,9 +72,11 @@ public class PlayContentThread extends Thread {
 	// Variable pour la fonction computeCollisionWithBounds
 	private int rayonN;
 
-	private boolean finished;
+	private int finished;
 
 	private Handler msgHandler;
+
+	private int mode;
 	
 	public PlayContentThread(SurfaceHolder surface, Handler hMsg) {
 	    mSurfaceHolder = surface;
@@ -85,36 +91,43 @@ public class PlayContentThread extends Thread {
 	    stringBrush.setColor(stringColor);
 	    
 	    gameMode = MenuPage.gameMode;
-	    finished = false;
+	    finished = Global.END_NOT_YET;
 	}
 	
 	public void FreshStart() {
+		mParticlesSystem.placeItems();
 		stopWatch.Start();
-	    finished = false;
+	    finished = Global.END_NOT_YET;
+	    mode = kRun;
 	}
 	
 	public boolean isGameFinished() {
-		return finished;
+		return finished > Global.END_NOT_YET;
 	}
 	
 	public void Panic() {
 		pause();
-		finished = true;
+		//SaveTheWorld.saveGame(mParticlesSystem);
+		//PanicMsg(stopWatch.Diff());
 	}
 
 	public void pause() {
-		mRun = false;
+		//mRun = false;
 		stopWatch.Pause();
+		mode = kReady;
+		//SaveTheWorld.saveGame(mParticlesSystem);
 	}
 	
 	public void unpause() {
 		stopWatch.Resume();
-		mRun = true;
+		//mRun = true;
+		mode = kRun;
+		//SaveTheWorld.loadGame(PlayContentView.sContext);
     	profiler.Tick();
 	}
 	
 	public void stopGame() {
-		finished = true;
+		finished = Global.END_WIN;
 	}
 	
 	@Override
@@ -122,38 +135,34 @@ public class PlayContentThread extends Thread {
 		Canvas c;
 		mParticlesSystem.placeItems();
 		stopWatch.Start();
-		while (!finished) {
-			if(mRun)
-			{
-		    	profiler.Tick();
-		    	
+		while (mRun) {
+			switch(mode) {
+			case kRun:
+				profiler.Tick();
 		    	delta = profiler.Delta();
 		    	mParticlesSystem.MoveNinja(delta);
 				computeCollisions();
-				
 				c = null;
 				try {
 					c = mSurfaceHolder.lockCanvas(null);
-					synchronized (mSurfaceHolder) {
-	
-						// reset l'écran
-						mParticlesSystem.DrawBackground(c);
-					    
-						doDraw(c);
-					    
-					    // affiche les fps
-						profiler.Draw(c, mCanvasDim);
-						stopWatch.Draw(c, 400, 20);
-						c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
-						 
-					}
+					synchronized (mSurfaceHolder) {doDraw(c);}
 				}finally {
-					if (c != null)
-						mSurfaceHolder.unlockCanvasAndPost(c);
+					if (c != null) mSurfaceHolder.unlockCanvasAndPost(c);
 				}
+				if(finished > Global.END_NOT_YET)
+					mode = kFinished;
+				break;
+			case kFinished:
+				boolean endType = finished == Global.END_WIN; 
+				ShowMenu(endType, stopWatch.Diff());
+				shurikensCollected = 0;
+				mode = kReady;
+				break;
+			case kReady:
+				break;
 			}
+		    	
 		}
-		ShowMenu(true, stopWatch.Diff());
 	}
 	
 	private void computeCollisionWithBounds() {
@@ -193,7 +202,7 @@ public class PlayContentThread extends Thread {
 					}
 				} else {
 					if(shurikensCollected >= mParticlesSystem.GetCoinsListeSize()) {
-						finished = true;
+						finished = Global.END_WIN;
 					}
 					it.replace(0, 0);
 				}
@@ -217,7 +226,7 @@ public class PlayContentThread extends Thread {
 					
 					if(gameMode == Global.MODE_SURVIVAL) {
 						mRun = false;
-						finished = true;
+						finished = Global.END_LOSE;
 						return;
 					}
 					
@@ -264,6 +273,9 @@ public class PlayContentThread extends Thread {
 	}
 	
     public void doDraw(Canvas c) {
+		// reset l'écran
+		mParticlesSystem.DrawBackground(c);
+		
     	// on dessine les obstacles
 	    mParticlesSystem.Draw(c, mCanvasDim);
 	    
@@ -273,6 +285,11 @@ public class PlayContentThread extends Thread {
 		// On dessine la balle Ninja en dernier pour que dans le cas ou elle 
 	    // chevauche quelque chose elle soit dessinée par dessus
     	mParticlesSystem.DrawNinja(c);
+	    
+	    // affiche les fps
+		profiler.Draw(c, mCanvasDim);
+		stopWatch.Draw(c, 400, 20);
+		c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
   	}
 
 	public void setRunning(boolean running) {
@@ -293,7 +310,17 @@ public class PlayContentThread extends Thread {
 	private void ShowMenu(boolean hasWon, double time) {
 		Message msg = msgHandler.obtainMessage();
 		Bundle b = new Bundle();
+		b.putInt("mode", Global.MSG_SHOW_MENU);
 		b.putBoolean("hasWon", hasWon);
+		b.putDouble("time", time);
+		msg.setData(b);
+		msgHandler.sendMessage(msg);
+	}
+	
+	private void PanicMsg(double time) {
+		Message msg = msgHandler.obtainMessage();
+		Bundle b =new Bundle();
+		b.putInt("mode", Global.MSG_PANIC);
 		b.putDouble("time", time);
 		msg.setData(b);
 		msgHandler.sendMessage(msg);

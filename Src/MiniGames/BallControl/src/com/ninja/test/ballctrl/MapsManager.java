@@ -38,6 +38,10 @@ public class MapsManager {
 		
 		// Ajout d'objets mobiles
 		//map.mEnnemiesList.add(new NinjaBall(135, 135, 1));
+
+		// Position initialie du ninja
+		map.mNinjaInitPos.x = 250;
+		map.mNinjaInitPos.y = 120;
 		
 		return map;
 	}
@@ -71,6 +75,10 @@ public class MapsManager {
 		
 		// Ajout d'objets mobiles
 		//map.mEnnemiesList.add(new NinjaBall(135, 135, 1));
+
+		// Position initialie du ninja
+		map.mNinjaInitPos.x = 250;
+		map.mNinjaInitPos.y = 120;
 		
 		return map;
 	}

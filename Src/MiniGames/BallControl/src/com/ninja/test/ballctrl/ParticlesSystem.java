@@ -33,7 +33,7 @@ public class ParticlesSystem {
 	private int mHeight;
 	
 	// permet de savoir si les éléments du mur on déjà été dessinés ou pas
-	private boolean placed;
+	//private boolean placed;
 	
 	// Variable temporaire pour les objets collisionables
 	private Collidable tmp;
@@ -132,13 +132,12 @@ public class ParticlesSystem {
 	}
 	
 	public void placeItems() {
-		if(!placed) {
-			Map map = MapsManager.GetMapFromID(0);
-			mObstalcesList = map.mObstaclesList;
-			mCoinsList = map.mItemsList;
-			background = map.mBackground;
-			placed = true;
-		}
+		Map map = MapsManager.GetMapFromID(0);
+		mObstalcesList = map.mObstaclesList;
+		mCoinsList = map.mItemsList;
+		background = map.mBackground;
+		theOne.setX(map.mNinjaInitPos.x);
+		theOne.setY(map.mNinjaInitPos.y);
 	}
 	
 	public void setSurfaceSize(float width, float height) {

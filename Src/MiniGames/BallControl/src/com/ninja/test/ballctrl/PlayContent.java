@@ -21,15 +21,9 @@ public class PlayContent extends Activity implements SensorEventListener{
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    
-	/** L'identifiant du boutton option dans le menu en jeu. */
-	private static final int kOptionMenu = 1;
-	    
-	/** L'identifiant du boutton option dans le menu en jeu. */
-	private static final int kPauseMenu = 2;
 	  
 	/** L'identifiant du boutton option dans le menu en jeu. */
-	private static final int kResumeMenu = 3;
+	private static final int kResumeMenu = 0;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,15 +52,12 @@ public class PlayContent extends Activity implements SensorEventListener{
 		    mContentThread.FreshStart();
 	  }
     
-	  /**
-	   * Création du menu et des options qui s'y retrouve.
-	   */
+	  /** Création du menu et des options qui s'y retrouve. */
 	  @Override
 	  public boolean onCreateOptionsMenu(Menu menu) {
 	    super.onCreateOptionsMenu(menu);
-	        
-	    menu.add(0, kOptionMenu, 0, R.string.menu_options);
-	    menu.add(0, kPauseMenu, 0, R.string.menu_pause);
+	    
+	    mContentThread.pause();
 	    menu.add(0, kResumeMenu, 0, R.string.menu_resume);
 	        
 	    return true;

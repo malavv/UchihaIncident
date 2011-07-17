@@ -6,14 +6,10 @@ package com.ninja.test.ballctrl;
  * Contiens les variables globales du programme
  */
 public class Global {
-	/**
-	 * nombre de divisions qu'on considère avoir à la verticale
-	 */
+	/** nombre de divisions qu'on considère avoir à la verticale */
 	public static final int yDiv = 13;
 
-	/**
-	 * nombre de divisions qu'on considère avoir à l'horizontal
-	 */
+	/** nombre de divisions qu'on considère avoir à l'horizontal */
 	public static final int xDiv = yDiv*2;
 	
 	/** direction dans laquelle se déplace un objet */
@@ -27,5 +23,14 @@ public class Global {
 	public static final int MODE_TIMED = 1;
 	public static final int MODE_SURVIVAL = 2;
 	public static final int MODE_CREDITS = -1;
+	
+	/** Etats du message */
+	public static final int MSG_PANIC = 0;
+	public static final int MSG_SHOW_MENU = 1;
+	
+	/** Fin du jeu */
+	public static final int END_NOT_YET = 0;
+	public static final int END_WIN = 1;
+	public static final int END_LOSE = 2;
 
 }
