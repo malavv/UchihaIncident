@@ -17,7 +17,7 @@ public class NinjaBall extends Movable{
 	private Drawable back;
 	private Drawable right;
 	private Drawable left;
-
+	
     /** 
      * Constructor for the NinjaBall 
      * with the start position and rebound 

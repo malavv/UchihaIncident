@@ -140,7 +140,12 @@ public class PlayContentThread extends Thread {
 			case kRun:
 				profiler.Tick();
 		    	delta = profiler.Delta();
-		    	mParticlesSystem.MoveNinja(delta);
+		    	
+		    	// délai nécessaire pour que la balle ne commence pas a bouger 
+		    	// avant que l'écran ne soit affiché pour la première fois
+		    	if(stopWatch.Diff() > 0.2)
+		    		mParticlesSystem.MoveNinja(delta);
+		    	
 				computeCollisions();
 				c = null;
 				try {
@@ -154,7 +159,7 @@ public class PlayContentThread extends Thread {
 				break;
 			case kFinished:
 				boolean endType = finished == Global.END_WIN; 
-				ShowMenu(endType, stopWatch.Diff());
+				ShowMenu(endType, stopWatch.Diff()-0.2);
 				shurikensCollected = 0;
 				mode = kReady;
 				break;
