@@ -320,13 +320,4 @@ public class PlayContentThread extends Thread {
 		msgHandler.sendMessage(msg);
 	}
 	
-	private void PanicMsg(double time) {
-		Message msg = msgHandler.obtainMessage();
-		Bundle b =new Bundle();
-		b.putInt("mode", Global.MSG_PANIC);
-		b.putDouble("time", time);
-		msg.setData(b);
-		msgHandler.sendMessage(msg);
-	}
-	
 }

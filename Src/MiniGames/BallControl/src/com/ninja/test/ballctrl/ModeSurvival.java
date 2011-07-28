@@ -29,7 +29,7 @@ public class ModeSurvival extends GameMode {
 	Bundle DoEndingMessage(int shuriken) {
 		double time = Global.precision(StopWatch.Instance().Diff()-0.2, 3);
 		Bundle b = new Bundle();
-		b.putInt("mode", Global.MSG_SHOW_MENU);
+		b.putInt("mode", Global.MSG_SURVIVAL);
 		b.putDouble("time", time);
 		b.putInt("shuriken", shuriken);
 		return b;

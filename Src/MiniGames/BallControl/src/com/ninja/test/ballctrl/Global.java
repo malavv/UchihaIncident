@@ -25,8 +25,9 @@ public class Global {
 	public static final int MODE_CREDITS = -1;
 	
 	/** Etats du message */
-	public static final int MSG_PANIC = 0;
-	public static final int MSG_SHOW_MENU = 1;
+	public static final int MSG_NORMAL = 0;
+	public static final int MSG_TIMED = 1;
+	public static final int MSG_SURVIVAL = 2;
 	
 	/** Fin du jeu */
 	public static final int END_NOT_YET = 0;

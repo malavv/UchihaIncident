@@ -32,13 +32,14 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
           public void handleMessage(Message m) {
         	int mode = m.getData().getInt("mode");
         	switch(mode) {
-        	case Global.MSG_PANIC:
-        		//TODO
-        		break;
-        	case Global.MSG_SHOW_MENU:
-	        	//boolean hasWon = m.getData().getBoolean("hasWon");
-	        	double time = m.getData().getDouble("time");
-	        	ShowEndGameMenu(true, time);
+        	case Global.MSG_NORMAL:
+	        	ShowEndNormal(m.getData().getDouble("time"));
+	        	break;
+        	case Global.MSG_TIMED:
+        		ShowEndTimed(m.getData().getInt("shuriken"), m.getData().getInt("collisions"));
+	        	break;
+        	case Global.MSG_SURVIVAL:
+	        	ShowEndSurvival(m.getData().getInt("shuriken"), m.getData().getDouble("time"));
 	        	break;
         	}
           }
@@ -48,15 +49,33 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
       setFocusable(true);
    }
 
-   protected void ShowEndGameMenu(boolean hasWon, double time) {
-	   String msg;
-     // if(hasWon) {
-         alert.setTitle(R.string.endgame_win);
-         msg = getResources().getString(R.string.end_win_msg);
-     // } else {
-         //alert.setTitle(R.string.endgame_lose);
-         //msg = getResources().getString(R.string.end_lose_msg);
-      //}
+   protected void ShowEndNormal(double time) {
+	  String msg;
+	   
+      alert.setTitle(R.string.endgame_win);
+      msg = getResources().getString(R.string.end_win_msg);
+
+      ((TextView)alert.findViewById(R.id.text)).setText(msg);
+      ((TextView)alert.findViewById(R.id.time)).setText(Double.toString(time) + " s");
+      alert.show();
+   }
+
+   protected void ShowEndTimed(int shuriken, int collision) {
+	  String msg;
+	   
+      alert.setTitle(R.string.endgame_win);
+      msg = "You collected " + Integer.toString(shuriken) + " shuriken\nand collided only";
+
+      ((TextView)alert.findViewById(R.id.text)).setText(msg);
+      ((TextView)alert.findViewById(R.id.time)).setText(Integer.toString(collision) + " time(s)");
+      alert.show();
+   }
+
+   protected void ShowEndSurvival(int shuriken, double time) {
+	  String msg;
+	   
+      alert.setTitle(R.string.endgame_win);
+      msg = "You collected " + Integer.toString(shuriken) + " shuriken\nwithin";
 
       ((TextView)alert.findViewById(R.id.text)).setText(msg);
       ((TextView)alert.findViewById(R.id.time)).setText(Double.toString(time) + " s");
