@@ -81,6 +81,8 @@ public class PlayContentThread extends Thread {
 		stringBrush = new Paint();
 	    mCanvasDim = new RectF();  
 	    stringBrush.setColor(stringColor);
+	    
+	    profiler = new Profiler();
 	}
 	
 	public void FreshStart() {
@@ -88,7 +90,7 @@ public class PlayContentThread extends Thread {
 		mParticlesSystem.placeItems();
 		ball.resetSpeed();
 		shurikensCollected = 0;
-		//StopWatch.Instance().Start();
+		StopWatch.Instance().Start();
 	    mode = kRun;
 	}
 	
@@ -103,13 +105,13 @@ public class PlayContentThread extends Thread {
 	}
 
 	public void pause() {
-		//StopWatch.Instance().Pause();
+		StopWatch.Instance().Pause();
 		mode = kReady;
 		//SaveTheWorld.saveGame(mParticlesSystem);
 	}
 	
 	public void unpause() {
-		//StopWatch.Instance().Resume();
+		StopWatch.Instance().Resume();
 		mode = kRun;
 		//SaveTheWorld.loadGame(PlayContentView.sContext);
     	//profiler.Tick();
@@ -124,7 +126,7 @@ public class PlayContentThread extends Thread {
 		Canvas c;
 		mParticlesSystem.placeItems();
 		createMode();
-		//StopWatch.Instance().Start();
+		StopWatch.Instance().Start();
 		while (mRun) {
 			switch(mode) {
 			case kRun:
@@ -133,7 +135,7 @@ public class PlayContentThread extends Thread {
 		    	
 		    	// délai nécessaire pour que la balle ne commence pas a bouger 
 		    	// avant que l'écran ne soit affiché pour la première fois
-		    	//if(StopWatch.Instance().Diff() > 0.2)
+		    	if(StopWatch.Instance().Diff() > 0.2)
 		    		mParticlesSystem.MoveNinja(delta);
 		    	
 				computeCollisions();
@@ -292,7 +294,7 @@ public class PlayContentThread extends Thread {
 	    
 	    // affiche les fps
 		profiler.Draw(c, mCanvasDim);
-		//StopWatch.Instance().Draw(c, 400, 20);
+		StopWatch.Instance().Draw(c, 400, 20);
 		c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
   	}
 

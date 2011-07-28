@@ -31,7 +31,7 @@ public class ModeTimed extends GameMode {
 	
 	@Override
 	Bundle DoEndingMessage(int shuriken) {
-		double time = 1;//Global.precision(StopWatch.Instance().Diff()-0.2, 3);
+		double time = Global.precision(StopWatch.Instance().Diff()-0.2, 3);
 		Bundle b = new Bundle();
 		b.putInt("mode", Global.MSG_SHOW_MENU);
 		b.putDouble("time", time);
@@ -47,7 +47,7 @@ public class ModeTimed extends GameMode {
 	@Override
 	boolean isGameFinished() {
 		// ici la précision des décimale n'est pas nécessaire, c'est seulement pour l'affichage
-		return false;//StopWatch.Instance().Diff()-0.2 >= limit;
+		return StopWatch.Instance().Diff()-0.2 >= limit;
 	}
 
 }
