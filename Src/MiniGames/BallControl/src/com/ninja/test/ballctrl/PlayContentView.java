@@ -36,9 +36,9 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
         		//TODO
         		break;
         	case Global.MSG_SHOW_MENU:
-	        	boolean hasWon = m.getData().getBoolean("hasWon");
+	        	//boolean hasWon = m.getData().getBoolean("hasWon");
 	        	double time = m.getData().getDouble("time");
-	        	ShowEndGameMenu(hasWon, time);
+	        	ShowEndGameMenu(true, time);
 	        	break;
         	}
           }
@@ -50,13 +50,13 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
 
    protected void ShowEndGameMenu(boolean hasWon, double time) {
 	   String msg;
-      if(hasWon) {
+     // if(hasWon) {
          alert.setTitle(R.string.endgame_win);
          msg = getResources().getString(R.string.end_win_msg);
-      } else {
-         alert.setTitle(R.string.endgame_lose);
-         msg = getResources().getString(R.string.end_lose_msg);
-      }
+     // } else {
+         //alert.setTitle(R.string.endgame_lose);
+         //msg = getResources().getString(R.string.end_lose_msg);
+      //}
 
       ((TextView)alert.findViewById(R.id.text)).setText(msg);
       ((TextView)alert.findViewById(R.id.time)).setText(Double.toString(time) + " s");

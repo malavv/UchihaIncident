@@ -22,6 +22,10 @@ public class Movable extends Collidable{
 	public void increaseSpeed(float increment) {
 		speed += increment;
 	}
+	
+	public void resetSpeed() {
+		speed = 10;
+	}
 
 
 	/**

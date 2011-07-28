@@ -10,6 +10,8 @@ public class Collidable {
     private int distY;
     private int dist2;
     
+	protected boolean active;
+    
     private static int rayon;
     
     Collidable(int aPosX, int aPosY, float aElasticity) {
@@ -18,14 +20,6 @@ public class Collidable {
     	mElasticity = aElasticity;
     	
     	setSides();
-    }
-    
-    public static void setOffset(int offset) {
-    	rayon = offset/2;
-    }
-    
-    public static int getOffset() {
-    	return rayon*2;
     }
     
     public boolean collided( Collidable c) {
@@ -52,29 +46,16 @@ public class Collidable {
     	mPosX += rayon;
     	mPosY += rayon;
     }
-
-	public int getX() {
-		return mPosX;
-	}
-
-	public void setX(int mPosX) {
-		this.mPosX = mPosX;
-	}
-
-	public int getY() {
-		return mPosY;
-	}
-
-	public void setY(int mPosY) {
-		this.mPosY = mPosY;
-	}
-
-	public float getElasticity() {
-		return mElasticity;
-	}
-
-	public int getRayon() {
-		return rayon;
-	}
+    
+    public static void setOffset(int offset) { rayon = offset/2; }    
+    public static int getOffset() {	return rayon*2; }
+	public boolean isActive() {return active;}
+	public void setActive(boolean isActive) {active = isActive;}
+	public int getX() {return mPosX;}
+	public void setX(int mPosX) {this.mPosX = mPosX;}
+	public int getY() {return mPosY;}
+	public void setY(int mPosY) {this.mPosY = mPosY;}
+	public float getElasticity() {return mElasticity;}
+	public int getRayon() {return rayon;}
 
 }

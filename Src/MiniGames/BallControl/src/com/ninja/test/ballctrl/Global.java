@@ -3,7 +3,7 @@ package com.ninja.test.ballctrl;
 /**
  * Global
  * @author leelio
- * Contiens les variables globales du programme
+ * Contiens les variables et constantes globales du programme
  */
 public class Global {
 	/** nombre de divisions qu'on considère avoir à la verticale */
@@ -32,5 +32,15 @@ public class Global {
 	public static final int END_NOT_YET = 0;
 	public static final int END_WIN = 1;
 	public static final int END_LOSE = 2;
+	
+	
+	// Fonctions statiques
+	
+	/** retourne un double avec le nombre de décimales indiqué dans precision */
+	public static double precision(double number, int precision) {
+		double coef = Math.pow(10, precision);
+		number *= coef;
+		return Math.rint(number)/coef;
+	}
 
 }

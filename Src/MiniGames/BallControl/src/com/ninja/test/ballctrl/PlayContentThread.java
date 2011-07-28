@@ -19,8 +19,6 @@ public class PlayContentThread extends Thread {
 
 	/** Petit profiler rapide pour garder compte du FPS et obtenir le temps entre les frames. */
 	private Profiler profiler;
-	
-	private StopWatch stopWatch;
 
 	/** Es-ce que le thread de l'application est actif? */
 	private boolean mRun = false;
@@ -64,15 +62,12 @@ public class PlayContentThread extends Thread {
 	private int newY;
 	private Point translateVect;
 	private Point collideVect;
-//	private Collidable it;
 	private boolean more;
 	final int NB_MAX_ITERATIONS = 10;
-	private int gameMode;
+	private GameMode gameMode;
 	
 	// Variable pour la fonction computeCollisionWithBounds
 	private int rayonN;
-
-	private int finished;
 
 	private Handler msgHandler;
 
@@ -85,24 +80,20 @@ public class PlayContentThread extends Thread {
 		mParticlesSystem = new ParticlesSystem( PlayContentView.sContext );
 		stringBrush = new Paint();
 	    mCanvasDim = new RectF();  
-	    profiler = new Profiler();
-	    stopWatch = new StopWatch();
-
 	    stringBrush.setColor(stringColor);
-	    
-	    gameMode = MenuPage.gameMode;
-	    finished = Global.END_NOT_YET;
 	}
 	
 	public void FreshStart() {
+		gameMode.resetGame();
 		mParticlesSystem.placeItems();
-		stopWatch.Start();
-	    finished = Global.END_NOT_YET;
+		ball.resetSpeed();
+		shurikensCollected = 0;
+		//StopWatch.Instance().Start();
 	    mode = kRun;
 	}
 	
 	public boolean isGameFinished() {
-		return finished > Global.END_NOT_YET;
+		return gameMode.isGameFinished();
 	}
 	
 	public void Panic() {
@@ -112,29 +103,28 @@ public class PlayContentThread extends Thread {
 	}
 
 	public void pause() {
-		//mRun = false;
-		stopWatch.Pause();
+		//StopWatch.Instance().Pause();
 		mode = kReady;
 		//SaveTheWorld.saveGame(mParticlesSystem);
 	}
 	
 	public void unpause() {
-		stopWatch.Resume();
-		//mRun = true;
+		//StopWatch.Instance().Resume();
 		mode = kRun;
 		//SaveTheWorld.loadGame(PlayContentView.sContext);
-    	profiler.Tick();
+    	//profiler.Tick();
 	}
 	
 	public void stopGame() {
-		finished = Global.END_WIN;
+		mode = kFinished;
 	}
 	
 	@Override
 	public void run() {
 		Canvas c;
 		mParticlesSystem.placeItems();
-		stopWatch.Start();
+		createMode();
+		//StopWatch.Instance().Start();
 		while (mRun) {
 			switch(mode) {
 			case kRun:
@@ -143,7 +133,7 @@ public class PlayContentThread extends Thread {
 		    	
 		    	// délai nécessaire pour que la balle ne commence pas a bouger 
 		    	// avant que l'écran ne soit affiché pour la première fois
-		    	if(stopWatch.Diff() > 0.2)
+		    	//if(StopWatch.Instance().Diff() > 0.2)
 		    		mParticlesSystem.MoveNinja(delta);
 		    	
 				computeCollisions();
@@ -154,13 +144,11 @@ public class PlayContentThread extends Thread {
 				}finally {
 					if (c != null) mSurfaceHolder.unlockCanvasAndPost(c);
 				}
-				if(finished > Global.END_NOT_YET)
+				if(gameMode.isGameFinished())
 					mode = kFinished;
 				break;
 			case kFinished:
-				boolean endType = finished == Global.END_WIN; 
-				ShowMenu(endType, stopWatch.Diff()-0.2);
-				shurikensCollected = 0;
+				ShowMenu();
 				mode = kReady;
 				break;
 			case kReady:
@@ -170,47 +158,62 @@ public class PlayContentThread extends Thread {
 		}
 	}
 	
+	private void createMode() {
+	    switch(MenuPage.gameMode) {
+	    case Global.MODE_NORMAL:
+	    	gameMode = new ModeNormal(mParticlesSystem.GetCoinsListeSize());
+	    	break;
+	    case Global.MODE_TIMED:
+	    	gameMode = new ModeTimed(30);
+	    	break;
+	    case Global.MODE_SURVIVAL:
+	    	gameMode = new ModeSurvival();
+	    	break;
+	    default:
+	    	gameMode = new ModeNormal(mParticlesSystem.GetCoinsListeSize());
+	    }
+	}
+	
 	private void computeCollisionWithBounds() {
 		
 		rayonN = ball.getRayon();
+		boolean collided = false;
 		
 		// collision avec le bord de l'écran
 		if(ball.getX()-rayonN < mCanvasDim.left){
 			ball.setLastPosX(ball.getX());
 			ball.setX((int) (mCanvasDim.left + rayonN));
+			collided = true;
 		} else if(ball.getX()+rayonN > mCanvasDim.right) {
 			ball.setLastPosX(ball.getX());
 			ball.setX((int) (mCanvasDim.right - rayonN));
+			collided = true;
 		}
 		if(ball.getY()-rayonN < mCanvasDim.top){
 			ball.setLastPosY(ball.getY());
 			ball.setY((int) (mCanvasDim.top + rayonN));
+			collided = true;
 		} else if(ball.getY()+rayonN > mCanvasDim.bottom) {
 			ball.setLastPosY(ball.getY());
 			ball.setY((int) (mCanvasDim.bottom - rayonN));
+			collided = true;
+		}
+		
+		// some game mode might want to do something here
+		if(collided) {
+			gameMode.DoCollideBounds();
 		}
 	}
 	
 	private void findShuriken() {
 		
-		for(Iterator<Collidable> i = mParticlesSystem.GetCoinsList(); i.hasNext();) {
-			Coin it = (Coin) i.next();
+		for(Iterator<Coin> i = mParticlesSystem.GetCoinsList(); i.hasNext();) {
+			Coin it = i.next();
 			
-			if(ball.collided(it)) {
+			if(it.isActive() && ball.collided(it)) {
 				shurikensCollected++;
 				
-				// Timed ou Survival
-				if(gameMode > Global.MODE_NORMAL) {
-					it.replace((int)mCanvasDim.right, (int)mCanvasDim.bottom);
-					if(gameMode == Global.MODE_SURVIVAL){
-						ball.increaseSpeed(.5f);
-					}
-				} else {
-					if(shurikensCollected >= mParticlesSystem.GetCoinsListeSize()) {
-						finished = Global.END_WIN;
-					}
-					it.replace(0, 0);
-				}
+				gameMode.foundShuriken(ball, it, mCanvasDim);
 			}
 		}
 	}
@@ -229,12 +232,8 @@ public class PlayContentThread extends Thread {
 				// S'il y a collision entre les 2 objets
 				if(ball.collided(it)) {
 					
-					if(gameMode == Global.MODE_SURVIVAL) {
-						mRun = false;
-						finished = Global.END_LOSE;
-						return;
-					}
-					
+					gameMode.DoCollidedWall();
+										
 					// on calcule le produit vectoriel entre le vecteur déplacement de la balle
 					// et le vecteur de collision entre les deux éléments
 					translateVect = new Point(ball.getLastPosX()-ball.getX(), ball.getLastPosY()-ball.getY());
@@ -293,7 +292,7 @@ public class PlayContentThread extends Thread {
 	    
 	    // affiche les fps
 		profiler.Draw(c, mCanvasDim);
-		stopWatch.Draw(c, 400, 20);
+		//StopWatch.Instance().Draw(c, 400, 20);
 		c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
   	}
 
@@ -312,12 +311,9 @@ public class PlayContentThread extends Thread {
 		}
 	}
 	
-	private void ShowMenu(boolean hasWon, double time) {
+	private void ShowMenu() {
 		Message msg = msgHandler.obtainMessage();
-		Bundle b = new Bundle();
-		b.putInt("mode", Global.MSG_SHOW_MENU);
-		b.putBoolean("hasWon", hasWon);
-		b.putDouble("time", time);
+		Bundle b = gameMode.DoEndingMessage( shurikensCollected);
 		msg.setData(b);
 		msgHandler.sendMessage(msg);
 	}

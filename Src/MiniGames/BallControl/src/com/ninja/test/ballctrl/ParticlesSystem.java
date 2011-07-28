@@ -17,7 +17,7 @@ public class ParticlesSystem {
 	private ArrayList<Collidable> mObstalcesList;
 	
 	// liste des éléments de murs
-	private ArrayList<Collidable> mCoinsList;
+	private ArrayList<Coin> mCoinsList;
 	
 	// Objets qui seront dessinés à l'écran
 	private Drawable SpikesBall;
@@ -56,7 +56,7 @@ public class ParticlesSystem {
 	public ParticlesSystem( Context context ) {
 		
 		mObstalcesList = new ArrayList<Collidable>();
-		mCoinsList = new ArrayList<Collidable>();
+		mCoinsList = new ArrayList<Coin>();
 		
 		theOne = new NinjaBall(250, 120, 1, context);
 		
@@ -73,7 +73,7 @@ public class ParticlesSystem {
 		return mObstalcesList.size();
 	}
 	
-	public Iterator<Collidable> GetCoinsList() {
+	public Iterator<Coin> GetCoinsList() {
 		return mCoinsList.iterator();
 	}
 	
@@ -117,12 +117,14 @@ public class ParticlesSystem {
 		// On dessine les obstacles
 		for(int i = 0; i < mCoinsList.size(); i++){
 			tmp = mCoinsList.get(i);
-			shuriken.setBounds(tmp.getX() - tmp.getRayon(), 
-					 tmp.getY() - tmp.getRayon(), 
-					 tmp.getX() + tmp.getRayon(), 
-					 tmp.getY() + tmp.getRayon() );
-			
-			shuriken.draw(c);
+			if(tmp.isActive()) {
+				shuriken.setBounds(tmp.getX() - tmp.getRayon(), 
+						 tmp.getY() - tmp.getRayon(), 
+						 tmp.getX() + tmp.getRayon(), 
+						 tmp.getY() + tmp.getRayon() );
+				
+				shuriken.draw(c);
+			}
 		}
 	}
 	

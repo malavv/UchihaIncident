@@ -4,7 +4,7 @@ public class Coin extends Collidable {
 
 	Coin(int aPosX, int aPosY, float aElasticity) {
 		super(aPosX, aPosY, aElasticity);
-		// TODO Auto-generated constructor stub
+		active = true;
 	}
 	
 	// Variables de positions

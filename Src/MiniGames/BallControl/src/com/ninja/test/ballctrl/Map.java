@@ -10,7 +10,7 @@ public class Map {
 	
 	public ArrayList<Movable> mEnnemiesList;
 	
-	public ArrayList<Collidable> mItemsList;
+	public ArrayList<Coin> mItemsList;
 	
 	public Drawable mBackground;
 	
@@ -19,7 +19,7 @@ public class Map {
 	Map() {
 		mObstaclesList = new ArrayList<Collidable>();
 		mEnnemiesList = new ArrayList<Movable>();
-		mItemsList = new ArrayList<Collidable>();
+		mItemsList = new ArrayList<Coin>();
 		mNinjaInitPos = new Point(0, 0);
 		mBackground = PlayContentView.sContext.getResources().getDrawable(R.drawable.ingame_wp_1);
 	}

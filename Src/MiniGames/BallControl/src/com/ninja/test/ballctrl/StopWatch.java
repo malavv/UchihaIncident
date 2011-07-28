@@ -12,13 +12,24 @@ public class StopWatch {
 	  private long mStart;
 	  /** La brosse utilisé pour imprimer le diff. */
 	  private Paint diffBrush;
-	private long mPause;
+	  private long mPause;
 	  /** La couleur utilisé pour imprimer le diff. */
 	  private final static int diffColor = Color.WHITE;
 	  
-	  public StopWatch() {
+	  private static StopWatch stopWatch;
+	  
+	  private StopWatch() {
+		  mStart = 0;
+		  mPause = 0;
 		  diffBrush = new Paint();
 		  diffBrush.setColor(diffColor);
+	  }
+	  
+	  /** Donne une instance du chronometre */
+	  public static StopWatch Instance() {
+		  if(stopWatch == null)
+			  stopWatch = new StopWatch();
+		  return stopWatch;
 	  }
 	  
 	  /** Démarre le chronomètre */
