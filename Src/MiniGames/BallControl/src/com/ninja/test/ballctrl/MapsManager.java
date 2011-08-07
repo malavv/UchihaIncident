@@ -1,24 +1,86 @@
 package com.ninja.test.ballctrl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import android.content.res.AssetManager;
 import android.graphics.Point;
+import android.util.Log;
 
 public class MapsManager {
 	private static Point bounds;
 	private static boolean boundSet = false;
+	private static ArrayList<Map> mapList = new ArrayList<Map>();
 	
 	public static void GetMapFromFile(String name) {
-		//TODO : faire l'implémetation de cette fonction.
+		
+		AssetManager ass = PlayContentView.sContext.getAssets();
+		String maps[] = null;
+		
+		// tente de récupérer la liste des maps et utilise la map par défault 
+		// si l'asset est mal initialisé.
+		try {
+			maps = ass.list("ballmaps");
+		} catch (IOException e) {
+			Log.d("MapLoading", "Could not get Asset");
+			mapList.add(testMap1());
+			return;
+		}
+		// si la liste de maps est vide, on utilise la map par défault
+		if(maps == null) {
+			Log.d("MapLoading", "Could not get Maps");
+			mapList.add(testMap1());
+			return;
+		}
+		
+		Map map = null;
+		BufferedReader reader = null;
+		String line = null;
+		
+		// loop sur tous les fichier maps existants
+		for(String iter : maps) {
+			try {
+				reader = new BufferedReader(new InputStreamReader(ass.open("assets/ballmaps/"+iter.toString())));
+			
+				map = new Map();
+				// loop sur toutes les lignes
+				for(int i = 0; i < Global.yDiv; i++) {
+					try {
+						line = reader.readLine();
+					} catch (IOException e) {
+						Log.d("MapLoading", "Could not read line");
+					}
+					
+					// loop sur toutes les colonnes d'une ligne (tous les charactères)
+					for(int j = 0 ; j < Global.xDiv; j++) {
+						parseMapContent(map, line.charAt(j), j, i );
+					}
+					
+				}
+				mapList.add(map);
+			} catch (IOException e) {
+				Log.d("MapLoading", "Could not open file");
+			}
+		}
+		
+		if(mapList.isEmpty()) {
+			mapList.add(testMap1());
+		}
 	}
 	
 	public static Map GetMapFromID(int id) {
-		switch(id) {
-		case 0 :
-			return testMap1();
-		case 1 :
-			return testMap2();
-		default :
-			return testMap1();
-		}
+//		switch(id) {
+//		case 0 :
+//			return testMap1();
+//		case 1 :
+//			return testMap2();
+//		default :
+//			return testMap1();
+//		}
+		Map map = mapList.get(id);
+		return map;
 	}
 	
 	public static Map testMap1() {
@@ -94,6 +156,34 @@ public class MapsManager {
 
 	public static Point getBounds() {
 		return bounds;
+	}
+	
+	/**
+	 * @Nomenclature :
+	 * W = mur normal
+	 * N = position initiale du ninja
+	 * S = position initiale d'un des shuriken
+	 * @param c
+	 */
+	private static void parseMapContent(Map map, char c, int line, int collumn) {
+		int nLine = line*Global.yDiv;
+		int nColl = collumn*Global.xDiv;
+		
+		switch(c) {
+		case 'W':
+		case 'w':
+			map.mObstaclesList.add(new Wall(nColl, nLine, 1));
+			break;
+		case 'O':
+		case 'o':
+			map.mNinjaInitPos.x = nColl;
+			map.mNinjaInitPos.y = nLine;
+			break;
+		case 'S':
+		case 's':
+			map.mItemsList.add(new Coin(nColl, nLine, 1));
+			break;
+		}
 	}
 
 }

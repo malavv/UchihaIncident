@@ -134,12 +134,19 @@ public class ParticlesSystem {
 	}
 	
 	public void placeItems() {
+		MapsManager.GetMapFromFile("");
 		Map map = MapsManager.GetMapFromID(0);
 		mObstalcesList = map.mObstaclesList;
 		mCoinsList = map.mItemsList;
 		background = map.mBackground;
 		theOne.setX(map.mNinjaInitPos.x);
 		theOne.setY(map.mNinjaInitPos.y);
+	}
+	
+	public void enableAllCoins() {
+		for (Coin iter : mCoinsList) {
+			iter.setActive(true);
+		}
 	}
 	
 	public void setSurfaceSize(float width, float height) {

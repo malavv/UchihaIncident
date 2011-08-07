@@ -10,6 +10,7 @@ public abstract class GameMode {
 	GameMode(int mode) {
 		this.mode = mode;
 		finished = false;
+		MapsManager.GetMapFromFile("");
 	}
 	
 	// Concrete functions

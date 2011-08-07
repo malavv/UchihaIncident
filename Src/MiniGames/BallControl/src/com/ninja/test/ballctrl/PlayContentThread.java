@@ -88,6 +88,7 @@ public class PlayContentThread extends Thread {
 	public void FreshStart() {
 		gameMode.resetGame();
 		mParticlesSystem.placeItems();
+		mParticlesSystem.enableAllCoins();
 		ball.resetSpeed();
 		shurikensCollected = 0;
 		StopWatch.Instance().Start();
@@ -111,6 +112,7 @@ public class PlayContentThread extends Thread {
 	}
 	
 	public void unpause() {
+		profiler.Tick();
 		StopWatch.Instance().Resume();
 		mode = kRun;
 		//SaveTheWorld.loadGame(PlayContentView.sContext);
@@ -125,6 +127,7 @@ public class PlayContentThread extends Thread {
 	public void run() {
 		Canvas c;
 		mParticlesSystem.placeItems();
+		mParticlesSystem.enableAllCoins();
 		createMode();
 		StopWatch.Instance().Start();
 		while (mRun) {
