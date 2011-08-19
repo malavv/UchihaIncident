@@ -169,7 +169,7 @@ public class PlayContentThread extends Thread {
 	    	gameMode = new ModeNormal(mParticlesSystem.GetCoinsListeSize());
 	    	break;
 	    case Global.MODE_TIMED:
-	    	gameMode = new ModeTimed(30);
+	    	gameMode = new ModeTimed();
 	    	break;
 	    case Global.MODE_SURVIVAL:
 	    	gameMode = new ModeSurvival();
@@ -297,7 +297,7 @@ public class PlayContentThread extends Thread {
 	    
 	    // affiche les fps
 		profiler.Draw(c, mCanvasDim);
-		StopWatch.Instance().Draw(c, 400, 20);
+		gameMode.DrawTime(c, 400, 20);
 		c.drawText(Integer.toString(shurikensCollected), 5, 15, stringBrush);
   	}
 

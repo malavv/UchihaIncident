@@ -18,6 +18,7 @@ public class MapsManager {
 		
 		AssetManager ass = PlayContentView.sContext.getAssets();
 		String maps[] = null;
+		mapList.clear();
 		
 		// tente de récupérer la liste des maps et utilise la map par défault 
 		// si l'asset est mal initialisé.
@@ -26,13 +27,14 @@ public class MapsManager {
 		} catch (IOException e) {
 			Log.d("MapLoading", "Could not get Asset");
 			mapList.add(testMap1());
+			mapList.add(testMap2());
 			return;
 		}
 		// si la liste de maps est vide, on utilise la map par défault
 		if(maps == null) {
 			Log.d("MapLoading", "Could not get Maps");
 			mapList.add(testMap1());
-			return;
+			mapList.add(testMap2());
 		}
 		
 		Map map = null;
@@ -42,7 +44,7 @@ public class MapsManager {
 		// loop sur tous les fichier maps existants
 		for(String iter : maps) {
 			try {
-				reader = new BufferedReader(new InputStreamReader(ass.open("assets/ballmaps/"+iter.toString())));
+				reader = new BufferedReader(new InputStreamReader(ass.open(iter.toString())));
 			
 				map = new Map();
 				// loop sur toutes les lignes
@@ -67,20 +69,12 @@ public class MapsManager {
 		
 		if(mapList.isEmpty()) {
 			mapList.add(testMap1());
+			mapList.add(testMap2());
 		}
 	}
 	
 	public static Map GetMapFromID(int id) {
-//		switch(id) {
-//		case 0 :
-//			return testMap1();
-//		case 1 :
-//			return testMap2();
-//		default :
-//			return testMap1();
-//		}
-		Map map = mapList.get(id);
-		return map;
+		return mapList.get(id);
 	}
 	
 	public static Map testMap1() {

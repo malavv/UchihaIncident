@@ -1,41 +1,41 @@
 package com.ninja.test.ballctrl;
 
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
 
 public class ModeTimed extends GameMode {
 	
-	private double limit;
+	public static double limit;
 	private int collisions;
 	
-	public ModeTimed(double timeLimit) {
+	public ModeTimed() {
 		super(Global.MODE_TIMED);
-		limit = timeLimit;
 		collisions = 0;
 	}
 
 	@Override
-	void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
 		c.replace((int)canvas.right, (int)canvas.bottom);
 	}
 
 	@Override
-	void resetGame() {
+	public void resetGame() {
 		collisions = 0;
 	}
 
 	@Override
-	void DoCollidedWall() {
+	public void DoCollidedWall() {
 		collisions++;
 	}
 
 	@Override
-	void DoCollideBounds() {
+	public void DoCollideBounds() {
 		collisions++;
 	}
 	
 	@Override
-	Bundle DoEndingMessage(int shuriken) {
+	public Bundle DoEndingMessage(int shuriken) {
 		double time = Global.precision(StopWatch.Instance().Diff()-0.2, 3);
 		Bundle b = new Bundle();
 		b.putInt("mode", Global.MSG_TIMED);
@@ -46,9 +46,14 @@ public class ModeTimed extends GameMode {
 	}
 	
 	@Override
-	boolean isGameFinished() {
+	public boolean isGameFinished() {
 		// ici la précision des décimale n'est pas nécessaire, c'est seulement pour l'affichage
 		return StopWatch.Instance().Diff()-0.2 >= limit;
+	}
+	
+	@Override
+	public void DrawTime(Canvas c, float x, float y) {
+		StopWatch.Instance().DrawCountdown(c, x, y, limit);
 	}
 
 }

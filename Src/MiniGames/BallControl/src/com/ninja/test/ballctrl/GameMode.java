@@ -1,5 +1,6 @@
 package com.ninja.test.ballctrl;
 
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
 
@@ -14,17 +15,18 @@ public abstract class GameMode {
 	}
 	
 	// Concrete functions
-	int getMode() { return mode; }
-	boolean isGameFinished() {return finished;}
+	public int getMode() { return mode; }
+	public boolean isGameFinished() {return finished;}
+	public void DrawTime(Canvas c, float x, float y){StopWatch.Instance().Draw(c, x, y);}
 	
 	// Hook functions
-	void DoCollidedWall() {}
-	void DoCollideBounds() {}
-	void resetGame() {}
+	public void DoCollidedWall() {}
+	public void DoCollideBounds() {}
+	public void resetGame() {}
 	
 	// Abstract functions
-	abstract void foundShuriken(NinjaBall b, Coin c, RectF mCanvasDim);
-	abstract Bundle DoEndingMessage(int shuriken);
+	public abstract void foundShuriken(NinjaBall b, Coin c, RectF mCanvasDim);
+	public abstract Bundle DoEndingMessage(int shuriken);
 
 
 }

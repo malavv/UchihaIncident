@@ -10,23 +10,23 @@ public class ModeSurvival extends GameMode {
 	}
 
 	@Override
-	void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
 		b.increaseSpeed(.5f);
 		c.replace((int)canvas.right, (int)canvas.bottom);
 	}
 
 	@Override
-	void resetGame() {
+	public void resetGame() {
 		finished = false;
 	}
 
 	@Override
-	void DoCollidedWall() {
+	public void DoCollidedWall() {
 		finished = true;
 	}
 	
 	@Override
-	Bundle DoEndingMessage(int shuriken) {
+	public Bundle DoEndingMessage(int shuriken) {
 		double time = Global.precision(StopWatch.Instance().Diff()-0.2, 3);
 		Bundle b = new Bundle();
 		b.putInt("mode", Global.MSG_SURVIVAL);
@@ -36,7 +36,7 @@ public class ModeSurvival extends GameMode {
 	}
 
 	@Override
-	void DoCollideBounds() {
+	public void DoCollideBounds() {
 		
 	}
 }

@@ -62,8 +62,14 @@ public class StopWatch {
 		  return Double.toString(Diff());
 	  }
 	  
+	  /** retourne la différence entre le temps alloué de base et temps passé
+	   *  depuis le départ dans une chaine de charactères */
+	  public String DiffCountDownStr(double base) {
+		  return Double.toString(Global.precision(base-Diff(), 3));
+	  }
+	  
 	  /**
-	   * Permet d'imprimer le Diff en bas à gauche de l'écran.
+	   * Permet d'imprimer le Diff en haut à droite de l'écran.
 	   * @param c Le canvas sur lequel imprimer le fps.
 	   * @param position en x 
 	   * @param position en y 
@@ -71,6 +77,18 @@ public class StopWatch {
 	  public void Draw(Canvas c, float x, float y) {
 	    String s = "Time : " + DiffStr();
 	    c.drawText(s, x, y, diffBrush);
+	  }
+
+	  /**
+	   * Permet d'imprimer le Diff en haut à droite de l'écran.
+	   * @param c Le canvas sur lequel imprimer le fps.
+	   * @param position en x 
+	   * @param position en y
+	   * @param base de temps du compte à rebours 
+	   */
+	  public void DrawCountdown(Canvas c, float x, float y, double base) {
+		    String s = "Time : " + DiffCountDownStr(base);
+		    c.drawText(s, x, y, diffBrush);
 	  }
 
 }

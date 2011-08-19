@@ -8,14 +8,14 @@ public class ModeNormal extends GameMode {
 	private int limit;
 	private int shurikenFound;
 
-	ModeNormal(int shurikenLimit) {
+	public ModeNormal(int shurikenLimit) {
 		super(Global.MODE_NORMAL);
 		limit = shurikenLimit;
 		shurikenFound = 0;
 	}
 
 	@Override
-	void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
 		c.setActive(false);	
 		if(++shurikenFound >= limit)
 		{
@@ -24,18 +24,18 @@ public class ModeNormal extends GameMode {
 	}
 
 	@Override
-	void resetGame() {
+	public void resetGame() {
 		finished = false;
 		shurikenFound = 0;
 	}
 
 	@Override
-	void DoCollidedWall() {
+	public void DoCollidedWall() {
 		
 	}
 	
 	@Override
-	Bundle DoEndingMessage(int shuriken) {
+	public Bundle DoEndingMessage(int shuriken) {
 		double time = Global.precision(StopWatch.Instance().Diff()-0.2, 3);
 		Bundle b = new Bundle();
 		b.putInt("mode", Global.MSG_NORMAL);
@@ -45,7 +45,7 @@ public class ModeNormal extends GameMode {
 	}
 
 	@Override
-	void DoCollideBounds() {
+	public void DoCollideBounds() {
 		
 	}
 
