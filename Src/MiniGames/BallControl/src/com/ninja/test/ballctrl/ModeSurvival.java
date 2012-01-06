@@ -1,5 +1,7 @@
 package com.ninja.test.ballctrl;
 
+import java.util.Iterator;
+
 import android.graphics.RectF;
 import android.os.Bundle;
 
@@ -10,9 +12,10 @@ public class ModeSurvival extends GameMode {
 	}
 
 	@Override
-	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
-		b.increaseSpeed(.5f);
-		c.replace((int)canvas.right, (int)canvas.bottom);
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas, 
+			Iterator<Collidable> obstacles) {
+		b.increaseSpeed(.1f);
+		c.replace((int)canvas.right, (int)canvas.bottom, obstacles);
 	}
 
 	@Override

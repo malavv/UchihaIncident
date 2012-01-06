@@ -1,25 +1,33 @@
 package com.ninja.test.ballctrl;
 
 public class Collidable {
-    private int mPosX;
-    private int mPosY;
+    private float mPosX;
+    private float mPosY;
     private float mElasticity;
     private int collideDistance;
     private int collideDistance2;
-    private int distX;
-    private int distY;
-    private int dist2;
+    private float distX;
+    private float distY;
+    private float dist2;
     
 	protected boolean active;
     
     private static int rayon;
     
-    Collidable(int aPosX, int aPosY, float aElasticity) {
+    Collidable(float aPosX, float aPosY, float aElasticity) {
     	mPosX = aPosX;
     	mPosY = aPosY;
     	mElasticity = aElasticity;
     	
     	setSides();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+    	Collidable tmp = (Collidable)o;
+    	if(tmp.mPosX == mPosX && tmp.mPosY == mPosY)
+    		return true;
+    	return false;
     }
     
     public boolean collided( Collidable c) {
@@ -51,10 +59,10 @@ public class Collidable {
     public static int getOffset() {	return rayon*2; }
 	public boolean isActive() {return active;}
 	public void setActive(boolean isActive) {active = isActive;}
-	public int getX() {return mPosX;}
-	public void setX(int mPosX) {this.mPosX = mPosX;}
-	public int getY() {return mPosY;}
-	public void setY(int mPosY) {this.mPosY = mPosY;}
+	public float getX() {return mPosX;}
+	public void setX(float x) {this.mPosX = x;}
+	public float getY() {return mPosY;}
+	public void setY(float mPosY) {this.mPosY = mPosY;}
 	public float getElasticity() {return mElasticity;}
 	public int getRayon() {return rayon;}
 

@@ -18,6 +18,13 @@ public class Global {
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
 	
+	/** coté de l'écran */
+	public static final int BOUND_NONE = -1;
+	public static final int BOUND_TOP = 0;
+	public static final int BOUND_BOTTOM = 1;
+	public static final int BOUND_RIGHT = 2;
+	public static final int BOUND_LEFT = 3;
+	
 	/** Options du menu */
 	public static final int MODE_NORMAL = 0;
 	public static final int MODE_TIMED = 1;

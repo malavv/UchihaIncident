@@ -1,5 +1,7 @@
 package com.ninja.test.ballctrl;
 
+import java.util.Iterator;
+
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -15,8 +17,9 @@ public class ModeTimed extends GameMode {
 	}
 
 	@Override
-	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
-		c.replace((int)canvas.right, (int)canvas.bottom);
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas, 
+			Iterator<Collidable> obstacles) {
+		c.replace((int)canvas.right, (int)canvas.bottom, obstacles);
 	}
 
 	@Override

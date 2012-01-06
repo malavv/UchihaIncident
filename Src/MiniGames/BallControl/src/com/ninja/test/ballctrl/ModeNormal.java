@@ -1,5 +1,7 @@
 package com.ninja.test.ballctrl;
 
+import java.util.Iterator;
+
 import android.graphics.RectF;
 import android.os.Bundle;
 
@@ -15,7 +17,8 @@ public class ModeNormal extends GameMode {
 	}
 
 	@Override
-	public void foundShuriken(NinjaBall b, Coin c, RectF canvas) {
+	public void foundShuriken(NinjaBall b, Coin c, RectF canvas, 
+			Iterator<Collidable> obstacles) {
 		c.setActive(false);	
 		if(++shurikenFound >= limit)
 		{

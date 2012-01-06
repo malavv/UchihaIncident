@@ -1,5 +1,7 @@
 package com.ninja.test.ballctrl;
 
+import java.util.Iterator;
+
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -25,7 +27,8 @@ public abstract class GameMode {
 	public void resetGame() {}
 	
 	// Abstract functions
-	public abstract void foundShuriken(NinjaBall b, Coin c, RectF mCanvasDim);
+	public abstract void foundShuriken(NinjaBall b, Coin c, RectF mCanvasDim, 
+			Iterator<Collidable> obstacles);
 	public abstract Bundle DoEndingMessage(int shuriken);
 
 

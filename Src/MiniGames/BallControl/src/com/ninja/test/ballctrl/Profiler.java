@@ -31,7 +31,7 @@ public class Profiler {
    */
   public void Draw(Canvas c, RectF bounds) {
     String s = "FPS : " + FpsStr();
-    c.drawText(s, bounds.left + 5, bounds.bottom - 5, fpsBrush);
+    c.drawText(s, bounds.left + 5, bounds.bottom + 20, fpsBrush);
   }
   
   /** Retourne le fps actuel. */

@@ -58,7 +58,7 @@ public class ParticlesSystem {
 		mObstalcesList = new ArrayList<Collidable>();
 		mCoinsList = new ArrayList<Coin>();
 		
-		theOne = new NinjaBall(250, 120, 1, context);
+		theOne = new NinjaBall(250, 120, 2f, context);
 		
 		SpikesBall = context.getResources().getDrawable(R.drawable.spikes_ball);
 
@@ -86,28 +86,28 @@ public class ParticlesSystem {
 		// On dessine les obstacles
 		for(int i = 0; i < mObstalcesList.size(); i++){
 			tmp = mObstalcesList.get(i);
-			SpikesBall.setBounds(tmp.getX() - tmp.getRayon(), 
-								 tmp.getY() - tmp.getRayon(), 
-								 tmp.getX() + tmp.getRayon(), 
-								 tmp.getY() + tmp.getRayon() );
+			SpikesBall.setBounds((int)tmp.getX() - tmp.getRayon(), 
+					(int)tmp.getY() - tmp.getRayon(), 
+					(int)tmp.getX() + tmp.getRayon(), 
+					(int)tmp.getY() + tmp.getRayon() );
 
 			SpikesBall.draw(c);
 		}
 	}
 	
-	public void MoveNinja(long delta) {
+	public void MoveNinja(float delta) {
 		
 		// Puis on calcule le déplacement des objets notemment le Ninja
-		theOne.computePhysics(delta/10);
+		theOne.computePhysics(delta);
 	}
 	
 	public void DrawNinja(Canvas c) {
 		
 		ninjaB = theOne.getNinja();
-		ninjaB.setBounds(theOne.getX() - theOne.getRayon(), 
-						 theOne.getY() - theOne.getRayon()-5, 
-						 theOne.getX() + theOne.getRayon(), 
-						 theOne.getY() + theOne.getRayon() );
+		ninjaB.setBounds((int)theOne.getX() - theOne.getRayon(), 
+				(int)theOne.getY() - theOne.getRayon()-5, 
+				(int)theOne.getX() + theOne.getRayon(), 
+				(int)theOne.getY() + theOne.getRayon() );
 
 		//BlkSquare.draw(c);
 		ninjaB.draw(c);
@@ -118,10 +118,10 @@ public class ParticlesSystem {
 		for(int i = 0; i < mCoinsList.size(); i++){
 			tmp = mCoinsList.get(i);
 			if(tmp.isActive()) {
-				shuriken.setBounds(tmp.getX() - tmp.getRayon(), 
-						 tmp.getY() - tmp.getRayon(), 
-						 tmp.getX() + tmp.getRayon(), 
-						 tmp.getY() + tmp.getRayon() );
+				shuriken.setBounds((int)tmp.getX() - tmp.getRayon(), 
+						(int)tmp.getY() - tmp.getRayon(), 
+						(int)tmp.getX() + tmp.getRayon(), 
+						(int)tmp.getY() + tmp.getRayon() );
 				
 				shuriken.draw(c);
 			}
@@ -156,6 +156,14 @@ public class ParticlesSystem {
 		mHeight = (int)height;
 		
 		scaler();
+	}
+	
+	public float getHeight() {
+		return mHeight;
+	}
+	
+	public float getWidth() {
+		return mWidth;
 	}
 	
 	private void scaler() {
