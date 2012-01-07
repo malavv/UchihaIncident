@@ -57,10 +57,20 @@ public class PlayContent extends Activity implements SensorEventListener{
 	  public boolean onCreateOptionsMenu(Menu menu) {
 	    super.onCreateOptionsMenu(menu);
 	    
-	    mContentThread.pause();
 	    menu.add(0, kResumeMenu, 0, R.string.menu_resume);
 	        
 	    return true;
+	  }
+	  
+	  @Override
+	  public boolean onPrepareOptionsMenu (Menu menu) {
+		  mContentThread.pause();
+		  return true;
+	  }
+	  
+	  @Override
+	  public void onOptionsMenuClosed (Menu menu) {
+		  Resume();
 	  }
 	    
 	  /**
@@ -69,15 +79,9 @@ public class PlayContent extends Activity implements SensorEventListener{
 	  @Override
 	  public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
-	  	  case 1:  return true;
-	  	  case 2:
-	        Pause();
-	  		return true;
-	  	  case 3:
-	  		Resume();
-	  		return true;
+	  	  case kResumeMenu:
 	  	}
-	    return false;
+	    return true;
 	  }
 	    
 	  /**
