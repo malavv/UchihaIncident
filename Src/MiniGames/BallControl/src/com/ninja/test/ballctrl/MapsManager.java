@@ -5,38 +5,71 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Point;
-import android.util.Log;
+
+import com.ninja.test.ballctrl.base.MapItem;
+import com.ninja.test.ballctrl.base.MapModel;
 
 public class MapsManager {
+	private static Resources res_ = null;
+	private static String package_ = null;
 	private static Point bounds;
 	private static boolean boundSet = false;
 	private static ArrayList<Map> mapList = new ArrayList<Map>();
 	
-	public static void GetMapFromFile(String name) {
+	public static void Init() {
+	  res_ = PlayContentView.sContext.getResources();
+	  package_ = PlayContentView.sContext.getPackageName();
+	  MapModel.CharToType.put('W', MapItem.wall);
+	  MapModel.CharToType.put('X', MapItem.start);
+	  MapModel.CharToType.put('S', MapItem.shuriken);	
+	}
+	
+	public static Map GetMapFromFile(String name) {
+      if (res_ == null)  Init();
 		
-		AssetManager ass = PlayContentView.sContext.getAssets();
+	  int id = PlayContentView.sContext.getResources().getIdentifier(name, "raw", package_);
+      if (id == 0)  throw new IllegalArgumentException("Le fichier map voulu n'existe pas.");
+	
+      MapModel map = null;
+      try {
+         BufferedReader data = new BufferedReader(new InputStreamReader(res_.openRawResource(id)));
+		 if (!data.ready())  throw new IOException("Unable to open the map file");
+		 map = MapModel.Import(data);
+		 data.close();
+	  } catch (IOException e) { e.printStackTrace(); }
+      
+      Map createdMap = new Map();
+      for (MapItem item : map.Items) {
+    	int xPos = item.X * Collidable.getOffset();
+    	int yPos = bounds.y - item.Y * Collidable.getOffset();
+    	
+        switch (item.Type) {
+          case MapItem.wall:
+        	createdMap.mObstaclesList.add(new Wall(xPos, yPos, 1));
+        	break;
+          case MapItem.start:
+        	  createdMap.mNinjaInitPos.x = xPos;
+        	  createdMap.mNinjaInitPos.y = yPos;
+        	break;
+          case MapItem.shuriken:
+        	  createdMap.mItemsList.add(new Coin(xPos, yPos, 1));
+        	  break;
+        }
+      }
+      return createdMap;
+      
+      /*
+      try {
 		String maps[] = null;
-		mapList.clear();
-		
-		// tente de récupérer la liste des maps et utilise la map par défault 
-		// si l'asset est mal initialisé.
-		try {
-			maps = ass.list("ballmaps");
-		} catch (IOException e) {
-			Log.d("MapLoading", "Could not get Asset");
-			mapList.add(testMap1());
-			mapList.add(testMap2());
-			return;
-		}
 		// si la liste de maps est vide, on utilise la map par défault
 		if(maps == null) {
 			Log.d("MapLoading", "Could not get Maps");
 			mapList.add(testMap1());
 			mapList.add(testMap2());
 		}
-		
+	
 		Map map = null;
 		BufferedReader reader = null;
 		String line = null;
@@ -71,6 +104,7 @@ public class MapsManager {
 			mapList.add(testMap1());
 			mapList.add(testMap2());
 		}
+		*/
 	}
 	
 	public static Map GetMapFromID(int id) {

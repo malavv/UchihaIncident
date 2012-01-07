@@ -134,8 +134,9 @@ public class ParticlesSystem {
 	}
 	
 	public void placeItems() {
-		MapsManager.GetMapFromFile("");
-		Map map = MapsManager.GetMapFromID(0);
+		MapsManager.Init();
+		Map map = MapsManager.GetMapFromFile("test");
+		//Map map = MapsManager.GetMapFromID(0);
 		mObstalcesList = map.mObstaclesList;
 		mCoinsList = map.mItemsList;
 		background = map.mBackground;

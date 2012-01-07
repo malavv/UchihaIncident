@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback{
+public class PlayContentView extends SurfaceView implements SurfaceHolder.Callback {
 
    public PlayContentThread mContentThread;
    
@@ -22,7 +22,6 @@ public class PlayContentView extends SurfaceView implements SurfaceHolder.Callba
    
    public PlayContentView(Context context, AttributeSet attrs) {
       super(context, attrs);
-      
       sContext = context;
   	
       SurfaceHolder holder = getHolder();
