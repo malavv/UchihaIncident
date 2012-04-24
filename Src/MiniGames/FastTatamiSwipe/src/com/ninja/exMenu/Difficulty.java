@@ -1,7 +1,5 @@
 package com.ninja.exMenu;
 
-import java.util.ArrayList;
-
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -19,9 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ninja.exMenu.FbConnect.Identity;
-
-public class Difficulty extends ListActivity implements FbConnect.FbConnectCallback {
+public class Difficulty extends ListActivity {
 
    private static final int kStatsBtn = 0;
    private static final int kFbBtn = 1;
@@ -72,28 +68,20 @@ public class Difficulty extends ListActivity implements FbConnect.FbConnectCallb
    public boolean onOptionsItemSelected(MenuItem item) {
      switch (item.getItemId()) {
        case kStatsBtn: onStatisticBtnClicked();  return true;
-       case kFbBtn: onFacebookBtnClicked();  return true;
      }
      return false;
    }
    
    private void onStatisticBtnClicked() {}
-   private void onFacebookBtnClicked() {
-     FbConnect.Get().Login(this, GameContext.kFbAppId, GameContext.kFbAppPermissions, this);
-   }
   
    private class OpponentAdapter extends BaseAdapter {
 
       private LayoutInflater mInflater_;
       public OpponentAdapter(Context c) { mInflater_ = LayoutInflater.from(c); }
-      @Override
       public int getCount() { return GameContext.GetNVisible(); }
-      @Override
       public Object getItem(int index) { return GameContext.Get(index); }
-      @Override
       public long getItemId(int position) { return GameContext.Get(position).getID(); }
 
-      @Override
       public View getView(int position, View convertView, ViewGroup parent) {
         Opponent op = GameContext.GetVisible(position);
         View view;
@@ -122,19 +110,4 @@ public class Difficulty extends ListActivity implements FbConnect.FbConnectCallb
         return view;
       }
    }
-
-  @Override
-  public void onComplete(boolean isAuth) {
-    /*
-    Log.d("Difficulty", "Yay, Complete! " + Boolean.toString(isAuth));
-    
-    Identity id = FbConnect.Get().GetIdentity();
-    Log.d("Difficulty", id.toString());
-    
-    ArrayList<FbConnect.Identity> friends = FbConnect.Get().GetFriends();
-    Log.d("Difficulty", friends.toString());
-    
-    FbConnect.Get().PostOnFeed("Maxime Lavigne Took less than 1230ms to beat the game.");
-    */
-  }
 }
